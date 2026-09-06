@@ -1,4 +1,4 @@
-package servlet.empresaDemandante;
+package servlet.telefone;
 
 import exception.GenericExceptionEnum;
 
@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import model.EmpresaDemandante;
-import service.EmpresaDemandanteService;
+import service.TelefoneService;
+import model.Telefone;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ import java.util.Enumeration;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
-@WebServlet("/crudEmpresaDemandante-update")
-public class UpdateEmpresaDemandanteServlet extends HttpServlet{
+@WebServlet("/crudTelefone-update")
+public class UpdateTelefoneServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,15 +34,15 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
             }
 
             String id = request.getParameter("idUpdate");
-            EmpresaDemandante empresaDemandante = EmpresaDemandanteService.exibirEmpresaDemandanteParaUpdate(id);
+            Telefone telefone = TelefoneService.exibirFornecedorParaUpdate(id);
 
-            if (empresaDemandante == null){
+            if (telefone == null){
                 session.setAttribute("erroUpdate", "Um erro inesperado aconteceu, tente novamente");
-                response.sendRedirect(request.getContextPath()+"/crudEmpresaDemandante");
+                response.sendRedirect(request.getContextPath()+"/crudTelefone");
             } else {
-                session.setAttribute("empresaDemandanteUpdate", empresaDemandante);
+                session.setAttribute("telefoneUpdate", telefone);
                 session.setAttribute("abrirUpdate", true);
-                response.sendRedirect(request.getContextPath()+"/crudEmpresaDemandante");
+                response.sendRedirect(request.getContextPath()+"/crudTelefone");
             }
         } catch (Exception e){
             HttpSession session = request.getSession();
@@ -54,7 +54,7 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
             }
 
             session.setAttribute("erroUpdate", "Um erro inesperado aconteceu, tente novamente");
-            response.sendRedirect(request.getContextPath()+"/crudEmpresaDemandante");
+            response.sendRedirect(request.getContextPath()+"/crudTelefone");
         }
     }
 
@@ -65,16 +65,16 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
             HttpSession session = request.getSession();
 
             String idUpdate = request.getParameter("idUpdate");
-            String tipoUsuarioUpdate = request.getParameter("tipoUsuarioUpdate");
-            String cnpjUpdate = request.getParameter("cnpjUpdate");
-            String razaoSocialUpdate = request.getParameter("razaoSocialUpdate");
-            String ehMandanteUpdate = request.getParameter("ehMandanteUpdate");
+            String idUsuarioUpdate = request.getParameter("idUsuarioUpdate");
+            String telefoneUpdate = request.getParameter("telefoneUpdate");
+            String tipoUpdate = request.getParameter("tipoUpdate");
+            String principalUpdate = request.getParameter("principalUpdate");
 
-            ArrayList<GenericExceptionEnum> erros = EmpresaDemandanteService.realizarUpdate(idUpdate, tipoUsuarioUpdate, cnpjUpdate, razaoSocialUpdate, ehMandanteUpdate);
+            ArrayList<GenericExceptionEnum> erros = TelefoneService.realizarUpdate(idUpdate, telefoneUpdate, idUsuarioUpdate, tipoUpdate, principalUpdate);
 
             if(!erros.isEmpty()){
                 session.setAttribute("errosUpdate", erros);
-                response.sendRedirect(request.getContextPath()+"/crudEmpresaDemandante");
+                response.sendRedirect(request.getContextPath()+"/crudTelefone");
             } else{
                 //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
                 Enumeration<String> attributes = session.getAttributeNames();
@@ -83,7 +83,7 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
                 }
 
                 session.setAttribute("mensagemUpdate", "Os dados foram atualizados com sucesso");
-                response.sendRedirect(request.getContextPath()+"/crudEmpresaDemandante");
+                response.sendRedirect(request.getContextPath()+"/crudTelefone");
             }
         } catch (Exception e) {
             HttpSession session = request.getSession();
@@ -92,7 +92,7 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
             erros.add(ERRO_GENERICO);
 
             session.setAttribute("errosUpdate", erros);
-            response.sendRedirect(request.getContextPath()+"/crudEmpresaDemandante");
+            response.sendRedirect(request.getContextPath()+"/crudTelefone");
         }
     }
 }

@@ -1,4 +1,4 @@
-package servlet.usuario;
+package servlet.endereco;
 
 import exception.GenericExceptionEnum;
 
@@ -9,20 +9,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import service.UsuarioService;
+import service.EnderecoService;
 
 import java.io.IOException;
 import java.util.Enumeration;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
-@WebServlet("/crudUsuario-delete")
-public class DeleteUsuarioServlet extends HttpServlet {
+@WebServlet("/crudEndereco-delete")
+public class DeleteEnderecoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath() + "/crudUsuario");
+        response.sendRedirect(request.getContextPath() + "/crudEndereco");
     }
 
     @Override
@@ -39,14 +39,14 @@ public class DeleteUsuarioServlet extends HttpServlet {
 
             String id = request.getParameter("idDelete");
 
-            GenericExceptionEnum erro = UsuarioService.realizarDelete(id);
+            GenericExceptionEnum erro = EnderecoService.realizarDelete(id);
 
             if(erro != null){
                 session.setAttribute("mensagemDelete", erro.exibirMensagem());
-                response.sendRedirect(request.getContextPath() + "/crudUsuario");
+                response.sendRedirect(request.getContextPath() + "/crudEndereco");
             } else {
                 session.setAttribute("mensagemDelete", "O usuário foi deletado com sucesso!");
-                response.sendRedirect(request.getContextPath() + "/crudUsuario");
+                response.sendRedirect(request.getContextPath() + "/crudEndereco");
             }
         } catch (Exception e){
 
@@ -59,7 +59,7 @@ public class DeleteUsuarioServlet extends HttpServlet {
             }
 
             session.setAttribute("mensagemDelete", ERRO_GENERICO.exibirMensagem());
-            response.sendRedirect(request.getContextPath() + "/crudUsuario");
+            response.sendRedirect(request.getContextPath() + "/crudEndereco");
         }
     }
 }

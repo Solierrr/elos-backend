@@ -1,6 +1,7 @@
 package servlet.profissional;
 
 import exception.GenericExceptionEnum;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import model.Profissional;
 import service.ProfissionalService;
 
@@ -18,7 +20,7 @@ import java.util.List;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
-@WebServlet("/crudProfissionl")
+@WebServlet("/crudProfissional")
 public class ReadProfissionalServlet extends HttpServlet {
 
     @Override

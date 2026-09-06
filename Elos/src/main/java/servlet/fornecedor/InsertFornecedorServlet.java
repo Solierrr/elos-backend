@@ -1,19 +1,20 @@
 package servlet.fornecedor;
 
 import exception.GenericExceptionEnum;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.Fornecedor;
+
 import service.FornecedorService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.Enumeration;
+
 import static exception.ErrosGerais.ERRO_GENERICO;
 
 @WebServlet("/crudFornecedor-insert")

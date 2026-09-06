@@ -283,7 +283,7 @@ public class UsuarioService {
 
     }
 
-    //Métodos para realizar as ações do InsertEmpresaDemandanteServlet
+    //Métodos para realizar as ações do InsertEnderecoServlet
     public static ArrayList<GenericExceptionEnum> realizarInsert(String email, String senha, String nome, String tipoUsuario, String raioProcuraKm){
         ArrayList<GenericExceptionEnum> mensagens = validarUsuarioInsert(email, senha, nome, tipoUsuario, raioProcuraKm);
 

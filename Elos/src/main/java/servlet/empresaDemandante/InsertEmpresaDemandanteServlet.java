@@ -1,18 +1,20 @@
 package servlet.empresaDemandante;
 
 import exception.GenericExceptionEnum;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import service.EmpresaDemandanteService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.Enumeration;
+
 import static exception.ErrosGerais.ERRO_GENERICO;
 
 @WebServlet("/crudEmpresaDemandante-insert")
@@ -49,7 +51,7 @@ public class InsertEmpresaDemandanteServlet extends HttpServlet {
                 session.setAttribute("tipoUsuarioInsert", tipoUsuario);
                 session.setAttribute("idUsuarioInsert", idUsuario);
                 session.setAttribute("cnpjInsert", cnpj);
-                session.setAttribute("razaoSocial", razaoSocial);
+                session.setAttribute("razaoSocialInsert", razaoSocial);
                 session.setAttribute("ehMandanteInsert", ehMandante);
 
                 //Atributo usado no javascript para abrir o pop-up
