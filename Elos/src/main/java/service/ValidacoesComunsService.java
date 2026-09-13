@@ -32,22 +32,11 @@ public class ValidacoesComunsService {
         return where.isValido() ? VALIDACAO_OK : WHERE_INVALIDO;
     }
 
-    public static GenericExceptionEnum validarOrderBy(GenericEnumCampos ordenacao){
-        return ordenacao.isValido() ? VALIDACAO_OK : ORDER_BY_INVALIDO;
+    public static GenericExceptionEnum validarOrderBy(GenericEnumCampos orderBy){
+        return orderBy.isValido() ? VALIDACAO_OK : ORDER_BY_INVALIDO;
     }
 
-    public static GenericExceptionEnum validarEntradaStringUniversal(ValidadorEntradaStringUniversalDto validadorEntradaStringDto){
-        String stringParaValidar = validadorEntradaStringDto.stringParaValidar();
-        if (stringParaValidar == null || stringParaValidar.isBlank()) {
-            return validadorEntradaStringDto.retornoParaVazio();
-        }
 
-        String stringTratada = stringParaValidar.strip();
-        if(stringTratada.length() > validadorEntradaStringDto.tamanhoMaximoString()){
-            return validadorEntradaStringDto.retornoParaTamanhoInvalido();
-        }
-        return VALIDACAO_OK;
-    }
 
 
 

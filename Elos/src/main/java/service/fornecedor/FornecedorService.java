@@ -20,40 +20,17 @@ import static service.fornecedor.CamposFornecedor.*;
 
 public final class FornecedorService {
 
+    //Constantes para evitar valores mágicos ou instancia desnecessária de objetos
     private static final int TAMANHO_CNPJ = 14;
-
     private static final Pattern  PATTERN_CNPJ = Pattern.compile("^[0-9-A-Z]{12}[0-9]{2}$");
 
     private static final Pattern PATTERN_RAZAO_SOCIAL = Pattern.compile("^[\\p{Script=Latin}0-9&,.;'\\-]+[\\p{Script=Latin}0-9&,.;'\\-\\s]+$");
 
     private static final int TAMANHO_MAXIMO_RAZAO_SOCIAL = 150;
 
-    private static GenericExceptionEnum validarWhere(String where){
-        if (where == null || where.isBlank()){return WHERE_INVALIDO;}
-
-        CamposFornecedor campoDoWhere = CamposFornecedor.descobrirCampoFornecedor(where.strip().toLowerCase());
-        return campoDoWhere == INVALIDO ? WHERE_INVALIDO : VALIDACAO_OK;
-    }
-
-    private static GenericExceptionEnum validarOrderBy(String ordenacao){
-        if (ordenacao == null || ordenacao.isBlank()){return ORDER_BY_INVALIDO;}
-
-        CamposFornecedor ordenacaoCampo = CamposFornecedor.descobrirCampoFornecedor(ordenacao.strip().toLowerCase());
-        return ordenacaoCampo == INVALIDO ? ORDER_BY_INVALIDO : VALIDACAO_OK;
-    }
-
-    private static GenericExceptionEnum validarId(String id){
-        try {
-            String idTratado = id.strip();
-            Long.parseLong(idTratado);
-            return VALIDACAO_OK;
-        } catch (NumberFormatException numberFormatException){
-            return ID_INVALIDO;
-        }
-    }
-
+    //Validação do id usuario
     private static GenericExceptionEnum validarIdUsuario(String idUsuario){
-        if(validarId(idUsuario) != VALIDACAO_OK){
+        if(ValidacoesComunsService.validarId(idUsuario) != VALIDACAO_OK){
             return ID_USUARIO_INVALIDO;
         }
 
@@ -71,6 +48,7 @@ public final class FornecedorService {
         return VALIDACAO_OK;
     }
 
+    //Validação do tipo fornecedor
     private static GenericExceptionEnum validarTipoFornecedor(String tipoFornecedor){
         if(tipoFornecedor == null || tipoFornecedor.isBlank()){
             return TIPO_FORNECEDOR_VAZIO;
@@ -80,6 +58,7 @@ public final class FornecedorService {
         return tiposFornecedorEncontrado == null ? TIPO_FORNECEDOR_INVALIDO : VALIDACAO_OK;
     }
 
+    //Validações do cnpj
     private static GenericExceptionEnum validarCnpj(String cnpj, boolean insert){
         if(cnpj == null || cnpj.isBlank()){
             return CNPJ_VAZIO;
@@ -150,6 +129,7 @@ public final class FornecedorService {
         return (resto < 2) ? 0 : (11 - resto);
     }
 
+    //Validações da razão social
     private static GenericExceptionEnum validarRazaoSocial(String razaoSocial){
         if(razaoSocial == null || razaoSocial.isBlank()){
             return RAZAO_SOCIAL_VAZIA;
@@ -165,16 +145,16 @@ public final class FornecedorService {
             return RAZAO_SOCIAL_INVALIDA;
         }
 
-        return validarEstruturaRazaoSocial(razaoSocialTratada);
+        return validarFormatoRazaoSocial(razaoSocialTratada);
     }
 
-    private static GenericExceptionEnum validarEstruturaRazaoSocial(String razaoSocial){
+    private static GenericExceptionEnum validarFormatoRazaoSocial(String razaoSocial){
         return PATTERN_RAZAO_SOCIAL.matcher(razaoSocial).matches() ? VALIDACAO_OK : RAZAO_SOCIAL_INVALIDA;
     }
 
     //Métodos relacionados ao delete
     public static GenericExceptionEnum realizarDelete(String id){
-        if(validarId(id) != VALIDACAO_OK) {
+        if(ValidacoesComunsService.validarId(id) != VALIDACAO_OK) {
             return ERRO_GENERICO;
         }
 
@@ -191,35 +171,35 @@ public final class FornecedorService {
     }
 
     //Métodos relacionados ao select
-    public static List<Fornecedor> realizarSelect(FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDto, List<GenericExceptionEnum> errosEncontrados){
+    public static List<Fornecedor> realizarSelect(FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDTO, List<GenericExceptionEnum> errosEncontrados){
         List<Fornecedor> Fornecedores;
 
-        if(fornecedorDadosDePesquisaDto == null){
+        if(fornecedorDadosDePesquisaDTO == null){
             return lerFornecedores(null, true);
         }
 
-        errosEncontrados.addAll(validarFornecedorSelect(fornecedorDadosDePesquisaDto));
+        errosEncontrados.addAll(validarFornecedorSelect(fornecedorDadosDePesquisaDTO));
         if (!errosEncontrados.isEmpty()){
-            return lerFornecedores(fornecedorDadosDePesquisaDto,true);
+            return lerFornecedores(fornecedorDadosDePesquisaDTO,true);
         }
 
-        Fornecedores = lerFornecedores(fornecedorDadosDePesquisaDto,false);
+        Fornecedores = lerFornecedores(fornecedorDadosDePesquisaDTO,false);
         if (Fornecedores.isEmpty()){
             errosEncontrados.add(REGISTROS_NAO_ENCONTRADOS);
         }
         return Fornecedores;
     }
 
-    private static List<Fornecedor> lerFornecedores(FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDto, boolean erroEncontrado){
+    private static List<Fornecedor> lerFornecedores(FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDTO, boolean erroEncontrado){
         if (erroEncontrado){
             FornecedorDAO dao = new FornecedorDAO();
             return dao.readAll();
         }
 
-        CamposFornecedor clausulaWhere = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
+        CamposFornecedor clausulaWhere = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDTO.clausulaWhereNome().strip().toLowerCase());
 
         if(!clausulaWhere.isMultiplosRetornos()){
-            Fornecedor fornecedor = lerFornecedorUnicoRetorno(clausulaWhere, fornecedorDadosDePesquisaDto.clausulaWhereValor());
+            Fornecedor fornecedor = lerFornecedorUnicoRetorno(clausulaWhere, fornecedorDadosDePesquisaDTO.clausulaWhereValor());
 
             List<Fornecedor> fornecedores = new ArrayList<>();
 
@@ -228,7 +208,7 @@ public final class FornecedorService {
             }
             return fornecedores;
         }
-        return lerFornecedorMultiplosRetornos(clausulaWhere, fornecedorDadosDePesquisaDto);
+        return lerFornecedorMultiplosRetornos(clausulaWhere, fornecedorDadosDePesquisaDTO);
     }
 
     private static Fornecedor lerFornecedorUnicoRetorno(CamposFornecedor clausulaWhere, String clausulaWhereValor){
@@ -251,46 +231,48 @@ public final class FornecedorService {
         return new Fornecedor(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null);
     }
 
-    private static List<Fornecedor> lerFornecedorMultiplosRetornos(CamposFornecedor clausulaWhere, FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDto){
-        CamposFornecedor orderBy = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDto.orderBy().strip().toLowerCase());
+    private static List<Fornecedor> lerFornecedorMultiplosRetornos(CamposFornecedor clausulaWhere, FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDTO){
+        CamposFornecedor orderBy = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDTO.orderBy().strip().toLowerCase());
 
         FornecedorDAO dao = new FornecedorDAO();
         if (clausulaWhere == GENERICO){
-            return orderBy == GENERICO ? dao.readAll() : dao.readAllOrderBy(orderBy.getCampoFornecedor(), fornecedorDadosDePesquisaDto.sentidoOrderBy());
+            return orderBy == GENERICO ? dao.readAll() : dao.readAllOrderBy(orderBy.getCampoFornecedor(), fornecedorDadosDePesquisaDTO.sentidoOrderBy());
         }
 
         if (clausulaWhere == TIPO_FORNECEDOR){
-            String tipoFornecedorTratado = fornecedorDadosDePesquisaDto.clausulaWhereValor().strip();
+            String tipoFornecedorTratado = fornecedorDadosDePesquisaDTO.clausulaWhereValor().strip();
             return orderBy == GENERICO ? dao.readAllByTipoFornecedor(tipoFornecedorTratado) :
-                    dao.readAllByTipoFornecedorOrderBy(tipoFornecedorTratado, orderBy.getCampoFornecedor(), fornecedorDadosDePesquisaDto.sentidoOrderBy());
+                    dao.readAllByTipoFornecedorOrderBy(tipoFornecedorTratado, orderBy.getCampoFornecedor(), fornecedorDadosDePesquisaDTO.sentidoOrderBy());
         }
 
         if(clausulaWhere == RAZAO_SOCIAL){
-            String razaoSocialTratada = fornecedorDadosDePesquisaDto.clausulaWhereValor().toUpperCase();
+            String razaoSocialTratada = fornecedorDadosDePesquisaDTO.clausulaWhereValor().toUpperCase();
             return orderBy == GENERICO ?
                     dao.readAllByRazaoSocial(razaoSocialTratada) :
-                    dao.readAllByRazaoSocialOrderBy(razaoSocialTratada, orderBy.getCampoFornecedor(), fornecedorDadosDePesquisaDto.sentidoOrderBy());
+                    dao.readAllByRazaoSocialOrderBy(razaoSocialTratada, orderBy.getCampoFornecedor(), fornecedorDadosDePesquisaDTO.sentidoOrderBy());
         }
         return new ArrayList<>();
     }
 
-    private static List<GenericExceptionEnum> validarFornecedorSelect(FornecedorDadosDePesquisaDTO FornecedorDadosDePesquisaDto){
+    private static List<GenericExceptionEnum> validarFornecedorSelect(FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDTO){
         List<GenericExceptionEnum> erros = new ArrayList<>();
 
-        GenericExceptionEnum clausulaWhereNomeValidacao = validarWhere(FornecedorDadosDePesquisaDto.clausulaWhereNome());
+        CamposFornecedor clausulaWhere = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDTO.clausulaWhereNome());
+        GenericExceptionEnum clausulaWhereNomeValidacao = ValidacoesComunsService.validarWhere(clausulaWhere);
         if (clausulaWhereNomeValidacao != VALIDACAO_OK){
             erros.add(clausulaWhereNomeValidacao);
             return erros;
         }
 
-        erros.addAll(validarClausulaWhereValor(FornecedorDadosDePesquisaDto.clausulaWhereNome(), FornecedorDadosDePesquisaDto.clausulaWhereValor()));
+        erros.addAll(validarClausulaWhereValor(fornecedorDadosDePesquisaDTO.clausulaWhereNome(), fornecedorDadosDePesquisaDTO.clausulaWhereValor()));
 
-        GenericExceptionEnum orderByValidacao = validarOrderBy(FornecedorDadosDePesquisaDto.orderBy());
+        CamposFornecedor orderBy = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDTO.orderBy());
+        GenericExceptionEnum orderByValidacao = ValidacoesComunsService.validarOrderBy(orderBy);
         if (orderByValidacao != VALIDACAO_OK){
             erros.add(orderByValidacao);
         }
 
-        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(FornecedorDadosDePesquisaDto.sentidoOrderBy());
+        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(fornecedorDadosDePesquisaDTO.sentidoOrderBy());
         if (ordenacaoValidacao != VALIDACAO_OK){
             erros.add(ordenacaoValidacao);
         }
@@ -308,7 +290,7 @@ public final class FornecedorService {
         }
 
         if (clausulaWhere == ID || clausulaWhere == ID_USUARIO){
-            clausulaWhereValorValidacao = validarId(clausulaWhereValor);
+            clausulaWhereValorValidacao = ValidacoesComunsService.validarId(clausulaWhereValor);
         }
 
         if (clausulaWhere == TIPO_FORNECEDOR){
@@ -334,33 +316,33 @@ public final class FornecedorService {
     }
 
     //Métodos relacionados ao update
-    public static List<GenericExceptionEnum> realizarUpdate(FornecedorDadosDTO FornecedorDadosDto){
-        List<GenericExceptionEnum> erros = validarUpdate(FornecedorDadosDto);
+    public static List<GenericExceptionEnum> realizarUpdate(FornecedorDadosDTO fornecedorDadosDTO){
+        List<GenericExceptionEnum> erros = validarUpdate(fornecedorDadosDTO);
         if(!erros.isEmpty()){
             return erros;
         }
 
-        int qtdLinhasAlteradas = atualizarFornecedor(FornecedorDadosDto);
+        int qtdLinhasAlteradas = atualizarFornecedor(fornecedorDadosDTO);
         if(qtdLinhasAlteradas < 1){
             erros.add(ErrosGerais.descobrirErroGeral(qtdLinhasAlteradas));
         }
         return erros;
     }
 
-    private static int atualizarFornecedor(FornecedorDadosDTO FornecedorDadosDto){
+    private static int atualizarFornecedor(FornecedorDadosDTO fornecedorDadosDTO){
         FornecedorDAO dao = new FornecedorDAO();
-        return dao.updateById(FornecedorDadosDto.construirFornecedor());
+        return dao.updateById(fornecedorDadosDTO.construirFornecedor());
     }
 
-    private static List<GenericExceptionEnum> validarUpdate(FornecedorDadosDTO FornecedorDadosDto){
+    private static List<GenericExceptionEnum> validarUpdate(FornecedorDadosDTO fornecedorDadosDTO){
         List<GenericExceptionEnum> erros = new ArrayList<>();
 
-        GenericExceptionEnum tipoFornecedorValidacao = validarTipoFornecedor(FornecedorDadosDto.tipoFornecedor());
+        GenericExceptionEnum tipoFornecedorValidacao = validarTipoFornecedor(fornecedorDadosDTO.tipoFornecedor());
         if(tipoFornecedorValidacao != VALIDACAO_OK){
             erros.add(tipoFornecedorValidacao);
         }
 
-        GenericExceptionEnum razaoSocialValidacao = validarRazaoSocial(FornecedorDadosDto.razaoSocial());
+        GenericExceptionEnum razaoSocialValidacao = validarRazaoSocial(fornecedorDadosDTO.razaoSocial());
         if (razaoSocialValidacao != VALIDACAO_OK){
             erros.add(razaoSocialValidacao);
         }
@@ -368,7 +350,7 @@ public final class FornecedorService {
     }
 
     public static Fornecedor exibirFornecedorParaUpdate(String id){
-        if(validarId(id) != VALIDACAO_OK){
+        if(ValidacoesComunsService.validarId(id) != VALIDACAO_OK){
             return null;
         }
 
@@ -377,10 +359,10 @@ public final class FornecedorService {
     }
 
     //Métodos relacionados ao insert
-    public static List<GenericExceptionEnum> realizarInsert(FornecedorDadosDTO FornecedorDadosDto){
-        List<GenericExceptionEnum> mensagens = validarFornecedorInsert(FornecedorDadosDto);
+    public static List<GenericExceptionEnum> realizarInsert(FornecedorDadosDTO fornecedorDadosDTO){
+        List<GenericExceptionEnum> mensagens = validarFornecedorInsert(fornecedorDadosDTO);
         if (mensagens.isEmpty()) {
-            int resultado = persistirFornecedor(FornecedorDadosDto);
+            int resultado = persistirFornecedor(fornecedorDadosDTO);
             if (resultado < 1) {
                 mensagens.add(ErrosGerais.descobrirErroGeral(resultado));
             }
@@ -388,33 +370,33 @@ public final class FornecedorService {
         return mensagens;
     }
 
-    private static List<GenericExceptionEnum> validarFornecedorInsert(FornecedorDadosDTO FornecedorDadosDto){
+    private static List<GenericExceptionEnum> validarFornecedorInsert(FornecedorDadosDTO fornecedorDadosDTO){
         List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
 
-        GenericExceptionEnum validacaoIdUsuario = validarIdUsuario(FornecedorDadosDto.idUsuario());
+        GenericExceptionEnum validacaoIdUsuario = validarIdUsuario(fornecedorDadosDTO.idUsuario());
         if (validacaoIdUsuario != VALIDACAO_OK){
             listaDeErros.add(validacaoIdUsuario);
         }
 
-        GenericExceptionEnum validacaoTipoFornecedor = validarTipoFornecedor(FornecedorDadosDto.tipoFornecedor());
+        GenericExceptionEnum validacaoTipoFornecedor = validarTipoFornecedor(fornecedorDadosDTO.tipoFornecedor());
         if(validacaoTipoFornecedor != VALIDACAO_OK){
             listaDeErros.add(validacaoTipoFornecedor);
         }
 
-        GenericExceptionEnum validacaoCnpj = validarCnpj(FornecedorDadosDto.cnpj(), true);
+        GenericExceptionEnum validacaoCnpj = validarCnpj(fornecedorDadosDTO.cnpj(), true);
         if(validacaoCnpj != VALIDACAO_OK && validacaoCnpj != ATRIBUTO_NULL){
             listaDeErros.add(validacaoCnpj);
         }
 
-        GenericExceptionEnum validacaoRazaoSocial = validarRazaoSocial(FornecedorDadosDto.razaoSocial());
+        GenericExceptionEnum validacaoRazaoSocial = validarRazaoSocial(fornecedorDadosDTO.razaoSocial());
         if(validacaoRazaoSocial != VALIDACAO_OK){
             listaDeErros.add(validacaoRazaoSocial);
         }
         return listaDeErros;
     }
 
-    private static int persistirFornecedor(FornecedorDadosDTO FornecedorDadosDto){
+    private static int persistirFornecedor(FornecedorDadosDTO fornecedorDadosDTO){
         FornecedorDAO dao = new FornecedorDAO();
-        return dao.insert(FornecedorDadosDto.construirFornecedor());
+        return dao.insert(fornecedorDadosDTO.construirFornecedor());
     }
 }

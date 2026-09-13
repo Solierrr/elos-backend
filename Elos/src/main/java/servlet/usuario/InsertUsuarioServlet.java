@@ -45,8 +45,7 @@ public final class InsertUsuarioServlet extends HttpServlet {
             String nomeInsert = request.getParameter("nomeInsert");
             String raioProcuraKmInsert = request.getParameter("raioProcuraKmInsert");
 
-            UsuarioDadosDTO usuarioDadosDto = new UsuarioDadosDTO(null, tipoUsuarioInsert, emailInsert,
-                                                                    senhaInsert, nomeInsert, raioProcuraKmInsert);
+            UsuarioDadosDTO usuarioDadosDto = new UsuarioDadosDTO(null, tipoUsuarioInsert, emailInsert, senhaInsert, nomeInsert, raioProcuraKmInsert);
 
             List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(usuarioDadosDto);
 
