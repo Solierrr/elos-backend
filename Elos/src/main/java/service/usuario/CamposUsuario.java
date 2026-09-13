@@ -1,12 +1,13 @@
 package service.usuario;
 
 import dao.AcoesInstrucao;
+import service.GenericEnumCampos;
 
 import java.sql.Types;
 
 import static dao.AcoesInstrucao.*;
 
-public enum CamposUsuarioAcessiveis {
+public enum CamposUsuario implements GenericEnumCampos {
 
     ID("id", true, IGUAL, Types.BIGINT),
     TIPO_USUARIO("tipo_usuario", true, IGUAL, Types.VARCHAR),
@@ -22,7 +23,7 @@ public enum CamposUsuarioAcessiveis {
     private final AcoesInstrucao acao;
     private final int dataType;
 
-    CamposUsuarioAcessiveis(String campoUsuario, boolean acessivel, AcoesInstrucao acao, int dataType) {
+    CamposUsuario(String campoUsuario, boolean acessivel, AcoesInstrucao acao, int dataType) {
         this.campoUsuario = campoUsuario;
         this.acessivel = acessivel;
         this.acao = acao;
@@ -45,17 +46,23 @@ public enum CamposUsuarioAcessiveis {
         return dataType;
     }
 
-    public static CamposUsuarioAcessiveis descobrirCampoUsuario(String campoUsuarioEntrada){
-        if(campoUsuarioEntrada == null){
+    public static CamposUsuario descobrirCampoUsuario(String campoUsuarioEntrada){
+        if(campoUsuarioEntrada == null || campoUsuarioEntrada.isBlank()){
             return INVALIDO;
         }
 
         String campoUsuarioEntradaTratado = campoUsuarioEntrada.strip().toLowerCase();
-        for(CamposUsuarioAcessiveis campoUsuario : CamposUsuarioAcessiveis.values()){
+        for(CamposUsuario campoUsuario : CamposUsuario.values()){
             if(campoUsuario.getCampoUsuario().equalsIgnoreCase(campoUsuarioEntradaTratado) && campoUsuario.isAcessivel()){
                 return campoUsuario;
             }
         }
         return INVALIDO;
     }
+
+    @Override
+    public boolean isValido(){
+        return this != INVALIDO;
+    }
+
 }

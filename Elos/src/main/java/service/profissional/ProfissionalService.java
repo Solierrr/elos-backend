@@ -3,7 +3,7 @@ package service.profissional;
 import static exception.ErrosDadosProfissional.*;
 import static exception.ErrosGerais.*;
 import static exception.ErrosGeraisDados.*;
-import static service.profissional.CamposProfissionalAcessiveis.*;
+import static service.profissional.CamposProfissional.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import dao.ProfissionalDAO;
 import dao.UsuarioDAO;
 import exception.ErrosGerais;
 import exception.GenericExceptionEnum;
+import service.ValidacoesComunsService;
 
 public final class ProfissionalService {
 
@@ -28,40 +29,20 @@ public final class ProfissionalService {
     private static final Pattern PATTERN_CPF = Pattern.compile("^[0-9]{11}$");
 
     //Validação
-    private static GenericExceptionEnum validarSentidoOrderBy(String sentidoOrderBy){
-        if (sentidoOrderBy == null || sentidoOrderBy.isBlank()){return SENTIDO_ORDER_BY_INVALIDO;}
 
-        String ordenacaoTratada = sentidoOrderBy.strip().toLowerCase();
-        switch(ordenacaoTratada) {
-            case "asc", "desc":
-                return VALIDACAO_OK;
-            default:
-                return SENTIDO_ORDER_BY_INVALIDO;
-        }
-    }
 
     private static GenericExceptionEnum validarWhere(String where){
         if (where == null || where.isBlank()){return WHERE_INVALIDO;}
 
-        CamposProfissionalAcessiveis campoDoWhere = CamposProfissionalAcessiveis.descobrirCampoProfissional(where.strip().toLowerCase());
+        CamposProfissional campoDoWhere = CamposProfissional.descobrirCampoProfissional(where.strip().toLowerCase());
         return campoDoWhere == INVALIDO ? WHERE_INVALIDO : VALIDACAO_OK;
     }
 
     private static GenericExceptionEnum validarOrderBy(String ordenacao){
         if (ordenacao == null || ordenacao.isBlank()){return ORDER_BY_INVALIDO;}
 
-        CamposProfissionalAcessiveis ordenacaoCampo = CamposProfissionalAcessiveis.descobrirCampoProfissional(ordenacao.strip().toLowerCase());
+        CamposProfissional ordenacaoCampo = CamposProfissional.descobrirCampoProfissional(ordenacao.strip().toLowerCase());
         return ordenacaoCampo == INVALIDO ? ORDER_BY_INVALIDO : VALIDACAO_OK;
-    }
-
-    private static GenericExceptionEnum validarId(String id){
-        try {
-            String idTratado = id.strip();
-            Long.parseLong(idTratado);
-            return VALIDACAO_OK;
-        } catch (NumberFormatException numberFormatException){
-            return ID_INVALIDO;
-        }
     }
 
     private static GenericExceptionEnum validarIdUsuario(String idUsuario){
@@ -222,7 +203,7 @@ public final class ProfissionalService {
             return dao.readAll();
         }
 
-        CamposProfissionalAcessiveis clausulaWhere = CamposProfissionalAcessiveis.descobrirCampoProfissional(profissionalDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
+        CamposProfissional clausulaWhere = CamposProfissional.descobrirCampoProfissional(profissionalDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
 
         if(!clausulaWhere.isMultiplosRetornos()){
             Profissional profissional= lerProfissionalUnicoRetorno(clausulaWhere, profissionalDadosDePesquisaDto.clausulaWhereValor());
@@ -237,7 +218,7 @@ public final class ProfissionalService {
         return lerProfissionalMultiplosRetorno(clausulaWhere, profissionalDadosDePesquisaDto);
     }
 
-    private static Profissional lerProfissionalUnicoRetorno(CamposProfissionalAcessiveis clausulaWhere, String clausulaWhereValor){
+    private static Profissional lerProfissionalUnicoRetorno(CamposProfissional clausulaWhere, String clausulaWhereValor){
         ProfissionalDAO dao = new ProfissionalDAO();
 
         if (clausulaWhere == ID){
@@ -258,8 +239,8 @@ public final class ProfissionalService {
         return new Profissional(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
     }
 
-    private static List<Profissional> lerProfissionalMultiplosRetorno(CamposProfissionalAcessiveis clausulaWhere, ProfissionalDadosDePesquisaDTO profissionalDadosDePesquisaDto){
-        CamposProfissionalAcessiveis orderBy = CamposProfissionalAcessiveis.descobrirCampoProfissional(profissionalDadosDePesquisaDto.orderBy().strip().toLowerCase());
+    private static List<Profissional> lerProfissionalMultiplosRetorno(CamposProfissional clausulaWhere, ProfissionalDadosDePesquisaDTO profissionalDadosDePesquisaDto){
+        CamposProfissional orderBy = CamposProfissional.descobrirCampoProfissional(profissionalDadosDePesquisaDto.orderBy().strip().toLowerCase());
 
         ProfissionalDAO dao = new ProfissionalDAO();
         if (clausulaWhere == GENERICO){
@@ -298,7 +279,7 @@ public final class ProfissionalService {
             erros.add(orderByValidacao);
         }
 
-        GenericExceptionEnum ordenacaoValidacao = validarSentidoOrderBy(profissionalDadosDePesquisaDto.sentidoOrderBy());
+        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(profissionalDadosDePesquisaDto.sentidoOrderBy());
         if (ordenacaoValidacao != VALIDACAO_OK){
             erros.add(ordenacaoValidacao);
         }
@@ -310,7 +291,7 @@ public final class ProfissionalService {
 
         GenericExceptionEnum clausulaWhereValorValidacao = null;
 
-        CamposProfissionalAcessiveis clausulaWhere = CamposProfissionalAcessiveis.descobrirCampoProfissional(clausulaWhereNome.strip().toLowerCase());
+        CamposProfissional clausulaWhere = CamposProfissional.descobrirCampoProfissional(clausulaWhereNome.strip().toLowerCase());
         if (clausulaWhere == GENERICO){
             return errosNasClausulasWhere;
         }

@@ -6,6 +6,7 @@ import dao.UsuarioDAO;
 import exception.ErrosGerais;
 import exception.GenericExceptionEnum;
 import model.*;
+import service.ValidacoesComunsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
 import static exception.ErrosDadosFornecedor.*;
 import static exception.ErrosGerais.*;
 import static exception.ErrosGeraisDados.*;
-import static service.fornecedor.CamposFornecedorAcessiveis.*;
+import static service.fornecedor.CamposFornecedor.*;
 
 
 public final class FornecedorService {
@@ -27,29 +28,17 @@ public final class FornecedorService {
 
     private static final int TAMANHO_MAXIMO_RAZAO_SOCIAL = 150;
 
-    private static GenericExceptionEnum validarSentidoOrderBy(String sentidoOrderBy){
-        if (sentidoOrderBy == null || sentidoOrderBy.isBlank()){return SENTIDO_ORDER_BY_INVALIDO;}
-
-        String ordenacaoTratada = sentidoOrderBy.strip().toLowerCase();
-        switch(ordenacaoTratada) {
-            case "asc", "desc":
-                return VALIDACAO_OK;
-            default:
-                return SENTIDO_ORDER_BY_INVALIDO;
-        }
-    }
-
     private static GenericExceptionEnum validarWhere(String where){
         if (where == null || where.isBlank()){return WHERE_INVALIDO;}
 
-        CamposFornecedorAcessiveis campoDoWhere = CamposFornecedorAcessiveis.descobrirCampoFornecedor(where.strip().toLowerCase());
+        CamposFornecedor campoDoWhere = CamposFornecedor.descobrirCampoFornecedor(where.strip().toLowerCase());
         return campoDoWhere == INVALIDO ? WHERE_INVALIDO : VALIDACAO_OK;
     }
 
     private static GenericExceptionEnum validarOrderBy(String ordenacao){
         if (ordenacao == null || ordenacao.isBlank()){return ORDER_BY_INVALIDO;}
 
-        CamposFornecedorAcessiveis ordenacaoCampo = CamposFornecedorAcessiveis.descobrirCampoFornecedor(ordenacao.strip().toLowerCase());
+        CamposFornecedor ordenacaoCampo = CamposFornecedor.descobrirCampoFornecedor(ordenacao.strip().toLowerCase());
         return ordenacaoCampo == INVALIDO ? ORDER_BY_INVALIDO : VALIDACAO_OK;
     }
 
@@ -227,7 +216,7 @@ public final class FornecedorService {
             return dao.readAll();
         }
 
-        CamposFornecedorAcessiveis clausulaWhere = CamposFornecedorAcessiveis.descobrirCampoFornecedor(fornecedorDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
+        CamposFornecedor clausulaWhere = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
 
         if(!clausulaWhere.isMultiplosRetornos()){
             Fornecedor fornecedor = lerFornecedorUnicoRetorno(clausulaWhere, fornecedorDadosDePesquisaDto.clausulaWhereValor());
@@ -242,7 +231,7 @@ public final class FornecedorService {
         return lerFornecedorMultiplosRetornos(clausulaWhere, fornecedorDadosDePesquisaDto);
     }
 
-    private static Fornecedor lerFornecedorUnicoRetorno(CamposFornecedorAcessiveis clausulaWhere, String clausulaWhereValor){
+    private static Fornecedor lerFornecedorUnicoRetorno(CamposFornecedor clausulaWhere, String clausulaWhereValor){
         FornecedorDAO dao = new FornecedorDAO();
 
         if (clausulaWhere == ID){
@@ -262,8 +251,8 @@ public final class FornecedorService {
         return new Fornecedor(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null);
     }
 
-    private static List<Fornecedor> lerFornecedorMultiplosRetornos(CamposFornecedorAcessiveis clausulaWhere, FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDto){
-        CamposFornecedorAcessiveis orderBy = CamposFornecedorAcessiveis.descobrirCampoFornecedor(fornecedorDadosDePesquisaDto.orderBy().strip().toLowerCase());
+    private static List<Fornecedor> lerFornecedorMultiplosRetornos(CamposFornecedor clausulaWhere, FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDto){
+        CamposFornecedor orderBy = CamposFornecedor.descobrirCampoFornecedor(fornecedorDadosDePesquisaDto.orderBy().strip().toLowerCase());
 
         FornecedorDAO dao = new FornecedorDAO();
         if (clausulaWhere == GENERICO){
@@ -301,7 +290,7 @@ public final class FornecedorService {
             erros.add(orderByValidacao);
         }
 
-        GenericExceptionEnum ordenacaoValidacao = validarSentidoOrderBy(FornecedorDadosDePesquisaDto.sentidoOrderBy());
+        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(FornecedorDadosDePesquisaDto.sentidoOrderBy());
         if (ordenacaoValidacao != VALIDACAO_OK){
             erros.add(ordenacaoValidacao);
         }
@@ -313,7 +302,7 @@ public final class FornecedorService {
 
         GenericExceptionEnum clausulaWhereValorValidacao = null;
 
-        CamposFornecedorAcessiveis clausulaWhere = CamposFornecedorAcessiveis.descobrirCampoFornecedor(clausulaWhereNome.strip().toLowerCase());
+        CamposFornecedor clausulaWhere = CamposFornecedor.descobrirCampoFornecedor(clausulaWhereNome.strip().toLowerCase());
         if (clausulaWhere == GENERICO){
             return errosNasClausulasWhere;
         }

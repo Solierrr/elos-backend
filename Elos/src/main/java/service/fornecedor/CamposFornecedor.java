@@ -1,7 +1,9 @@
 package service.fornecedor;
 
 
-public enum CamposFornecedorAcessiveis {
+import service.GenericEnumCampos;
+
+public enum CamposFornecedor implements GenericEnumCampos {
 
     ID("id", false),
     ID_USUARIO("id_usuario", false),
@@ -14,7 +16,7 @@ public enum CamposFornecedorAcessiveis {
     private final String campoFornecedor;
     private final boolean multiplosRetornos;
 
-    CamposFornecedorAcessiveis(String campoFornecedor, boolean multiplosRetornos) {
+    CamposFornecedor(String campoFornecedor, boolean multiplosRetornos) {
         this.campoFornecedor = campoFornecedor;
         this.multiplosRetornos = multiplosRetornos;
     }
@@ -27,17 +29,23 @@ public enum CamposFornecedorAcessiveis {
         return multiplosRetornos;
     }
 
-    public static CamposFornecedorAcessiveis descobrirCampoFornecedor(String campoFornecedorEntrada){
-        if(campoFornecedorEntrada == null){
+    public static CamposFornecedor descobrirCampoFornecedor(String campoFornecedorEntrada){
+        if(campoFornecedorEntrada == null || campoFornecedorEntrada.isBlank()){
             return INVALIDO;
         }
 
         String campoFornecedorEntradaTratado = campoFornecedorEntrada.strip().toLowerCase();
-        for(CamposFornecedorAcessiveis campoFornecedor : CamposFornecedorAcessiveis.values()){
+        for(CamposFornecedor campoFornecedor : CamposFornecedor.values()){
             if(campoFornecedor.getCampoFornecedor().equalsIgnoreCase(campoFornecedorEntradaTratado)){
                 return campoFornecedor;
             }
         }
         return INVALIDO;
     }
+
+    @Override
+    public boolean isValido(){
+        return this != INVALIDO;
+    }
+
 }

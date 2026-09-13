@@ -7,11 +7,13 @@ public enum AcoesInstrucao {
     IGUAL(" = "),
     AND(" and "),
     OR(" or "),
-    VAZIO(" ");
+    VAZIO(" "),
+    ORDEM_CRESCENTE("asc"),
+    ORDEM_DECRESCENTE("desc");
 
     private final String acao;
 
-     AcoesInstrucao(String acao) {
+    AcoesInstrucao(String acao) {
         this.acao = acao;
     }
 

@@ -1,7 +1,9 @@
 package service.profissional;
 
 
-public enum CamposProfissionalAcessiveis {
+import service.GenericEnumCampos;
+
+public enum CamposProfissional implements GenericEnumCampos {
 
     ID("id", false),
     ID_USUARIO("id_usuario", false),
@@ -14,7 +16,7 @@ public enum CamposProfissionalAcessiveis {
     private final String campoProfissional;
     private final boolean multiplosRetornos;
 
-    CamposProfissionalAcessiveis(String campoProfissional, boolean multiplosRetornos) {
+    CamposProfissional(String campoProfissional, boolean multiplosRetornos) {
         this.campoProfissional = campoProfissional;
         this.multiplosRetornos = multiplosRetornos;
     }
@@ -27,17 +29,23 @@ public enum CamposProfissionalAcessiveis {
         return multiplosRetornos;
     }
 
-    public static CamposProfissionalAcessiveis descobrirCampoProfissional(String campoProfissionalEntrada){
-        if(campoProfissionalEntrada == null){
+    public static CamposProfissional descobrirCampoProfissional(String campoProfissionalEntrada){
+        if(campoProfissionalEntrada == null || campoProfissionalEntrada.isBlank()){
             return INVALIDO;
         }
 
         String campoProfissionalEntradaTratada = campoProfissionalEntrada.strip().toLowerCase();
-        for(CamposProfissionalAcessiveis campoProfissional : CamposProfissionalAcessiveis.values()){
+        for(CamposProfissional campoProfissional : CamposProfissional.values()){
             if(campoProfissional.getCampoProfissional().equalsIgnoreCase(campoProfissionalEntradaTratada)){
                 return campoProfissional;
             }
         }
         return INVALIDO;
     }
+
+    @Override
+    public boolean isValido(){
+        return this != INVALIDO;
+    }
+
 }

@@ -4,7 +4,7 @@ import static dao.AcoesInstrucao.*;
 import static exception.ErrosGerais.*;
 import static exception.ErrosDadosUsuario.*;
 import static exception.ErrosGeraisDados.*;
-import static service.usuario.CamposUsuarioAcessiveis.*;
+import static service.usuario.CamposUsuario.*;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -18,11 +18,14 @@ import exception.ErrosGerais;
 import exception.GenericExceptionEnum;
 import model.TiposUsuario;
 import model.Usuario;
+import service.ValidacoesComunsService;
+import service.ValidadorEntradaStringUniversalDto;
 
 public final class UsuarioService {
 
     //Constantes para evitar valores mágicos ou instancia desnecessária de objetos
     private static final double TAMANHO_MAXIMO_RAIO_PROCURA_KM = 999.99;
+    private static final double TAMANHO_MAXIMO_CARACTERES_RAIO_PROCURA_KM = 6;
 
     private static final int TAMANHO_MAXIMO_NOME = 150;
 
@@ -37,56 +40,32 @@ public final class UsuarioService {
     private static final int TAMANHO_MAXIMO_EMAIL = 150;
 
     //Validação
-    private static GenericExceptionEnum validarSentidoOrderBy(String sentidoOrderBy){
-        if (sentidoOrderBy == null || sentidoOrderBy.isBlank()){return SENTIDO_ORDER_BY_INVALIDO;}
-
-        String ordenacaoTratada = sentidoOrderBy.strip().toLowerCase();
-        switch(ordenacaoTratada) {
-            case "asc", "desc":
-                return VALIDACAO_OK;
-            default:
-                return SENTIDO_ORDER_BY_INVALIDO;
-        }
-    }
-
-    private static GenericExceptionEnum validarWhere(String where){
-        if (where == null || where.isBlank()){return WHERE_INVALIDO;}
-
-        CamposUsuarioAcessiveis campoDoWhere = CamposUsuarioAcessiveis.descobrirCampoUsuario(where.strip().toLowerCase());
-        return campoDoWhere == INVALIDO ? WHERE_INVALIDO : VALIDACAO_OK;
-    }
-
-    private static GenericExceptionEnum validarOrderBy(String ordenacao){
-        if (ordenacao == null || ordenacao.isBlank()){return ORDER_BY_INVALIDO;}
-
-        CamposUsuarioAcessiveis ordenacaoCampo = CamposUsuarioAcessiveis.descobrirCampoUsuario(ordenacao.strip().toLowerCase());
-        return ordenacaoCampo == INVALIDO ? ORDER_BY_INVALIDO : VALIDACAO_OK;
-    }
-
-    private static GenericExceptionEnum validarId(String id){
-        try {
-            String idTratado = id.strip();
-            Long.parseLong(idTratado);
-            return VALIDACAO_OK;
-        } catch (NumberFormatException numberFormatException){
-            return ID_INVALIDO;
-        }
-    }
-
     private static GenericExceptionEnum validarEmailBasico(String email) {
-        if (email == null || email.isBlank()) {
-            return EMAIL_VAZIO;
+        GenericExceptionEnum validacaoInicial =ValidacoesComunsService.validarEntradaStringUniversal(
+                new ValidadorEntradaStringUniversalDto(EMAIL_VAZIO, EMAIL_TAMANHO_INVALIDO, TAMANHO_MAXIMO_EMAIL, email));
+
+        if(validacaoInicial != VALIDACAO_OK){
+            return validacaoInicial;
         }
 
         String emailTratado = email.toLowerCase().strip();
-        if(emailTratado.length() > TAMANHO_MAXIMO_EMAIL){
-            return EMAIL_TAMANHO_INVALIDO;
-        }
         return validarFormatoEmail(emailTratado) != VALIDACAO_OK ? EMAIL_INVALIDO : VALIDACAO_OK;
     }
 
+//    private static GenericExceptionEnum validarEmailBasico(String email) {
+//        if (email == null || email.isBlank()) {
+//            return EMAIL_VAZIO;
+//        }
+//
+//        String emailTratado = email.toLowerCase().strip();
+//        if(emailTratado.length() > TAMANHO_MAXIMO_EMAIL){
+//            return EMAIL_TAMANHO_INVALIDO;
+//        }
+//        return validarFormatoEmail(emailTratado) != VALIDACAO_OK ? EMAIL_INVALIDO : VALIDACAO_OK;
+//    }
+
     private static GenericExceptionEnum validarEmailInsert(String email) {
-        GenericExceptionEnum validarEmailBasico = validarFormatoEmail(email);
+        GenericExceptionEnum validarEmailBasico = validarEmailBasico(email);
         if(validarEmailBasico != VALIDACAO_OK){
             return validarEmailBasico;
         }
@@ -258,7 +237,7 @@ public final class UsuarioService {
             return dao.readAllTeste(new CriarInstrucaoDinamica());
         }
 
-        CamposUsuarioAcessiveis clausulaWhere = CamposUsuarioAcessiveis.descobrirCampoUsuario(usuarioDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
+        CamposUsuario clausulaWhere = CamposUsuario.descobrirCampoUsuario(usuarioDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
         CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
 
         if(clausulaWhere.getAcao() == BETWEEN){
@@ -285,7 +264,7 @@ public final class UsuarioService {
 
 
         List<Object> listaTemporaria = new ArrayList<>();
-        CamposUsuarioAcessiveis clausulaWhere = CamposUsuarioAcessiveis.descobrirCampoUsuario(usuarioDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
+        CamposUsuario clausulaWhere = CamposUsuario.descobrirCampoUsuario(usuarioDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
 
         if(!clausulaWhere.isAcessivel()){
             Usuario usuario = lerUsuarioUnicoRetorno(clausulaWhere, usuarioDadosDePesquisaDto.clausulaWhereValor());
@@ -300,7 +279,7 @@ public final class UsuarioService {
         return lerUsuarioMultiplosRetornos(clausulaWhere, usuarioDadosDePesquisaDto);
     }
 
-    private static Usuario lerUsuarioUnicoRetorno(CamposUsuarioAcessiveis clausulaWhere, String clausulaWhereValor){
+    private static Usuario lerUsuarioUnicoRetorno(CamposUsuario clausulaWhere, String clausulaWhereValor){
         UsuarioDAO dao = new UsuarioDAO();
 
         if (clausulaWhere == ID){
@@ -315,8 +294,8 @@ public final class UsuarioService {
         return new Usuario(REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
     }
 
-    private static List<Usuario> lerUsuarioMultiplosRetornos(CamposUsuarioAcessiveis clausulaWhere, UsuarioDadosDePesquisaDTO usuarioDadosDePesquisaDto){
-        CamposUsuarioAcessiveis orderBy = CamposUsuarioAcessiveis.descobrirCampoUsuario(usuarioDadosDePesquisaDto.orderBy().strip().toLowerCase());
+    private static List<Usuario> lerUsuarioMultiplosRetornos(CamposUsuario clausulaWhere, UsuarioDadosDePesquisaDTO usuarioDadosDePesquisaDto){
+        CamposUsuario orderBy = CamposUsuario.descobrirCampoUsuario(usuarioDadosDePesquisaDto.orderBy().strip().toLowerCase());
 
         UsuarioDAO dao = new UsuarioDAO();
         if (clausulaWhere == GENERICO){
@@ -363,7 +342,7 @@ public final class UsuarioService {
             erros.add(orderByValidacao);
         }
 
-        GenericExceptionEnum ordenacaoValidacao = validarSentidoOrderBy(usuarioDadosDePesquisaDto.sentidoOrderBy());
+        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(usuarioDadosDePesquisaDto.sentidoOrderBy());
         if (ordenacaoValidacao != VALIDACAO_OK){
             erros.add(ordenacaoValidacao);
         }
@@ -375,7 +354,7 @@ public final class UsuarioService {
 
         GenericExceptionEnum clausulaWhereValorValidacao = null;
 
-        CamposUsuarioAcessiveis clausulaWhere = CamposUsuarioAcessiveis.descobrirCampoUsuario(clausulaWhereNome.strip().toLowerCase());
+        CamposUsuario clausulaWhere = CamposUsuario.descobrirCampoUsuario(clausulaWhereNome.strip().toLowerCase());
         if (clausulaWhere == GENERICO){
             return errosNasClausulasWhere;
         }
