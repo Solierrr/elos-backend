@@ -3,8 +3,8 @@ package model;
 public enum TiposFornecedor {
 
     FABRICANTE("FABRICANTE"),
-    DISTRIBUIDOR("DISTRIBUIDOR"),
-    REVENDEDOR("REVENDEDOR"),
+    DISTRIBUIDOR("MAC"),
+    REVENDEDOR("ANDROID"),
     INTEGRADOR("INTEGRADOR");
 
     private final String tipoFornecedor;
