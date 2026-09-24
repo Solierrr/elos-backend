@@ -26,6 +26,14 @@
           <version>42.6.0</version>
       </dependency>
 
+      <!-- POOL de conexão -->
+      <dependency>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+          <version>7.1.0</version>
+          <scope>compile</scope>
+      </dependency>
+
       <!-- Variáveis de ambiente (.env) -->
       <dependency>
           <groupId>io.github.cdimascio</groupId>

@@ -20,46 +20,40 @@ import model.EstadosBrasileiros;
 public class EnderecoDAO implements GenericDAO<Endereco> {
 
     @Override
-    public int insert(Endereco endereco){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public int insert(Endereco endereco) {
+        try (Connection connection = Conexao.getConnection()) {
 
-        try{
             String insert = "insert into endereco(id_usuario, estado, cidade, bairro, cep, logradouro, numero, complemento) values(?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setLong(1, endereco.getIdUsuario() );
+            preparedStatement.setLong(1, endereco.getIdUsuario());
             preparedStatement.setString(2, endereco.getEstado().getSiglaEstado());
             preparedStatement.setString(3, endereco.getCidade());
-            preparedStatement.setString(4, endereco.getBairro() );
-            preparedStatement.setString(5, endereco.getCep() );
-            preparedStatement.setString(6, endereco.getLogradouro() );
-            preparedStatement.setString(7, endereco.getNumero() );
-            preparedStatement.setString(8, endereco.getComplemento() );
+            preparedStatement.setString(4, endereco.getBairro());
+            preparedStatement.setString(5, endereco.getCep());
+            preparedStatement.setString(6, endereco.getLogradouro());
+            preparedStatement.setString(7, endereco.getNumero());
+            preparedStatement.setString(8, endereco.getComplemento());
 
             return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
         }
     }
 
     @Override
-    public Endereco readById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public Endereco readById(long id) {
+        try (Connection connection = Conexao.getConnection()) {
 
-        try {
             String read = "select * from endereco where id = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 return new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -74,27 +68,24 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
             }
 
             return new Endereco(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null,
-                          null, null, null, null, null);
-        } catch (Exception exception){
+                    null, null, null, null, null);
+        } catch (Exception exception) {
             return null;
-        } finally {
-            conexao.desconectar();
         }
     }
 
     @Override
-    public List<Endereco> readAll(){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Endereco> readAll() {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try {
+        try (Connection connection = Conexao.getConnection()) {
+
             String read = "select * from endereco";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 enderecos.add(new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -108,26 +99,22 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
                 ));
             }
             return enderecos;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return enderecos;
-        } finally {
-            conexao.desconectar();
         }
     }
 
-    public List<Endereco> readAllByIdUsuario(long idUsuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Endereco> readAllByIdUsuario(long idUsuario) {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try {
+        try (Connection connection = Conexao.getConnection()) {
             String read = "select * from endereco where id_usuario = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             preparedStatement.setLong(1, idUsuario);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 enderecos.add(new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -141,26 +128,22 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
                 ));
             }
             return enderecos;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return enderecos;
-        } finally {
-            conexao.desconectar();
         }
     }
 
-    public List<Endereco> readAllByEstado(String estado){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Endereco> readAllByEstado(String estado) {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try {
+        try (Connection connection = Conexao.getConnection()) {
             String read = "select * from endereco where estado = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             preparedStatement.setString(1, estado);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 enderecos.add(new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -174,26 +157,22 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
                 ));
             }
             return enderecos;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return enderecos;
-        } finally {
-            conexao.desconectar();
         }
     }
 
-    public List<Endereco> readAllByCidade(String cidade){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Endereco> readAllByCidade(String cidade) {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try {
+        try (Connection connection = Conexao.getConnection()) {
             String read = "select * from endereco where cidade = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             preparedStatement.setString(1, cidade);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 enderecos.add(new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -207,26 +186,22 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
                 ));
             }
             return enderecos;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return enderecos;
-        } finally {
-            conexao.desconectar();
         }
     }
 
-    public List<Endereco> readAllByBairro(String bairro){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Endereco> readAllByBairro(String bairro) {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try {
+        try (Connection connection = Conexao.getConnection()) {
             String read = "select * from endereco where bairro = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             preparedStatement.setString(1, bairro);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 enderecos.add(new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -240,26 +215,22 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
                 ));
             }
             return enderecos;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return enderecos;
-        } finally {
-            conexao.desconectar();
         }
     }
 
-    public List<Endereco> readAllByCep(String cep){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Endereco> readAllByCep(String cep) {
         List<Endereco> enderecos = new ArrayList<>();
 
-        try {
+        try (Connection connection = Conexao.getConnection()) {
             String read = "select * from endereco where cep = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(read);
             preparedStatement.setString(1, cep);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 enderecos.add(new Endereco(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
@@ -273,59 +244,49 @@ public class EnderecoDAO implements GenericDAO<Endereco> {
                 ));
             }
             return enderecos;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return enderecos;
-        } finally {
-            conexao.desconectar();
         }
     }
 
     @Override
-    public int updateById(Endereco endereco){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public int updateById(Endereco endereco) {
+        try (Connection connection = Conexao.getConnection()) {
 
-        try{
             String update = "update endereco set estado = ?, cidade = ?, bairro = ?, cep = ?, logradouro = ?, numero = ?, complemento = ? where id = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, endereco.getEstado().getSiglaEstado() );
-            preparedStatement.setString(2, endereco.getCidade() );
-            preparedStatement.setString(3, endereco.getBairro() );
-            preparedStatement.setString(4, endereco.getCep() );
-            preparedStatement.setString(5, endereco.getLogradouro() );
-            preparedStatement.setString(6, endereco.getNumero() );
-            preparedStatement.setString(7, endereco.getComplemento() );
+            preparedStatement.setString(1, endereco.getEstado().getSiglaEstado());
+            preparedStatement.setString(2, endereco.getCidade());
+            preparedStatement.setString(3, endereco.getBairro());
+            preparedStatement.setString(4, endereco.getCep());
+            preparedStatement.setString(5, endereco.getLogradouro());
+            preparedStatement.setString(6, endereco.getNumero());
+            preparedStatement.setString(7, endereco.getComplemento());
             preparedStatement.setLong(8, endereco.getId());
 
             return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
         }
     }
 
     @Override
-    public int deleteById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public int deleteById(long id) {
+        try (Connection connection = Conexao.getConnection()) {
 
-        try{
             String delete = "delete from endereco where id = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(delete);
             preparedStatement.setLong(1, id);
 
             return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
         }
     }
 }
