@@ -41,7 +41,7 @@ public final class ProfissionalService {
         UsuarioDAO dao = new UsuarioDAO();
 
         Usuario usuario = dao.readById(idUsuarioConvertido);
-        if(usuario != null && usuario.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
+        if(usuario != null && usuario.getId() == (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
             return ID_USUARIO_NAO_REGISTRADO;
         }
 
@@ -61,7 +61,7 @@ public final class ProfissionalService {
 
         FornecedorDAO dao = new FornecedorDAO();
         Fornecedor fornecedor = dao.readById(idFornecedorConvertido);
-        if(fornecedor != null && fornecedor.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
+        if(fornecedor != null && fornecedor.getId() == (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
             return ID_FORNECEDOR_NAO_REGISTRADO;
         }
         return VALIDACAO_OK;
@@ -122,7 +122,7 @@ public final class ProfissionalService {
         ProfissionalDAO dao = new ProfissionalDAO();
         Profissional profissional = dao.readByCpf(cpf);
 
-        return profissional == null || profissional.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo() ? VALIDACAO_OK : CPF_INVALIDO;
+        return profissional == null || profissional.getId() == (long)REGISTRO_NAO_ENCONTRADO.getCodigo() ? VALIDACAO_OK : CPF_INVALIDO;
     }
 
     private static GenericExceptionEnum validarFormatoCpf(String cpf){
@@ -169,7 +169,7 @@ public final class ProfissionalService {
 
     private static int deletarProfissional(String id){
         ProfissionalDAO dao = new ProfissionalDAO();
-        return dao.deleteById(Long.parseLong(id.strip()));
+        return dao.delete(Long.parseLong(id.strip()));
     }
 
     //Métodos relacionados ao select
@@ -205,7 +205,7 @@ public final class ProfissionalService {
 
             List<Profissional> profissionais = new ArrayList<>();
 
-            if (profissional.getId() != REGISTRO_NAO_ENCONTRADO.getCodigo()){
+            if (profissional.getId() != (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
                 profissionais.add(profissional);
             }
             return profissionais;
@@ -231,7 +231,7 @@ public final class ProfissionalService {
             return dao.readByCpf(cpf);
         }
 
-        return new Profissional(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
+        return new Profissional((long)REGISTRO_NAO_ENCONTRADO.getCodigo(), (long)REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, (long)REGISTRO_NAO_ENCONTRADO.getCodigo());
     }
 
     private static List<Profissional> lerProfissionalMultiplosRetorno(CamposProfissional clausulaWhere, ProfissionalDadosDePesquisaDTO profissionalDadosDePesquisaDTO){
@@ -331,7 +331,7 @@ public final class ProfissionalService {
 
     private static int atualizarProfissional(ProfissionalDadosDTO profissionalDadosDTO){
         ProfissionalDAO dao = new ProfissionalDAO();
-        return dao.updateById(profissionalDadosDTO.construirProfissional());
+        return dao.update(profissionalDadosDTO.construirProfissional());
     }
 
     private static List<GenericExceptionEnum> validarUpdate(ProfissionalDadosDTO profissionalDadosDTO){

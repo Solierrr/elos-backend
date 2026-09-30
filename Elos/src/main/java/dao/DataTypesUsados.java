@@ -70,6 +70,19 @@ public enum DataTypesUsados {
                         "DataType fornecido incompatível com o valor inserido");
             }
         }
+    },
+    BYTEA(Types.BINARY){
+        @Override
+        public void realizarSet(PreparedStatement preparedStatement, int index, Object object) throws SQLException{
+            if (object == null) {
+                preparedStatement.setNull(index, Types.BINARY);
+            } else if (object instanceof byte[]) {
+                preparedStatement.setBytes(index, (byte[]) object);
+            } else {
+                throw new IllegalArgumentException(
+                        "DataType fornecido incompatível com o valor inserido");
+            }
+        }
     };
 
     private final int dataType;

@@ -1,432 +1,114 @@
 package dao;
 
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
+import static exception.ErrosDadosProfissional.CPF_INVALIDO;
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
+import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
+import static exception.ErrosGerais.SUCESSO;
+import static exception.ErrosGeraisDados.ID_USUARIO_INVALIDO;
 
-import java.util.ArrayList;
+import conexao.Conexao;
+import exception.ErrosDoSQL;
+import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-
-import conexao.Conexao;
-import exception.ErrosDoSQL;
 import model.Profissional;
+import model.TiposUsuario;
 
 public class ProfissionalDAO implements GenericDAO<Profissional> {
 
+    private static final String TABELA = "profissional";
+
     @Override
-    public int insert(Profissional profissional) {
-
-
+    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica) {
         try (Connection connection = Conexao.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
 
-            String insert = "insert into profissional(id_usuario, profissao, cpf, id_fornecedor) values(?, ?, ?, ?)";
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setLong(1, profissional.getIdUsuario());
-            preparedStatement.setString(2, profissional.getProfissao());
-            preparedStatement.setString(3, profissional.getCpf());
-            preparedStatement.setLong(4, profissional.getIdFornecedor());
-
-            return preparedStatement.executeUpdate();
+            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
         } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-        }
-    }
+            if(foiCausadoPorCpfCadastrado(sqlException))
+                return CPF_INVALIDO;
 
-    @Override
-    public Profissional readById(long id) {
+            if(foiCausadoPorUsuarioCadastrado(sqlException))
+                return ID_USUARIO_INVALIDO;
 
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                );
-            }
-            return new Profissional(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
-        } catch (Exception exception) {
-            return null;
-        }
-    }
-
-    public Profissional readByIdUsuario(long idUsuario) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, idUsuario);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                );
-            }
-            return new Profissional(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
-        } catch (Exception exception) {
-            return null;
-        }
-    }
-
-    public Profissional readByCpf(String cpf) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where cpf = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, cpf);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                );
-            }
-
-            return new Profissional(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
-
-        } catch (Exception exception) {
-            return null;
-
+            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
         }
     }
 
     @Override
-    public List<Profissional> readAll() {
-
+    public List<Profissional> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica) {
         List<Profissional> profissionais = new ArrayList<>();
 
         try (Connection connection = Conexao.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
 
-            String read = "select * from profissional";
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
                 profissionais.add(new Profissional(
                         resultSet.getLong("id"),
                         resultSet.getLong("id_usuario"),
+                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
                         resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
+                        resultSet.getString("cpf_hmac"),
+                        resultSet.getBytes("cpf_aes"),
                         resultSet.getLong("id_fornecedor")
                 ));
             }
-
-            return profissionais;
-
-        } catch (Exception exception) {
-            return profissionais;
-
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
+        return profissionais;
     }
 
-    public List<Profissional> readAllOrderBy(String campoDoOderBy, String sentidoOrderBy) {
-
-        List<Profissional> profissionais = new ArrayList<>();
-
+    @Override
+    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica) {
         try (Connection connection = Conexao.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-            String read = "select * from profissional order by " + campoDoOderBy + " " + sentidoOrderBy;
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        } catch (SQLException sqlException) {
+            if(foiCausadoPorCpfCadastrado(sqlException))
+                return CPF_INVALIDO;
 
-            while (resultSet.next()) {
-                profissionais.add(new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                ));
-            }
+            if(foiCausadoPorUsuarioCadastrado(sqlException))
+                return ID_USUARIO_INVALIDO;
 
-            return profissionais;
-
-        } catch (Exception exception) {
-            return profissionais;
-
-        }
-    }
-
-    public List<Profissional> readAllByIdFornecedor(long idFornecedor) {
-
-        List<Profissional> profissionais = new ArrayList<>();
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where id_fornecedor = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, idFornecedor);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                profissionais.add(new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                ));
-            }
-
-            return profissionais;
-
-        } catch (Exception exception) {
-            return profissionais;
-
-        }
-    }
-
-    public List<Profissional> readAllByIdFornecedorOrderBy(long idFornecedor, String campoDoOderBy, String sentidoOrderBy) {
-
-        List<Profissional> profissionais = new ArrayList<>();
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where id_fornecedor = ? order by " + campoDoOderBy + " " + sentidoOrderBy;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, idFornecedor);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                profissionais.add(new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                ));
-            }
-
-            return profissionais;
-
-        } catch (Exception exception) {
-            return profissionais;
-
-        }
-    }
-
-    public List<Profissional> readAllByIdProfissao(String profissao) {
-
-        List<Profissional> profissionais = new ArrayList<>();
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where profissao ilike ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, "%" + profissao + "%");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                profissionais.add(new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                ));
-            }
-            return profissionais;
-        } catch (Exception exception) {
-            return profissionais;
-        }
-    }
-
-    public List<Profissional> readAllByIdProfissaoOrderBy(String profissao, String campoDoOderBy, String sentidoOrderBy) {
-
-        List<Profissional> profissionais = new ArrayList<>();
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String read = "select * from profissional where profissao ilike ? order by " + campoDoOderBy + " " + sentidoOrderBy;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, "%" + profissao + "%");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                profissionais.add(new Profissional(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("profissao"),
-                        resultSet.getString("cpf"),
-                        resultSet.getLong("id_fornecedor")
-                ));
-            }
-            return profissionais;
-        } catch (Exception exception) {
-            return profissionais;
+            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
         }
     }
 
     @Override
-    public int updateById(Profissional profissional) {
+    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica) {
+        try (Connection connection = Conexao.getConnection()){
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        try (Connection connection = Conexao.getConnection()) {
-
-            String update = "update profissional set profissao = ?, id_fornecedor = ? where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, profissional.getProfissao());
-            preparedStatement.setLong(2, profissional.getIdFornecedor());
-            preparedStatement.setLong(3, profissional.getId());
-
-            return preparedStatement.executeUpdate();
-
+            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
         } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-
+            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
         }
     }
 
-    public int updateByIdUsuario(Profissional profissional) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String update = "update profissional set profissao = ?, id_fornecedor = ? where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, profissional.getProfissao());
-            preparedStatement.setLong(2, profissional.getIdFornecedor());
-            preparedStatement.setLong(3, profissional.getIdUsuario());
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-
-        }
-
+    //Métodos auxiliares que são usados para ver se o erro foi causado por um valor unique já cadastrado,
+    // isso foi usado para não realizar consultas desnecessárias para algo que o banco conseguiria barrar
+    private boolean foiCausadoPorCpfCadastrado(SQLException sqlException){
+        return "profissional_cpf_hmac_key".contains(sqlException.getMessage());
     }
 
-    public int updateByCpf(Profissional profissional) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String update = "update profissional set profissao = ?, id_fornecedor = ? where cpf = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, profissional.getProfissao());
-            preparedStatement.setLong(2, profissional.getIdFornecedor());
-            preparedStatement.setString(3, profissional.getCpf());
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-
-        }
+    private boolean foiCausadoPorUsuarioCadastrado(SQLException sqlException){
+        return "profissional_id_usuario_key".contains(sqlException.getMessage());
     }
 
-    @Override
-    public int deleteById(long id) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String delete = "delete from profissional where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, id);
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-
-        }
-    }
-
-    public int deleteByIdUsuario(long idUsuario) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String delete = "delete from profissional where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, idUsuario);
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-
-        }
-    }
-
-    public int deleteByCpf(String cpf) {
-
-
-        try (Connection connection = Conexao.getConnection()) {
-
-            String delete = "delete from profissional where cpf = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setString(1, cpf);
-
-            return preparedStatement.executeUpdate();
-
-        } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        } catch (Exception exception) {
-            return ERRO_GENERICO.getCodigo();
-
-        }
-    }
 }

@@ -1,26 +1,57 @@
 package service.usuario;
 
-import static dao.AcoesInstrucao.*;
-import static exception.ErrosGerais.*;
-import static exception.ErrosDadosUsuario.*;
-import static exception.ErrosGeraisDados.*;
+import static exception.ErrosDadosUsuario.EMAIL_INVALIDO;
+import static exception.ErrosDadosUsuario.EMAIL_TAMANHO_INVALIDO;
+import static exception.ErrosDadosUsuario.EMAIL_VAZIO;
+import static exception.ErrosDadosUsuario.IMPOSSIVEL_VALIDAR_NOME;
+import static exception.ErrosDadosUsuario.NOME_INVALIDO;
+import static exception.ErrosDadosUsuario.NOME_TAMANHO_INVALIDO;
+import static exception.ErrosDadosUsuario.NOME_VAZIO;
+import static exception.ErrosDadosUsuario.RAIOS_PROCURA_KM_NAO_NUMERICO;
+import static exception.ErrosDadosUsuario.RAIO_PROCURA_KM_MENOR_OU_IGUAL_QUE_ZERO;
+import static exception.ErrosDadosUsuario.RAIO_PROCURA_KM_NAO_NUMERICO;
+import static exception.ErrosDadosUsuario.RAIO_PROCURA_KM_TAMANHO_INVALIDO;
+import static exception.ErrosDadosUsuario.SENHA_FRACA;
+import static exception.ErrosDadosUsuario.SENHA_MENOR_QUE_OITO;
+import static exception.ErrosDadosUsuario.SENHA_TAMANHO_INVALIDO;
+import static exception.ErrosDadosUsuario.SENHA_VAZIA;
+import static exception.ErrosDadosUsuario.TIPO_USUARIO_INVALIDO;
+import static exception.ErrosDadosUsuario.TIPO_USUARIO_VAZIO;
+import static exception.ErrosGerais.ERRO_GENERICO;
+import static exception.ErrosGerais.REGISTROS_NAO_ENCONTRADOS;
+import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+import static exception.ErrosGerais.SUCESSO;
+import static exception.ErrosGerais.descobrirErroGeral;
+import static exception.ErrosGeraisDados.ATRIBUTO_NULL;
+import static exception.ErrosGeraisDados.VALIDACAO_OK;
+import static exception.ErrosGeraisDados.WHERE_INVALIDO;
 import static service.ValidacoesComunsService.validarId;
-import static service.usuario.CamposUsuario.*;
+import static service.usuario.CamposUsuario.EMAIL;
+import static service.usuario.CamposUsuario.GENERICO;
+import static service.usuario.CamposUsuario.ID;
+import static service.usuario.CamposUsuario.NOME;
+import static service.usuario.CamposUsuario.RAIO_PROCURA_KM;
+import static service.usuario.CamposUsuario.TIPO_USUARIO;
 
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import dao.CriarInstrucaoDinamica;
 import dao.UsuarioDAO;
 import exception.ErrosGerais;
 import exception.GenericExceptionEnum;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 import model.TiposUsuario;
 import model.Usuario;
 import service.ValidacoesComunsService;
+import service.profissional.ProfissionalService;
 
 public final class UsuarioService {
+
+    //Atributo usado para operações json no código
+    private static Gson GSON = new Gson();
 
     //Constantes para evitar valores mágicos ou instancia desnecessária de objetos
     private static final double TAMANHO_MAXIMO_RAIO_PROCURA_KM = 999.99;
@@ -35,7 +66,7 @@ public final class UsuarioService {
     private static final Pattern PATTERN_SENHA = Pattern.compile("(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{8,}");
 
     private static final Pattern PATTERN_EMAIL = Pattern.compile("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$");
-    private static final int TAMANHO_MAXIMO_EMAIL = 150;
+    private static final int TAMANHO_MAXIMO_EMAIL = 256;
 
     //Validações
 
@@ -190,18 +221,12 @@ public final class UsuarioService {
         return descobrirErroGeral(qtdLinhasDeletadas);
     }
 
-//    private static int deletarUsuarioTeste(String id){
-//        UsuarioDAO dao = new UsuarioDAO();
-//
-//        CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
-//
-//        criarInstrucaoDinamica.setCampo("id", id, Types.BIGINT);
-//        return dao.deleteById(Long.parseLong(id.strip()));
-//    }
-
     private static int deletarUsuario(String id){
         UsuarioDAO dao = new UsuarioDAO();
 
+        CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamica.setCampo("id", id, Types.BIGINT);
         return dao.deleteById(Long.parseLong(id.strip()));
     }
 
@@ -390,13 +415,13 @@ public final class UsuarioService {
     }
 
     //Métodos relacionados ao update
-    public static List<GenericExceptionEnum> realizarUpdate(UsuarioDadosDTO usuarioDadosDTO){
-        List<GenericExceptionEnum> erros = validarUpdate(usuarioDadosDTO);
+    public static List<GenericExceptionEnum> realizarUpdate(UsuarioParaInsertDTO usuarioParaInsertDTO){
+        List<GenericExceptionEnum> erros = validarUpdate(usuarioParaInsertDTO);
         if(!erros.isEmpty()){
             return erros;
         }
 
-        int qtdLinhasAlteradas = atualizarUsuario(usuarioDadosDTO);
+        int qtdLinhasAlteradas = atualizarUsuario(usuarioParaInsertDTO);
         if(qtdLinhasAlteradas < 1){
             erros.add(ErrosGerais.descobrirErroGeral(qtdLinhasAlteradas));
         }
@@ -416,30 +441,30 @@ public final class UsuarioService {
 //        return dao.updateByIdTeste(criarInstrucaoDinamica);
 //    }
 
-    private static int atualizarUsuario(UsuarioDadosDTO usuarioDadosDTO){
+    private static int atualizarUsuario(UsuarioParaInsertDTO usuarioParaInsertDTO){
         UsuarioDAO dao = new UsuarioDAO();
-        return dao.updateById(usuarioDadosDTO.construirUsuario());
+        return dao.updateById(usuarioParaInsertDTO.construirUsuario());
     }
 
-    private static List<GenericExceptionEnum> validarUpdate(UsuarioDadosDTO usuarioDadosDTO){
+    private static List<GenericExceptionEnum> validarUpdate(UsuarioParaInsertDTO usuarioParaInsertDTO){
         List<GenericExceptionEnum> erros = new ArrayList<>();
 
-        GenericExceptionEnum emailValidacao = validarEmailBasico(usuarioDadosDTO.email());
+        GenericExceptionEnum emailValidacao = validarEmailBasico(usuarioParaInsertDTO.email());
         if(emailValidacao != VALIDACAO_OK){
             erros.add(emailValidacao);
         }
 
-        GenericExceptionEnum senhaValidacao = validarSenhaUpdate(usuarioDadosDTO.senha());
+        GenericExceptionEnum senhaValidacao = validarSenhaUpdate(usuarioParaInsertDTO.senha());
         if (senhaValidacao != VALIDACAO_OK){
             erros.add(senhaValidacao);
         }
 
-        GenericExceptionEnum nomeValidacao = validarNome(usuarioDadosDTO.nome(), usuarioDadosDTO.tipoUsuario());
+        GenericExceptionEnum nomeValidacao = validarNome(usuarioParaInsertDTO.nome(), usuarioParaInsertDTO.tipoUsuario());
         if (nomeValidacao != VALIDACAO_OK){
             erros.add(nomeValidacao);
         }
 
-        GenericExceptionEnum raioProcuraKmValidacao = validarRaioProcuraKm(usuarioDadosDTO.raioProcuraKm());
+        GenericExceptionEnum raioProcuraKmValidacao = validarRaioProcuraKm(usuarioParaInsertDTO.raioProcuraKm());
         if(raioProcuraKmValidacao != VALIDACAO_OK){
             erros.add(raioProcuraKmValidacao);
         }
@@ -456,10 +481,10 @@ public final class UsuarioService {
     }
 
     //Métodos relacionados ao insert
-    public static List<GenericExceptionEnum> realizarInsert(UsuarioDadosDTO usuarioDadosDTO){
-        List<GenericExceptionEnum> mensagens = validarUsuarioInsert(usuarioDadosDTO);
+    public static List<GenericExceptionEnum> realizarInsert(JsonObject jsonObject){
+        List<GenericExceptionEnum> mensagens = validarUsuarioInsert(jsonObject);
         if (mensagens.isEmpty()) {
-            int resultado = persistirUsuario(usuarioDadosDTO);
+            int resultado = persistirUsuario(usuarioParaInsertDTO);
             if (resultado < 1) {
                 mensagens.add(ErrosGerais.descobrirErroGeral(resultado));
             }
@@ -467,35 +492,42 @@ public final class UsuarioService {
         return mensagens;
     }
 
-    private static List<GenericExceptionEnum> validarUsuarioInsert(UsuarioDadosDTO usuarioDadosDTO){
+    private static List<GenericExceptionEnum> validarUsuarioInsert(JsonObject jsonObject){
         List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
 
-        GenericExceptionEnum validacaoEmail = validarEmailInsert(usuarioDadosDTO.email());
+        UsuarioParaInsertDTO usuarioParaInsertDTO = GSON.fromJson(jsonObject, UsuarioParaInsertDTO.class);
+
+        GenericExceptionEnum validacaoEmail = validarEmailInsert(usuarioParaInsertDTO.email());
         if (validacaoEmail != VALIDACAO_OK){
             listaDeErros.add(validacaoEmail);
         }
 
-        GenericExceptionEnum validacaoSenha = validarSenha(usuarioDadosDTO.senha());
+        GenericExceptionEnum validacaoSenha = validarSenha(usuarioParaInsertDTO.senha());
         if(validacaoSenha != VALIDACAO_OK){
             listaDeErros.add(validacaoSenha);
         }
 
-        GenericExceptionEnum validacaoRaioProcuraKm = validarRaioProcuraKm(usuarioDadosDTO.raioProcuraKm());
+        GenericExceptionEnum validacaoRaioProcuraKm = validarRaioProcuraKm(usuarioParaInsertDTO.raioProcuraKm());
         if(validacaoRaioProcuraKm != VALIDACAO_OK && validacaoRaioProcuraKm != ATRIBUTO_NULL){
             listaDeErros.add(validacaoRaioProcuraKm);
         }
 
-        GenericExceptionEnum validacaoTipoUsuario = validarTipoUsuario(usuarioDadosDTO.tipoUsuario());
+        GenericExceptionEnum validacaoTipoUsuario = validarTipoUsuario(usuarioParaInsertDTO.tipoUsuario());
         if(validacaoTipoUsuario != VALIDACAO_OK){
             listaDeErros.add(validacaoTipoUsuario);
             listaDeErros.add(IMPOSSIVEL_VALIDAR_NOME);
             return listaDeErros;
         }
 
-        GenericExceptionEnum validacaoNome = validarNome(usuarioDadosDTO.nome(), usuarioDadosDTO.tipoUsuario());
+        GenericExceptionEnum validacaoNome = validarNome(usuarioParaInsertDTO.nome(), usuarioParaInsertDTO.tipoUsuario());
         if(validacaoNome != VALIDACAO_OK){
             listaDeErros.add(validacaoNome);
         }
+
+        if(TiposUsuario.PROFISSIONAL.getTipoDoUsuario().equalsIgnoreCase(usuarioParaInsertDTO.tipoUsuario())){
+            listaDeErros.addAll(ProfissionalService.)
+        }
+
         return listaDeErros;
     }
 
@@ -515,9 +547,9 @@ public final class UsuarioService {
 //        return dao.insert(usuarioDadosDto.construirUsuario());
 //    }
 
-    private static int persistirUsuario(UsuarioDadosDTO usuarioDadosDTO){
+    private static int persistirUsuario(UsuarioParaInsertDTO usuarioParaInsertDTO){
         UsuarioDAO dao = new UsuarioDAO();
-        return dao.insert(usuarioDadosDTO.construirUsuario());
+        return dao.insert(usuarioParaInsertDTO.construirUsuario());
     }
 
 }

@@ -1,25 +1,23 @@
 package servlet.usuario;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
-
-import java.util.Enumeration;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import exception.GenericExceptionEnum;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
-import service.usuario.UsuarioDadosDTO;
-import exception.GenericExceptionEnum;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import service.usuario.UsuarioService;
 
 @WebServlet("/crudUsuario-insert")
 public final class InsertUsuarioServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,54 +28,20 @@ public final class InsertUsuarioServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
-        try{
-            HttpSession session = request.getSession();
 
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
+        List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(gson.fromJson(request.getReader(), JsonObject.class));
+
+        if(!mensagensInsert.isEmpty()){
+            Map<String, String> mapaJson = new HashMap<>();
+            for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {
+                mapaJson.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
             }
 
-            String tipoUsuarioInsert = request.getParameter("tipoUsuarioInsert");
-            String emailInsert = request.getParameter("emailInsert");
-            String senhaInsert = request.getParameter("senhaInsert");
-            String nomeInsert = request.getParameter("nomeInsert");
-            String raioProcuraKmInsert = request.getParameter("raioProcuraKmInsert");
-
-            UsuarioDadosDTO usuarioDadosDto = new UsuarioDadosDTO(null, tipoUsuarioInsert, emailInsert, senhaInsert, nomeInsert, raioProcuraKmInsert);
-
-            List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(usuarioDadosDto);
-
-            if(!mensagensInsert.isEmpty()){
-                session.setAttribute("mensagensInsert", mensagensInsert);
-                session.setAttribute("tipoUsuarioInsert", tipoUsuarioInsert);
-                session.setAttribute("emailInsert", emailInsert);
-                session.setAttribute("nomeInsert", nomeInsert);
-                session.setAttribute("raioProcuraKmInsert", raioProcuraKmInsert);
-
-                //Atributo usado no javascript para abrir o pop-up
-                session.setAttribute("abrirInsert", true);
-
-                response.sendRedirect(request.getContextPath()+"/crudUsuario");
-            } else{
-                session.setAttribute("mensagemInsert", "O cadastro foi efetuado com sucesso");
-                response.sendRedirect(request.getContextPath() + "/crudUsuario");
-            }
-        } catch (Exception exception){
-            HttpSession session = request.getSession();
-
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
-
-            List<GenericExceptionEnum> mensagensInsert = new ArrayList<>();
-            mensagensInsert.add(ERRO_GENERICO);
-
-            session.setAttribute("mensagensInsert", mensagensInsert);
-            response.sendRedirect(request.getContextPath() + "/crudUsuario");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(gson.toJson(mapaJson));
+        } else{
+            response.getWriter().write("{}");
         }
     }
 }

@@ -38,7 +38,7 @@ public final class FornecedorService {
         UsuarioDAO dao = new UsuarioDAO();
 
         Usuario usuario = dao.readById(idUsuarioConvertido);
-        if(usuario != null && usuario.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
+        if(usuario != null && usuario.getId() == (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
             return ID_USUARIO_NAO_REGISTRADO;
         }
 
@@ -89,13 +89,13 @@ public final class FornecedorService {
     private static GenericExceptionEnum validarCnpjUnico(String cpnj){
         FornecedorDAO fornecedorDao = new FornecedorDAO();
         Fornecedor fornecedor = fornecedorDao.readByCnpj(cpnj);
-        if(fornecedor == null || fornecedor.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
+        if(fornecedor == null || fornecedor.getId() == (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
             return CNPJ_INVALIDO;
         }
 
         EmpresaDemandanteDAO empresaDemandanteDAO = new EmpresaDemandanteDAO();
         EmpresaDemandante empresaDemandante = empresaDemandanteDAO.readByCnpj(cpnj);
-        if(empresaDemandante == null || empresaDemandante.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
+        if(empresaDemandante == null || empresaDemandante.getId() == (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
             return CNPJ_INVALIDO;
         }
         return VALIDACAO_OK;
@@ -167,7 +167,7 @@ public final class FornecedorService {
 
     private static int deletarFornecedor(String id){
         FornecedorDAO dao = new FornecedorDAO();
-        return dao.deleteById(Long.parseLong(id.strip()));
+        return dao.delete(Long.parseLong(id.strip()));
     }
 
     //Métodos relacionados ao select
@@ -203,7 +203,7 @@ public final class FornecedorService {
 
             List<Fornecedor> fornecedores = new ArrayList<>();
 
-            if (fornecedor.getId() != REGISTRO_NAO_ENCONTRADO.getCodigo()){
+            if (fornecedor.getId() != (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
                 fornecedores.add(fornecedor);
             }
             return fornecedores;
@@ -228,7 +228,7 @@ public final class FornecedorService {
             String cnpjTratado = clausulaWhereValor.strip();
             return dao.readByCnpj(cnpjTratado);
         }
-        return new Fornecedor(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null);
+        return new Fornecedor((long)REGISTRO_NAO_ENCONTRADO.getCodigo(), (long)REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null);
     }
 
     private static List<Fornecedor> lerFornecedorMultiplosRetornos(CamposFornecedor clausulaWhere, FornecedorDadosDePesquisaDTO fornecedorDadosDePesquisaDTO){
@@ -331,7 +331,7 @@ public final class FornecedorService {
 
     private static int atualizarFornecedor(FornecedorDadosDTO fornecedorDadosDTO){
         FornecedorDAO dao = new FornecedorDAO();
-        return dao.updateById(fornecedorDadosDTO.construirFornecedor());
+        return dao.update(fornecedorDadosDTO.construirFornecedor());
     }
 
     private static List<GenericExceptionEnum> validarUpdate(FornecedorDadosDTO fornecedorDadosDTO){

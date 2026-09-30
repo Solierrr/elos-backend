@@ -2,19 +2,21 @@ package exception;
 
 public enum ErrosGerais implements GenericExceptionEnum {
 
-    SUCESSO(0, "Sucesso na operação!"),
-    ERRO_POR_VIOLACAO_DE_REGRA_DO_BD(-1, "Um ou mais dados inseridos estão inválidos"),
-    ERRO_GENERICO_NO_BD(-2, "Um possível erro de conexão ocorreu, cheque sua conexão de internet e tente novamente!"),
-    ERRO_GENERICO(-3, "Algo inesperado aconteceu, tente novamente!"),
-    REGISTRO_NAO_ENCONTRADO(-4, "O registro buscado não foi encontrado, verifique se os dados inseridos estão corretos"),
-    REGISTROS_NAO_ENCONTRADOS(-5, "Os registros buscados não foram encontrados, verifique se os dados inseridos estão corretos");
+    SUCESSO(0, "Sucesso na operação!", "sucesso"),
+    ERRO_POR_VIOLACAO_DE_REGRA_DO_BD(-1, "Um ou mais dados inseridos estão inválidos", "erro"),
+    ERRO_GENERICO_NO_BD(-2, "Um possível erro de conexão ocorreu, cheque sua conexão de internet e tente novamente!", "erro"),
+    ERRO_GENERICO(-3, "Algo inesperado aconteceu, tente novamente!", "erro"),
+    REGISTRO_NAO_ENCONTRADO(-4, "O registro buscado não foi encontrado, verifique se os dados inseridos estão corretos", "erro"),
+    REGISTROS_NAO_ENCONTRADOS(-5, "Os registros buscados não foram encontrados, verifique se os dados inseridos estão corretos", "erro");
 
     private final int codigo;
     private final String mensagem;
+    private final String nomeCampoErro;
 
-    ErrosGerais(int codigo, String mensagem) {
+    ErrosGerais(int codigo, String mensagem, String nomeCampoErro) {
         this.codigo = codigo;
         this.mensagem = mensagem;
+        this.nomeCampoErro = nomeCampoErro;
     }
 
     public int getCodigo() {
@@ -23,6 +25,10 @@ public enum ErrosGerais implements GenericExceptionEnum {
 
     public String getMensagem() {
         return mensagem;
+    }
+
+    public String getNomeCampoErro() {
+        return nomeCampoErro;
     }
 
     public static ErrosGerais descobrirErroGeral(int codigo){
@@ -37,5 +43,10 @@ public enum ErrosGerais implements GenericExceptionEnum {
     @Override
     public String exibirMensagem() {
         return getMensagem();
+    }
+
+    @Override
+    public String nomeCampoErro() {
+        return getNomeCampoErro();
     }
 }

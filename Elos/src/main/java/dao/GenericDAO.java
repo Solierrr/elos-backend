@@ -1,17 +1,17 @@
 package dao;
 
+import exception.GenericExceptionEnum;
+
 import java.util.List;
 
 public interface GenericDAO<T> {
 
-    public int insert(T objeto);
+    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica);
 
-    public T readById(long id);
+    public List<T> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica);
 
-    public List<T> readAll();
+    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica);
 
-    public int updateById(T objeto);
-
-    public int deleteById(long id);
+    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica);
 
 }

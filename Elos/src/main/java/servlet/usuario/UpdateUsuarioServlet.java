@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpSession;
 
 import exception.GenericExceptionEnum;
 import model.Usuario;
-import service.usuario.UsuarioDadosDTO;
+import service.usuario.UsuarioParaInsertDTO;
 import service.usuario.UsuarioService;
 
 @WebServlet("/crudUsuario-update")
@@ -72,8 +72,8 @@ public final class UpdateUsuarioServlet extends HttpServlet{
             String senhaUpdate = request.getParameter("senhaUpdate");
             String nomeUpdate = request.getParameter("nomeUpdate");
             String raioProcuraKmUpdate = request.getParameter("raioProcuraKmUpdate");
-            UsuarioDadosDTO usuarioDadosDto = new UsuarioDadosDTO(idUpdate, tipoUsuarioUpdate, emailUpdate, senhaUpdate, nomeUpdate, raioProcuraKmUpdate);
-            List<GenericExceptionEnum> erros = UsuarioService.realizarUpdate(usuarioDadosDto);
+            UsuarioParaInsertDTO usuarioParaInsertDto = new UsuarioParaInsertDTO(idUpdate, tipoUsuarioUpdate, emailUpdate, senhaUpdate, nomeUpdate, raioProcuraKmUpdate);
+            List<GenericExceptionEnum> erros = UsuarioService.realizarUpdate(usuarioParaInsertDto);
 
             if(!erros.isEmpty()){
                 session.setAttribute("errosUpdate", erros);

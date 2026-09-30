@@ -10,20 +10,20 @@ import com.zaxxer.hikari.*;
 
 public class Conexao {
 
-    private static final Dotenv VARIAVEIS_DE_AMBIENTE = Dotenv.load();
-
     private static final HikariDataSource dataSource = criarDataSource();
 
     private static HikariDataSource criarDataSource(){
-        final String URL = validarEnvs(VARIAVEIS_DE_AMBIENTE.get("DB_URL"), "DB_URL");
-        final String USUARIO = validarEnvs(VARIAVEIS_DE_AMBIENTE.get("DB_USUARIO"), "DB_USUARIO");
-        final String SENHA = validarEnvs(VARIAVEIS_DE_AMBIENTE.get("DB_SENHA"), "DB_SENHA");
+        final Dotenv variaveisDeAmbiente = Dotenv.load();
+
+        final String url = validarEnvs(variaveisDeAmbiente.get("DB_URL"), "DB_URL");
+        final String usuario = validarEnvs(variaveisDeAmbiente.get("DB_USUARIO"), "DB_USUARIO");
+        final String senha = validarEnvs(variaveisDeAmbiente.get("DB_SENHA"), "DB_SENHA");
 
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.postgresql.Driver");
-        config.setJdbcUrl(URL);
-        config.setUsername(USUARIO);
-        config.setPassword(SENHA);
+        config.setJdbcUrl(url);
+        config.setUsername(usuario);
+        config.setPassword(senha);
         config.setConnectionTimeout(15000L);
         config.setIdleTimeout(300000L);
         config.setMaxLifetime(600000L);

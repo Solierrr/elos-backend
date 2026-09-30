@@ -2,8 +2,8 @@ package model;
 
 public class Endereco {
 
-    private final long id;
-    private final long idUsuario;
+    private final Long id;
+    private final Long idUsuario;
     private EstadosBrasileiros estado;
     private String cidade;
     private String bairro;
@@ -12,7 +12,7 @@ public class Endereco {
     private String numero;
     private String complemento;
 
-    public Endereco(long id, long idUsuario, EstadosBrasileiros estado, String cidade, String bairro, String cep, String logradouro, String numero, String complemento) {
+    public Endereco(Long id, Long idUsuario, EstadosBrasileiros estado, String cidade, String bairro, String cep, String logradouro, String numero, String complemento) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.estado = estado;
@@ -24,11 +24,11 @@ public class Endereco {
         this.complemento = complemento;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 

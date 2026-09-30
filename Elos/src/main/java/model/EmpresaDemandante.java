@@ -2,14 +2,14 @@ package model;
 
 public class EmpresaDemandante {
 
-    private final long id;
-    private final long idUsuario;
+    private final Long id;
+    private final Long idUsuario;
     private final TiposUsuario tipoUsuario = TiposUsuario.EMPRESA_DEMANDANTE;
     private final String cnpj;
     private String razaoSocial;
-    private boolean ehMandante;
+    private Boolean ehMandante;
 
-    public EmpresaDemandante(long id, long idUsuario, String cnpj, String razaoSocial, boolean ehMandante) {
+    public EmpresaDemandante(Long id, Long idUsuario, String cnpj, String razaoSocial, Boolean ehMandante) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.cnpj = cnpj;
@@ -17,11 +17,11 @@ public class EmpresaDemandante {
         this.ehMandante = ehMandante;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 
@@ -41,11 +41,11 @@ public class EmpresaDemandante {
         this.razaoSocial = razaoSocial;
     }
 
-    public boolean isEhMandante() {
+    public Boolean isEhMandante() {
         return ehMandante;
     }
 
-    public void setEhMandante(boolean ehMandante) {
+    public void setEhMandante(Boolean ehMandante) {
         this.ehMandante = ehMandante;
     }
 

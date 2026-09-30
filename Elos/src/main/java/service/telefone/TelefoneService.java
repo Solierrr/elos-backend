@@ -114,7 +114,7 @@ public class TelefoneService {
 
     private static int deletarTelefone(String id){
         TelefoneDAO dao = new TelefoneDAO();
-        return dao.deleteById(Long.parseLong(id.strip()));
+        return dao.delete(Long.parseLong(id.strip()));
     }
 
     //Métodos relacionados ao select
@@ -175,7 +175,7 @@ public class TelefoneService {
 //            String cnpjTratado = clausulaWhereValor.strip();
 //            return dao.readByCnpj(cnpjTratado);
 //        }
-        return new Telefone(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, false);
+        return new Telefone((long)REGISTRO_NAO_ENCONTRADO.getCodigo(),(long) REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, false);
     }
 
     private static List<Telefone> lerTelefoneMultiplosRetornos(CamposTelefone clausulaWhere, TelefoneDadosDePesquisaDTO telefoneDadosDePesquisaDTO){
@@ -282,7 +282,7 @@ public class TelefoneService {
 
     private static int atualizarTelefone(TelefoneDadosDTO telefoneDadosDTO){
         TelefoneDAO dao = new TelefoneDAO();
-        return dao.updateById(telefoneDadosDTO.construirTelefone());
+        return dao.update(telefoneDadosDTO.construirTelefone());
     }
 
     private static List<GenericExceptionEnum> validarUpdate(TelefoneDadosDTO telefoneDadosDTO){

@@ -15,15 +15,15 @@ public enum CamposUsuario implements GenericEnumCampos {
     EMAIL("email", true, IGUAL, Types.VARCHAR),
     NOME("nome", true, ILIKE, Types.VARCHAR),
     RAIO_PROCURA_KM("raio_procura_km", true, BETWEEN, Types.DOUBLE),
-    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true, VAZIO, 0),
-    INVALIDO("campo_do_usuario_invalido", true, VAZIO, 0);
+    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true, VAZIO, null),
+    INVALIDO("campo_do_usuario_invalido", true, VAZIO, null);
 
     private final String campoUsuario;
     private final boolean acessivel;
     private final AcoesInstrucao acao;
-    private final int dataType;
+    private final Integer dataType;
 
-    CamposUsuario(String campoUsuario, boolean acessivel, AcoesInstrucao acao, int dataType) {
+    CamposUsuario(String campoUsuario, boolean acessivel, AcoesInstrucao acao, Integer dataType) {
         this.campoUsuario = campoUsuario;
         this.acessivel = acessivel;
         this.acao = acao;
@@ -42,7 +42,7 @@ public enum CamposUsuario implements GenericEnumCampos {
         return acao;
     }
 
-    public int getDataType() {
+    public Integer getDataType() {
         return dataType;
     }
 
