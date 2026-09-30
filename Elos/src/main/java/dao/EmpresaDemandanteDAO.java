@@ -104,15 +104,13 @@ public class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
         }
     }
 
-    // Métodos auxiliares que são usados para ver se o erro foi causado por um valor unique já
-    // cadastrado,
-    // isso foi usado para não realizar consultas desnecessárias para algo que o banco conseguiria
-    // barrar
-    private boolean foiCausadoPorCnpjCadastrado(SQLException sqle) {
-        return "empresa_demandante_cnpj_key".contains(sqle.getMessage());
+    // Métodos auxiliares que são usados para ver se o erro foi causado por um valor unique jácadastrado,
+    // isso foi usado para não realizar consultas desnecessárias para algo que o banco conseguiria barrar
+    private boolean foiCausadoPorCnpjCadastrado(SQLException sqlException) {
+        return "empresa_demandante_cnpj_key".contains(sqlException.getMessage());
     }
 
-    private boolean foiCausadoPorUsuarioCadastrado(SQLException sqle) {
-        return "empresa_demandante_id_usuario_key".contains(sqle.getMessage());
+    private boolean foiCausadoPorUsuarioCadastrado(SQLException sqlException) {
+        return "empresa_demandante_id_usuario_key".contains(sqlException.getMessage());
     }
 }
