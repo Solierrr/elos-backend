@@ -87,26 +87,6 @@ public final class UsuarioService {
         return PATTERN_EMAIL.matcher(email).matches() ? VALIDACAO_OK : EMAIL_INVALIDO;
     }
 
-    private static GenericExceptionEnum validarEmailInsert(String email) {
-        GenericExceptionEnum validarEmailBasico = validarEmailBasico(email);
-        if(validarEmailBasico != VALIDACAO_OK){
-            return validarEmailBasico;
-        }
-
-        String emailTratado = email.toLowerCase().strip();
-        return validarEmailNaoCadastrado(emailTratado) != VALIDACAO_OK ? EMAIL_INVALIDO : VALIDACAO_OK;
-    }
-
-    private static GenericExceptionEnum validarEmailNaoCadastrado(String email){
-        UsuarioDAO dao = new UsuarioDAO();
-
-        Usuario usuario = dao.readByEmail(email);
-        if(usuario != null && usuario.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
-            return EMAIL_INVALIDO;
-        }
-        return VALIDACAO_OK;
-    }
-
     //Validações da senha
     private static GenericExceptionEnum validarSenhaUpdate(String senha){
         if (senha == null || senha.isBlank()){

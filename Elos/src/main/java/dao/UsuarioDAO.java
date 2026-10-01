@@ -34,7 +34,6 @@ public class UsuarioDAO implements GenericDAO {
     public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamicaUsuario,
                                        CriarInstrucaoDinamica criarInstrucaoDinamicaFilho,
                                        String tabelaFilho) {
-
         try (Connection connection = Conexao.getConnection()) {
             connection.setAutoCommit(false);
 
@@ -105,11 +104,10 @@ public class UsuarioDAO implements GenericDAO {
                         resultSet.getDouble("raio_procura_km")
                 ));
             }
-            return usuarios;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
+        return usuarios;
     }
 
     @Override

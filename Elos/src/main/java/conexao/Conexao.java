@@ -1,29 +1,24 @@
 package conexao;
 
+import config.Env;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.zaxxer.hikari.*;
 
-public class Conexao {
+public class Conexao extends Env {
 
     private static final HikariDataSource dataSource = criarDataSource();
 
     private static HikariDataSource criarDataSource(){
-        final Dotenv variaveisDeAmbiente = Dotenv.load();
-
-        final String url = validarEnvs(variaveisDeAmbiente.get("DB_URL"), "DB_URL");
-        final String usuario = validarEnvs(variaveisDeAmbiente.get("DB_USUARIO"), "DB_USUARIO");
-        final String senha = validarEnvs(variaveisDeAmbiente.get("DB_SENHA"), "DB_SENHA");
 
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.postgresql.Driver");
-        config.setJdbcUrl(url);
-        config.setUsername(usuario);
-        config.setPassword(senha);
+        config.setJdbcUrl(getDbUrl());
+        config.setUsername(getDbUsuario());
+        config.setPassword(getDbSenha());
         config.setConnectionTimeout(15000L);
         config.setIdleTimeout(300000L);
         config.setMaxLifetime(600000L);
@@ -52,4 +47,5 @@ public class Conexao {
         }
         return valorEnv.strip();
     }
+
 }
