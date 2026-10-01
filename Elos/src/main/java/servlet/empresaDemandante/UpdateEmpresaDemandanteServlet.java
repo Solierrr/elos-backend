@@ -1,25 +1,25 @@
 package servlet.empresaDemandante;
 
 import exception.GenericExceptionEnum;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import model.EmpresaDemandante;
-import service.EmpresaDemandanteService;
+import service.empresaDemandante.EmpresaDemandanteDadosDTO;
+import service.empresaDemandante.EmpresaDemandanteService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
 @WebServlet("/crudEmpresaDemandante-update")
-public class UpdateEmpresaDemandanteServlet extends HttpServlet{
+public final class UpdateEmpresaDemandanteServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -70,7 +70,8 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
             String razaoSocialUpdate = request.getParameter("razaoSocialUpdate");
             String ehMandanteUpdate = request.getParameter("ehMandanteUpdate");
 
-            ArrayList<GenericExceptionEnum> erros = EmpresaDemandanteService.realizarUpdate(idUpdate, tipoUsuarioUpdate, cnpjUpdate, razaoSocialUpdate, ehMandanteUpdate);
+            EmpresaDemandanteDadosDTO empresaDemandanteDadosDTO = new EmpresaDemandanteDadosDTO(idUpdate, tipoUsuarioUpdate, cnpjUpdate, razaoSocialUpdate, ehMandanteUpdate);
+            List<GenericExceptionEnum> erros = EmpresaDemandanteService.realizarUpdate(empresaDemandanteDadosDTO);
 
             if(!erros.isEmpty()){
                 session.setAttribute("errosUpdate", erros);
@@ -88,7 +89,7 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet{
         } catch (Exception e) {
             HttpSession session = request.getSession();
 
-            ArrayList<GenericExceptionEnum> erros = new ArrayList<>();
+            List<GenericExceptionEnum> erros = new ArrayList<>();
             erros.add(ERRO_GENERICO);
 
             session.setAttribute("errosUpdate", erros);

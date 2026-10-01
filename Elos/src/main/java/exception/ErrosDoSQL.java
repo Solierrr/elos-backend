@@ -27,10 +27,12 @@ public enum ErrosDoSQL {
 
     //Método auxiliar
     public static boolean foiCausadoPorConstraint(String sqlState){
+        if(sqlState == null){
+            return false;
+        }
         for (ErrosDoSQL errosDoSQL : ErrosDoSQL.values()){
             if(errosDoSQL.getSqlState().equalsIgnoreCase(sqlState)){
                 return true;
-
             }
         }
         return false;

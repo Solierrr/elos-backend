@@ -1,6 +1,11 @@
 package servlet.fornecedor;
 
-import exception.GenericExceptionEnum;
+import static exception.ErrosGerais.ERRO_GENERICO;
+import static exception.ErrosGerais.SUCESSO;
+import static exception.ErrosGeraisDados.VALIDACAO_OK;
+
+import java.io.IOException;
+import java.util.Enumeration;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,15 +14,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import service.FornecedorService;
-
-import java.io.IOException;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import service.fornecedor.FornecedorService;
+import exception.GenericExceptionEnum;
 
 @WebServlet("/crudFornecedor-delete")
-public class DeleteFornecedorServlet extends HttpServlet {
+public final class DeleteFornecedorServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,10 +39,8 @@ public class DeleteFornecedorServlet extends HttpServlet {
             }
 
             String id = request.getParameter("idDelete");
-
             GenericExceptionEnum erro = FornecedorService.realizarDelete(id);
-
-            if(erro != null){
+            if(erro != null && erro != SUCESSO ){
                 session.setAttribute("mensagemDelete", erro.exibirMensagem());
                 response.sendRedirect(request.getContextPath() + "/crudFornecedor");
             } else {

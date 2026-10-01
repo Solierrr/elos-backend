@@ -1,24 +1,23 @@
 package servlet.usuario;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import exception.GenericExceptionEnum;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
-import service.UsuarioService;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import service.usuario.UsuarioService;
 
 @WebServlet("/crudUsuario-insert")
-public class InsertUsuarioServlet extends HttpServlet {
+public final class InsertUsuarioServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -29,52 +28,20 @@ public class InsertUsuarioServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
-        try{
-            HttpSession session = request.getSession();
 
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
+        List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(gson.fromJson(request.getReader(), JsonObject.class));
+
+        if(!mensagensInsert.isEmpty()){
+            Map<String, String> mapaJson = new HashMap<>();
+            for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {
+                mapaJson.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
             }
 
-            String tipoUsuario = request.getParameter("tipoUsuarioInsert");
-            String email = request.getParameter("emailInsert");
-            String senha = request.getParameter("senhaInsert");
-            String nome = request.getParameter("nomeInsert");
-            String raioProcuraKm = request.getParameter("raioProcuraKmInsert");
-
-            ArrayList<GenericExceptionEnum> mensagens = UsuarioService.realizarInsert(email, senha, nome, tipoUsuario, raioProcuraKm);
-
-            if(!mensagens.isEmpty()){
-                session.setAttribute("mensagensInsert", mensagens);
-                session.setAttribute("tipoUsuarioInsert", tipoUsuario);
-                session.setAttribute("emailInsert", email);
-                session.setAttribute("nomeInsert", nome);
-                session.setAttribute("raioProcuraKmInsert", raioProcuraKm);
-
-                //Atributo usado no javascript para abrir o pop-up
-                session.setAttribute("abrirInsert", true);
-
-                response.sendRedirect(request.getContextPath()+"/crudUsuario");
-            } else{
-                session.setAttribute("mensagemInsert", "O cadastro foi efetuado com sucesso");
-                response.sendRedirect(request.getContextPath() + "/crudUsuario");
-            }
-        } catch (Exception exception){
-            HttpSession session = request.getSession();
-
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
-
-            ArrayList<GenericExceptionEnum> mensagens = new ArrayList<>();
-            mensagens.add(ERRO_GENERICO);
-
-            session.setAttribute("mensagensInsert", mensagens);
-            response.sendRedirect(request.getContextPath() + "/crudUsuario");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(gson.toJson(mapaJson));
+        } else{
+            response.getWriter().write("{}");
         }
     }
 }

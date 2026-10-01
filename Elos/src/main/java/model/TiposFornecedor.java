@@ -18,8 +18,13 @@ public enum TiposFornecedor {
     }
 
     public static TiposFornecedor descobrirTipoFornecedor(String tipoFornecedorRecebido){
+        if(tipoFornecedorRecebido == null){
+            return null;
+        }
+
+        String tipoFornecedorRecebidoTratado = tipoFornecedorRecebido.strip().toUpperCase();
         for(TiposFornecedor tiposFornecedor : TiposFornecedor.values()){
-            if(tiposFornecedor.tipoFornecedor.equalsIgnoreCase(tipoFornecedorRecebido)){
+            if(tiposFornecedor.tipoFornecedor.equalsIgnoreCase(tipoFornecedorRecebidoTratado)){
                 return tiposFornecedor;
             }
         }

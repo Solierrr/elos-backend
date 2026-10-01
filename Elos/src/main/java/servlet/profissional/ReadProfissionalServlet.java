@@ -1,6 +1,11 @@
 package servlet.profissional;
 
-import exception.GenericExceptionEnum;
+import static exception.ErrosGerais.ERRO_GENERICO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -11,17 +16,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import model.Profissional;
-import service.ProfissionalService;
+import service.profissional.ProfissionalDadosDePesquisaDTO;import service.profissional.ProfissionalService;
+import exception.GenericExceptionEnum;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
-
-@WebServlet("/crudProfissional")
-public class ReadProfissionalServlet extends HttpServlet {
+@WebServlet("/crudProfissionl")
+public final class ReadProfissionalServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,26 +39,25 @@ public class ReadProfissionalServlet extends HttpServlet {
 
             String clausulaWhereNome = request.getParameter("clausulaWhereNome");
             String clausulaWhereValor = request.getParameter("clausulaWhereValor");
-            String clausulaWhereValor2 = request.getParameter("clausulaWhereValor2");
             String orderBy = request.getParameter("orderBy");
-            String ordenacao = request.getParameter("ordenacao");
+            String sentidoOrderBy = request.getParameter("sentidoOrderBy");
 
-            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
+            List<GenericExceptionEnum> errosRead = new ArrayList<>();
             List<Profissional> profissionalRead = new ArrayList<>();
 
-            profissionalRead.addAll(ProfissionalService.realizarSelect(clausulaWhereNome, clausulaWhereValor, clausulaWhereValor2, orderBy, ordenacao, errosRead));
+            ProfissionalDadosDePesquisaDTO profissionalDadosDePesquisaDto = new ProfissionalDadosDePesquisaDTO(clausulaWhereNome, clausulaWhereValor, orderBy, sentidoOrderBy);
+            profissionalRead.addAll(ProfissionalService.realizarSelect(profissionalDadosDePesquisaDto, errosRead));
 
             request.setAttribute("errosRead", errosRead);
             request.setAttribute("profissionalRead", profissionalRead);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/profissional/crudProfissional.jsp");
             dispatcher.forward(request, response);
-
         } catch (Exception e){
-            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
+            List<GenericExceptionEnum> errosRead = new ArrayList<>();
             errosRead.add(ERRO_GENERICO);
 
-            List<Profissional> profissionalRead = ProfissionalService.realizarSelect(null, null, null, null, null, errosRead);
+            List<Profissional> profissionalRead = ProfissionalService.realizarSelect(null, errosRead);
 
             request.setAttribute("errosRead", errosRead);
             request.setAttribute("profissionalRead", profissionalRead);

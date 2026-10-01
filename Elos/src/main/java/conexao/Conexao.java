@@ -1,51 +1,40 @@
 package conexao;
 
+import config.Env;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.sql.DriverManager;
-
 import java.sql.Connection;
+import java.sql.SQLException;
 
+import com.zaxxer.hikari.*;
 
-public class Conexao {
+public class Conexao extends Env {
 
-    private static final Dotenv VARIAVEIS_DE_AMBIENTE = Dotenv.load();
-    private Connection connection;
+    private static final HikariDataSource dataSource = criarDataSource();
 
-    public Connection conectar(){
-        try{
-            //Variáveis de ambiente
-            final String URL = validarEnvs(VARIAVEIS_DE_AMBIENTE.get("DB_URL"), "DB_URL");
-            final String USUARIO = validarEnvs(VARIAVEIS_DE_AMBIENTE.get("DB_USUARIO"), "DB_USUARIO");
-            final String SENHA = validarEnvs(VARIAVEIS_DE_AMBIENTE.get("DB_SENHA"), "DB_SENHA");
+    private static HikariDataSource criarDataSource(){
 
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(URL, USUARIO, SENHA);
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName("org.postgresql.Driver");
+        config.setJdbcUrl(getDbUrl());
+        config.setUsername(getDbUsuario());
+        config.setPassword(getDbSenha());
+        config.setConnectionTimeout(15000L);
+        config.setIdleTimeout(300000L);
+        config.setMaxLifetime(600000L);
+        config.setMinimumIdle(3);
+        config.setMaximumPoolSize(4);
+        config.setPoolName("elos-pool");
 
-            return connection;
-        } catch (NullPointerException | IllegalArgumentException e) {
-            e.printStackTrace();
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
-            return null;
-
-        } catch (Exception e){
-            e.printStackTrace();
-
-            return null;
-
-        }
+        return new HikariDataSource(config);
     }
 
-    public void desconectar(){
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
-
-        }
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     //Método auxiliar para o método conectar
@@ -56,7 +45,7 @@ public class Conexao {
         else if(valorEnv.isEmpty()){
             throw new IllegalArgumentException(String.format("Erro: A variável de ambiente %s não possuí um valor registrado", nomeEnv));
         }
-
-        return valorEnv.trim();
+        return valorEnv.strip();
     }
+
 }

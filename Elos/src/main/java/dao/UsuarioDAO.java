@@ -1,212 +1,100 @@
 package dao;
 
-import conexao.Conexao;
+import static exception.ErrosDadosProfissional.CPF_INVALIDO;
+import static exception.ErrosDadosUsuario.EMAIL_INVALIDO;
+import static exception.ErrosGerais.ERRO_GENERICO;
+import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
+import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
+import static exception.ErrosGerais.SUCESSO;
+import static exception.ErrosGeraisDados.CNPJ_INVALIDO;
+import static exception.ErrosGeraisDados.ID_USUARIO_INVALIDO;
 
+import conexao.Conexao;
 import exception.ErrosDoSQL;
+import exception.GenericExceptionEnum;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import model.TiposUsuario;
 import model.Usuario;
 
-import java.sql.*;
+public class UsuarioDAO implements GenericDAO {
 
-import java.util.List;
-
-import java.util.ArrayList;
-
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
-import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
-
-public class UsuarioDAO implements GenericDAO<Usuario> {
+    private static String TABELA = "usuario";
 
     @Override
-    public int insert(Usuario usuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            if(usuario.getRaioProcuraKm() > 0) {
-                String insert = "insert into usuario(email, senha, nome, tipo_usuario, raio_procura_km) values(?, ?, ?, ?, ?)";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(insert);
-                preparedStatement.setString(1, usuario.getEmail() );
-                preparedStatement.setString(2, usuario.getSenha());
-                preparedStatement.setString(3, usuario.getNome());
-                preparedStatement.setString(4, usuario.getTipoUsuario().getTipoDoUsuario());
-                preparedStatement.setDouble(5, usuario.getRaioProcuraKm());
-
-                return preparedStatement.executeUpdate();
-
-            }else{
-                String insert = "insert into usuario(email, senha, nome, tipo_usuario, raio_procura_km) values(?, ?, ?, ?, DEFAULT)";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(insert);
-                preparedStatement.setString(1, usuario.getEmail() );
-                preparedStatement.setString(2, usuario.getSenha());
-                preparedStatement.setString(3, usuario.getNome());
-                preparedStatement.setString(4, usuario.getTipoUsuario().getTipoDoUsuario());
-
-                return preparedStatement.executeUpdate();
-
-            }
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-
-        }finally {
-            conexao.desconectar();
-
-        }
+    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica) {
+        throw new IllegalArgumentException("Existe parametros faltando!");
     }
 
-    @Override
-    public Usuario readById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamicaUsuario,
+                                       CriarInstrucaoDinamica criarInstrucaoDinamicaFilho,
+                                       String tabelaFilho) {
+        try (Connection connection = Conexao.getConnection()) {
+            connection.setAutoCommit(false);
 
-        try {
-            String read = "select * from usuario where id = ?";
+            try {
+                PreparedStatement preparedStatementUsuario = connection.prepareStatement(criarInstrucaoDinamicaUsuario.construirInsert(TABELA));
+                criarInstrucaoDinamicaUsuario.aplicarValoresDoPreparedStatement(preparedStatementUsuario);
+                preparedStatementUsuario.executeUpdate();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatementUsuario.getGeneratedKeys();
+                resultSet.next();
+                Long idCriado = resultSet.getLong(1);
 
-            if (resultSet.next()){
-                return new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                );
+                criarInstrucaoDinamicaFilho.setCampo("id_usuario", idCriado, Types.BIGINT);
+
+                PreparedStatement preparedStatementFilho = connection.prepareStatement(
+                        criarInstrucaoDinamicaFilho.construirInsert(tabelaFilho));
+                criarInstrucaoDinamicaFilho.aplicarValoresDoPreparedStatement(preparedStatementFilho);
+
+                if (preparedStatementFilho.executeUpdate() < 1) {
+                    connection.rollback();
+                    return ERRO_GENERICO;
+                }
+
+                connection.commit();
+                return SUCESSO;
+            } catch (SQLException sqlException) {
+                connection.rollback();
+                throw sqlException;
+            } finally {
+                connection.setAutoCommit(true);
             }
+        } catch (SQLException sqlException) {
+            if (foiCausadoPorCpfCadastradoProfissional(sqlException))
+                return CPF_INVALIDO;
 
-            return new Usuario(REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
+            if (foiCausadoPorUsuarioCadastradoEmpresaDemandante(sqlException)
+                    || foiCausadoPorUsuarioCadastradoFornecedor(sqlException)
+                    || foiCausadoPorUsuarioCadastradoProfissional(sqlException))
+                return ID_USUARIO_INVALIDO;
 
-        } catch (Exception exception){
-            return null;
+            if (foiCausadoPorCnpjCadastradoFornecedor(sqlException) || foiCausadoPorCnpjCadastradoEmpresaDemandante(sqlException))
+                return CNPJ_INVALIDO;
 
-        }finally {
-            conexao.desconectar();
+            if (foiCausadoPorEmailCadastrado(sqlException))
+                return EMAIL_INVALIDO;
 
-        }
-    }
-
-    public Usuario readByEmail(String email){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try {
-            String read = "select * from usuario where email = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()){
-                return new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                );
-            }
-
-            return new Usuario(REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    public Usuario readByNome(String nome){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try {
-            String read = "select * from usuario where nome ilike ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, "%" + nome + "%");
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()){
-                return new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                );
-            }
-
-            return new Usuario(REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, null, null, REGISTRO_NAO_ENCONTRADO.getCodigo());
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
+            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
         }
     }
 
     @Override
-    public List<Usuario> readAll(){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public List<Usuario> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica) {
         List<Usuario> usuarios = new ArrayList<>();
 
-        try {
-            String read = "select * from usuario";
+        try (Connection connection = Conexao.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
+
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                 usuarios.add(new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                ));
-            }
-
-            return usuarios;
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    public List<Usuario> readAllOrderBy(String ordenacao, String ordem){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        List<Usuario> usuarios = new ArrayList<>();
-
-        try {
-            String read = "select * from usuario order by "+ordenacao+" "+ordem;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 usuarios.add(new Usuario(
                         resultSet.getLong("id"),
                         resultSet.getString("email"),
@@ -216,260 +104,80 @@ public class UsuarioDAO implements GenericDAO<Usuario> {
                         resultSet.getDouble("raio_procura_km")
                 ));
             }
-
-            return usuarios;
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
         }
+        return usuarios;
     }
 
-    public List<Usuario> readAllByTipoUsuario(String tipoUsuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        List<Usuario> usuarios = new ArrayList<>();
+    @Override
+    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica) {
+        try (Connection connection = Conexao.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-        try {
-            String read = "select * from usuario where tipo_usuario = ?";
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, tipoUsuario);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        } catch (SQLException sqlException) {
+            if (foiCausadoPorCpfCadastradoProfissional(sqlException))
+                return CPF_INVALIDO;
 
-            while (resultSet.next()){
-                usuarios.add(new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                ));
-            }
+            if (foiCausadoPorUsuarioCadastradoEmpresaDemandante(sqlException)
+                    || foiCausadoPorUsuarioCadastradoFornecedor(sqlException)
+                    || foiCausadoPorUsuarioCadastradoProfissional(sqlException))
+                return ID_USUARIO_INVALIDO;
 
-            return usuarios;
+            if (foiCausadoPorCnpjCadastradoFornecedor(sqlException) || foiCausadoPorCnpjCadastradoEmpresaDemandante(sqlException))
+                return CNPJ_INVALIDO;
 
-        } catch (Exception exception){
-            return null;
+            if (foiCausadoPorEmailCadastrado(sqlException))
+                return EMAIL_INVALIDO;
 
-        }finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    public List<Usuario> readAllByTipoUsuarioOrderBy(String tipoUsuario, String ordenacao, String ordem){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        List<Usuario> usuarios = new ArrayList<>();
-
-        try {
-            String read = "select * from usuario where tipo_usuario = ? order by "+ordenacao+" "+ordem;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, tipoUsuario);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                usuarios.add(new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                ));
-            }
-
-            return usuarios;
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    public List<Usuario> readAllWhereRaioProcuraKmEntre(double raioProcuraKmBase, double raioProcuraKmTeto){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        List<Usuario> usuarios = new ArrayList<>();
-
-        try {
-            String read = "select * from usuario where raio_procura_km between ? and ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setDouble(1, raioProcuraKmBase);
-            preparedStatement.setDouble(2, raioProcuraKmTeto);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                usuarios.add(new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                ));
-            }
-
-            return usuarios;
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    public List<Usuario> readAllWhereRaioProcuraKmEntreOrderBy(double raioProcuraKmBase, double raioProcuraKmTeto, String ordenacao, String ordem){
-
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        List<Usuario> usuarios = new ArrayList<>();
-
-        try {
-
-            String read = "select * from usuario where raio_procura_km between ? and ? order by "+ordenacao+" "+ordem;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setDouble(1, raioProcuraKmBase);
-            preparedStatement.setDouble(2, raioProcuraKmTeto);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                usuarios.add(new Usuario(
-                        resultSet.getLong("id"),
-                        resultSet.getString("email"),
-                        resultSet.getString("senha"),
-                        resultSet.getString("nome"),
-                        TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                        resultSet.getDouble("raio_procura_km")
-                ));
-            }
-
-            return usuarios;
-
-        } catch (Exception exception){
-            return null;
-
-        }finally {
-            conexao.desconectar();
-
+            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
         }
     }
 
     @Override
-    public int updateById(Usuario usuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica) {
+        try (Connection connection = Conexao.getConnection()){
+            PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
-        try{
-            String update = "update usuario set email = coalesce(?, email), senha = coalesce(?, senha), nome = coalesce(?, nome), raio_procura_km = coalesce(?, raio_procura_km) where id = ?";
+            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, usuario.getEmail() );
-            preparedStatement.setString(2, usuario.getSenha() );
-            preparedStatement.setString(3, usuario.getNome() );
-            preparedStatement.setDouble(4, usuario.getRaioProcuraKm());
-            preparedStatement.setLong(5, usuario.getId());
-
-            return preparedStatement.executeUpdate();
-
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-
-        }finally {
-            conexao.desconectar();
-
+            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        } catch (SQLException sqlException) {
+            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
         }
     }
 
-    public int updateByEmail(Usuario usuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update usuario set senha = ?, nome = ?, raio_procura_km = ? where email = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, usuario.getSenha() );
-            preparedStatement.setString(2, usuario.getNome() );
-            preparedStatement.setDouble(3, usuario.getRaioProcuraKm());
-            preparedStatement.setString(4, usuario.getEmail());
-
-            return preparedStatement.executeUpdate();
-
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-
-        }finally {
-            conexao.desconectar();
-
-        }
+    //Métodos auxiliares que são usados para ver se o erro foi causado por um valor unique já cadastrado,
+    // isso foi usado para não realizar consultas desnecessárias para algo que o banco conseguiria barrar
+    private boolean foiCausadoPorCnpjCadastradoFornecedor(SQLException sqlException){
+        return "fornecedor_cnpj_key".contains(sqlException.getMessage());
     }
 
-    @Override
-    public int deleteById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from usuario where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, id);
-
-            return preparedStatement.executeUpdate();
-
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-
-        }finally {
-            conexao.desconectar();
-
-        }
+    private boolean foiCausadoPorUsuarioCadastradoFornecedor(SQLException sqlException){
+        return "fornecedor_id_usuario_key".contains(sqlException.getMessage());
     }
 
-    public int deleteByEmail(String email){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from usuario where email = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setString(1, email);
-
-            return preparedStatement.executeUpdate();
-
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-
-        }finally {
-            conexao.desconectar();
-
-        }
+    private boolean foiCausadoPorCpfCadastradoProfissional(SQLException sqlException){
+        return "profissional_cpf_hmac_key".contains(sqlException.getMessage());
     }
+
+    private boolean foiCausadoPorUsuarioCadastradoProfissional(SQLException sqlException){
+        return "profissional_id_usuario_key".contains(sqlException.getMessage());
+    }
+
+    private boolean foiCausadoPorCnpjCadastradoEmpresaDemandante(SQLException sqlException) {
+        return "empresa_demandante_cnpj_key".contains(sqlException.getMessage());
+    }
+
+    private boolean foiCausadoPorUsuarioCadastradoEmpresaDemandante(SQLException sqlException) {
+        return "empresa_demandante_id_usuario_key".contains(sqlException.getMessage());
+    }
+
+    private boolean foiCausadoPorEmailCadastrado(SQLException sqlException){
+        return "usuario_email_key".contains(sqlException.getMessage());
+    }
+
 }

@@ -47,12 +47,16 @@ public enum EstadosBrasileiros {
     }
 
     public static EstadosBrasileiros descobrirEstadoBrasileiroPorSigla(String estadoBrasileiroSiglaEntrada){
+        if(estadoBrasileiroSiglaEntrada == null){
+            return null;
+        }
+
+        String estadoBrasileiroSiglaEntradaTratado = estadoBrasileiroSiglaEntrada.strip().toUpperCase();
         for(EstadosBrasileiros estadosBrasileiros : EstadosBrasileiros.values()){
-            if(estadosBrasileiros.getSiglaEstado().equalsIgnoreCase(estadoBrasileiroSiglaEntrada)){
+            if(estadosBrasileiros.getSiglaEstado().equalsIgnoreCase(estadoBrasileiroSiglaEntradaTratado)){
                 return estadosBrasileiros;
             }
         }
         return null;
     }
-
 }

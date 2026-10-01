@@ -3,14 +3,14 @@ package model;
 public class Telefone {
 
     //Atributos
-    private final long id;
-    private final long idUsuario;
+    private final Long id;
+    private final Long idUsuario;
     private String telefone;
     private TiposTelefone tipo;
     private boolean principal;
 
     //Construtor
-    public Telefone(long id,  long idUsuario, String telefone, TiposTelefone tipo,boolean principal) {
+    public Telefone(Long id,  Long idUsuario, String telefone, TiposTelefone tipo,boolean principal) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.telefone = telefone;
@@ -19,11 +19,11 @@ public class Telefone {
     }
 
     //Getters e Setters
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public long getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 
@@ -57,7 +57,7 @@ public class Telefone {
         return  "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n" +
                 "ID: "+ this.id + "\n" +
                 "Telefone: "+ this.telefone + "\n" +
-                "Tipo do telefone: "+ this.tipo + "\n" +
+                "Tipo do telefone: "+ this.tipo.getTipoTelefone() + "\n" +
                 "ID do usuário: "+ this.idUsuario + "\n" +
                 "Principal: "+ this.principal + "\n" +
                 "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";

@@ -17,16 +17,16 @@ public enum TiposUsuario {
     }
 
     public static TiposUsuario descobrirTipoUsuario(String tipoUsuarioRecebido){
+        if(tipoUsuarioRecebido == null){
+            return null;
+        }
 
-        String tipoUsuarioRecebidoTratado = tipoUsuarioRecebido.toUpperCase().trim();
-
+        String tipoUsuarioRecebidoTratado = tipoUsuarioRecebido.toUpperCase().strip();
         for(TiposUsuario tiposUsuario : TiposUsuario.values()){
-
             if(tiposUsuario.getTipoDoUsuario().equalsIgnoreCase(tipoUsuarioRecebidoTratado)){
                 return tiposUsuario;
             }
         }
         return null;
     }
-
 }

@@ -16,8 +16,13 @@ public enum TiposTelefone {
     }
 
     public static TiposTelefone descobrirTipoTelefone(String tipoTelefoneRecebido){
+        if(tipoTelefoneRecebido == null){
+            return null;
+        }
+
+        String tipoTelefoneRecebidoTratado = tipoTelefoneRecebido.toUpperCase().strip();
         for(TiposTelefone tiposTelefone : TiposTelefone.values()){
-            if(tiposTelefone.tipoTelefone.equalsIgnoreCase(tipoTelefoneRecebido)){
+            if(tiposTelefone.tipoTelefone.equalsIgnoreCase(tipoTelefoneRecebidoTratado)){
                 return tiposTelefone;
             }
         }

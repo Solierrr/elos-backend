@@ -1,6 +1,12 @@
 package servlet.profissional;
 
-import exception.GenericExceptionEnum;
+import static exception.ErrosGerais.ERRO_GENERICO;
+import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,16 +16,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import model.Profissional;
-import service.ProfissionalService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import service.profissional.ProfissionalDadosDTO;
+import service.profissional.ProfissionalService;
+import exception.GenericExceptionEnum;
 
 @WebServlet("/crudProfissional-update")
-public class UpdateProfissionalServlet extends HttpServlet{
+public final class UpdateProfissionalServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,7 +38,7 @@ public class UpdateProfissionalServlet extends HttpServlet{
             String id = request.getParameter("idUpdate");
             Profissional profissional = ProfissionalService.exibirProfissionalParaUpdate(id);
 
-            if (profissional == null){
+            if (profissional == null || profissional.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
                 session.setAttribute("erroUpdate", "Um erro inesperado aconteceu, tente novamente");
                 response.sendRedirect(request.getContextPath()+"/crudProfissional");
             } else {
@@ -66,12 +68,12 @@ public class UpdateProfissionalServlet extends HttpServlet{
 
             String idUpdate = request.getParameter("idUpdate");
             String idUsuarioUpdate = request.getParameter("idUsuarioUpdate");
-            String tipoUsuarioUpdate = request.getParameter("tipoUsuarioUpdate");
             String profissaoUpdate = request.getParameter("profissaoUpdate");
             String cpfUpdate = request.getParameter("cpfUpdate");
             String idFornecedorUpdate = request.getParameter("idFornecedorUpdate");
 
-            ArrayList<GenericExceptionEnum> erros = ProfissionalService.realizarUpdate(idUpdate, tipoUsuarioUpdate, idUsuarioUpdate, profissaoUpdate, cpfUpdate, idFornecedorUpdate);
+            ProfissionalDadosDTO profissionalDadosDto = new ProfissionalDadosDTO(idUpdate, idUsuarioUpdate, profissaoUpdate, cpfUpdate, idFornecedorUpdate);
+            List<GenericExceptionEnum> erros = ProfissionalService.realizarUpdate(profissionalDadosDto);
 
             if(!erros.isEmpty()){
                 session.setAttribute("errosUpdate", erros);
@@ -89,7 +91,7 @@ public class UpdateProfissionalServlet extends HttpServlet{
         } catch (Exception e) {
             HttpSession session = request.getSession();
 
-            ArrayList<GenericExceptionEnum> erros = new ArrayList<>();
+            List<GenericExceptionEnum> erros = new ArrayList<>();
             erros.add(ERRO_GENERICO);
 
             session.setAttribute("errosUpdate", erros);
@@ -97,4 +99,3 @@ public class UpdateProfissionalServlet extends HttpServlet{
         }
     }
 }
-

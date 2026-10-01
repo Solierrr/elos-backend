@@ -1,6 +1,11 @@
 package servlet.profissional;
 
-import exception.GenericExceptionEnum;
+import static exception.ErrosGerais.ERRO_GENERICO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,16 +14,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import service.ProfissionalService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import service.profissional.ProfissionalDadosDTO;
+import service.profissional.ProfissionalService;
+import exception.GenericExceptionEnum;
 
 @WebServlet("/crudProfissional-insert")
-public class InsertProfissionalServlet extends HttpServlet {
+public final class InsertProfissionalServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,12 +40,12 @@ public class InsertProfissionalServlet extends HttpServlet {
             }
 
             String idUsuario = request.getParameter("idUsuarioInsert");
-            String tipoUsuario = request.getParameter("tipoUsuarioInsert");
             String profissao = request.getParameter("profissaoInsert");
             String cpf = request.getParameter("cpfInsert");
             String idFornecedor = request.getParameter("idFornecedorInsert");
 
-            ArrayList<GenericExceptionEnum> mensagens = ProfissionalService.realizarInsert(idUsuario, profissao, cpf, tipoUsuario, idFornecedor);
+            ProfissionalDadosDTO profissionalDadosDto = new ProfissionalDadosDTO(null, idUsuario, profissao, cpf, idFornecedor);
+            List<GenericExceptionEnum> mensagens = ProfissionalService.realizarInsert(profissionalDadosDto);
 
             if(!mensagens.isEmpty()){
                 session.setAttribute("mensagensInsert", mensagens);
@@ -71,7 +72,7 @@ public class InsertProfissionalServlet extends HttpServlet {
                 session.removeAttribute(attributes.nextElement());
             }
 
-            ArrayList<GenericExceptionEnum> mensagens = new ArrayList<>();
+            List<GenericExceptionEnum> mensagens = new ArrayList<>();
             mensagens.add(ERRO_GENERICO);
 
             session.setAttribute("mensagensInsert", mensagens);

@@ -8,16 +8,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import service.ProfissionalService;
+import service.profissional.ProfissionalService;
 
 import java.io.IOException;
 import java.util.Enumeration;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
+import static exception.ErrosGerais.SUCESSO;
 
 @WebServlet("/crudProfissional-delete")
-public class DeleteProfissionalServlet extends HttpServlet {
+public final class DeleteProfissionalServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

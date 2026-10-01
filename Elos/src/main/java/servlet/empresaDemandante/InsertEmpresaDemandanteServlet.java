@@ -1,24 +1,25 @@
 package servlet.empresaDemandante;
 
 import exception.GenericExceptionEnum;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import service.EmpresaDemandanteService;
+import service.empresaDemandante.EmpresaDemandanteDadosDTO;
+import service.empresaDemandante.EmpresaDemandanteService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import java.util.Enumeration;
+import java.util.List;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
 @WebServlet("/crudEmpresaDemandante-insert")
-public class InsertEmpresaDemandanteServlet extends HttpServlet {
+public final class InsertEmpresaDemandanteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -44,14 +45,15 @@ public class InsertEmpresaDemandanteServlet extends HttpServlet {
             String razaoSocial = request.getParameter("razaoSocialInsert");
             String ehMandante = request.getParameter("ehMandanteInsert");
 
-            ArrayList<GenericExceptionEnum> mensagens = EmpresaDemandanteService.realizarInsert(idUsuario, tipoUsuario, cnpj, tipoUsuario, razaoSocial, ehMandante);
+            EmpresaDemandanteDadosDTO empresaDemandanteDadosDTO = new EmpresaDemandanteDadosDTO(null, idUsuario, cnpj, razaoSocial, ehMandante);
+            List<GenericExceptionEnum> mensagens = EmpresaDemandanteService.realizarInsert(empresaDemandanteDadosDTO);
 
             if(!mensagens.isEmpty()){
                 session.setAttribute("mensagensInsert", mensagens);
                 session.setAttribute("tipoUsuarioInsert", tipoUsuario);
                 session.setAttribute("idUsuarioInsert", idUsuario);
                 session.setAttribute("cnpjInsert", cnpj);
-                session.setAttribute("razaoSocialInsert", razaoSocial);
+                session.setAttribute("razaoSocial", razaoSocial);
                 session.setAttribute("ehMandanteInsert", ehMandante);
 
                 //Atributo usado no javascript para abrir o pop-up
@@ -71,7 +73,7 @@ public class InsertEmpresaDemandanteServlet extends HttpServlet {
                 session.removeAttribute(attributes.nextElement());
             }
 
-            ArrayList<GenericExceptionEnum> mensagens = new ArrayList<>();
+            List<GenericExceptionEnum> mensagens = new ArrayList<>();
             mensagens.add(ERRO_GENERICO);
 
             session.setAttribute("mensagensInsert", mensagens);

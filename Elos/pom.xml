@@ -23,14 +23,23 @@
       <dependency>
           <groupId>org.postgresql</groupId>
           <artifactId>postgresql</artifactId>
-          <version>42.6.0</version>
+          <version>42.7.12</version>
+      </dependency>
+
+      <!-- POOL de conexão -->
+      <dependency>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+          <version>7.1.0</version>
+          <scope>compile</scope>
       </dependency>
 
       <!-- Variáveis de ambiente (.env) -->
       <dependency>
           <groupId>io.github.cdimascio</groupId>
-          <artifactId>java-dotenv</artifactId>
-          <version>5.2.2</version>
+          <artifactId>dotenv-java</artifactId>
+          <version>3.2.0</version>
+          <scope>compile</scope>
       </dependency>
 
       <!-- Servlet API (Tomcat 11 usa Jakarta EE 10) -->
@@ -60,6 +69,22 @@
           <groupId>org.glassfish.web</groupId>
           <artifactId>jakarta.servlet.jsp.jstl</artifactId>
           <version>3.0.1</version>
+      </dependency>
+
+      <!-- Hash para senha -->
+      <dependency>
+          <groupId>org.mindrot</groupId>
+          <artifactId>jbcrypt</artifactId>
+          <version>0.4</version>
+          <scope>compile</scope>
+      </dependency>
+
+      <!-- Lib para jsons -->
+      <dependency>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+          <version>2.14.0</version>
+          <scope>compile</scope>
       </dependency>
 
   </dependencies>

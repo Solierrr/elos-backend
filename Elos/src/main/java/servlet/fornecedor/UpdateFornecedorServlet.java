@@ -1,6 +1,12 @@
 package servlet.fornecedor;
 
-import exception.GenericExceptionEnum;
+import static exception.ErrosGerais.ERRO_GENERICO;
+import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,17 +15,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import exception.GenericExceptionEnum;
 import model.Fornecedor;
-import service.FornecedorService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import service.fornecedor.FornecedorDadosDTO;
+import service.fornecedor.FornecedorService;
 
 @WebServlet("/crudFornecedor-update")
-public class UpdateFornecedorServlet extends HttpServlet{
+public final class UpdateFornecedorServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,7 +38,7 @@ public class UpdateFornecedorServlet extends HttpServlet{
             String id = request.getParameter("idUpdate");
             Fornecedor fornecedor = FornecedorService.exibirFornecedorParaUpdate(id);
 
-            if (Fornecedor == null){
+            if (fornecedor == null || fornecedor.getId() == REGISTRO_NAO_ENCONTRADO.getCodigo()){
                 session.setAttribute("erroUpdate", "Um erro inesperado aconteceu, tente novamente");
                 response.sendRedirect(request.getContextPath()+"/crudFornecedor");
             } else {
@@ -66,12 +68,12 @@ public class UpdateFornecedorServlet extends HttpServlet{
 
             String idUpdate = request.getParameter("idUpdate");
             String idUsuarioUpdate = request.getParameter("idUsuarioUpdate");
-            String tipoUsuarioUpdate = request.getParameter("tipoUsuarioUpdate");
             String tipoFornecedorUpdate = request.getParameter("tipoFornecedorUpdate");
             String cnpjUpdate = request.getParameter("cnpjUpdate");
             String razaoSocialUpdate = request.getParameter("razaoSocialUpdate");
 
-            ArrayList<GenericExceptionEnum> erros = FornecedorService.realizarUpdate(idUpdate, tipoUsuarioUpdate, idUsuarioUpdate, tipoFornecedorUpdate, cnpjUpdate, razaoSocialUpdate);
+            FornecedorDadosDTO fornecedorDadosDto = new FornecedorDadosDTO(idUpdate, idUsuarioUpdate, tipoFornecedorUpdate, cnpjUpdate, razaoSocialUpdate);
+            List<GenericExceptionEnum> erros = FornecedorService.realizarUpdate(fornecedorDadosDto);
 
             if(!erros.isEmpty()){
                 session.setAttribute("errosUpdate", erros);
@@ -89,7 +91,7 @@ public class UpdateFornecedorServlet extends HttpServlet{
         } catch (Exception e) {
             HttpSession session = request.getSession();
 
-            ArrayList<GenericExceptionEnum> erros = new ArrayList<>();
+            List<GenericExceptionEnum> erros = new ArrayList<>();
             erros.add(ERRO_GENERICO);
 
             session.setAttribute("errosUpdate", erros);

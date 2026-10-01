@@ -1,6 +1,11 @@
 package servlet.fornecedor;
 
-import exception.GenericExceptionEnum;
+import static exception.ErrosGerais.ERRO_GENERICO;
+
+import java.util.Enumeration;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,16 +14,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import service.FornecedorService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import service.fornecedor.FornecedorDadosDTO;
+import service.fornecedor.FornecedorService;
+import exception.GenericExceptionEnum;
 
 @WebServlet("/crudFornecedor-insert")
-public class InsertFornecedorServlet extends HttpServlet {
+public final class InsertFornecedorServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,12 +40,12 @@ public class InsertFornecedorServlet extends HttpServlet {
             }
 
             String idUsuario = request.getParameter("idUsuarioInsert");
-            String tipoUsuario = request.getParameter("tipoUsuarioInsert");
             String tipoFornecedor = request.getParameter("tipoFornecedorInsert");
             String cnpj = request.getParameter("cnpjInsert");
             String razaoSocial = request.getParameter("razaoSocialInsert");
 
-            ArrayList<GenericExceptionEnum> mensagens = FornecedorService.realizarInsert(tipoFornecedor, idUsuario, cnpj, tipoUsuario, razaoSocial);
+            FornecedorDadosDTO fornecedorDadosDto = new FornecedorDadosDTO(null, idUsuario, tipoFornecedor, cnpj, razaoSocial);
+            List<GenericExceptionEnum> mensagens = FornecedorService.realizarInsert(fornecedorDadosDto);
 
             if(!mensagens.isEmpty()){
                 session.setAttribute("mensagensInsert", mensagens);
@@ -70,7 +71,7 @@ public class InsertFornecedorServlet extends HttpServlet {
                 session.removeAttribute(attributes.nextElement());
             }
 
-            ArrayList<GenericExceptionEnum> mensagens = new ArrayList<>();
+            List<GenericExceptionEnum> mensagens = new ArrayList<>();
             mensagens.add(ERRO_GENERICO);
 
             session.setAttribute("mensagensInsert", mensagens);
