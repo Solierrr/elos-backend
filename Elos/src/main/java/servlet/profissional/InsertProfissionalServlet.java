@@ -50,6 +50,7 @@ public final class InsertProfissionalServlet extends HttpServlet {
             if(!mensagens.isEmpty()){
                 session.setAttribute("mensagensInsert", mensagens);
                 session.setAttribute("idUsuarioInsert", idUsuario);
+                session.setAttribute("tipoUsuarioInsert", tipoUsuario);
                 session.setAttribute("profissaoInsert", profissao);
                 session.setAttribute("cpfInsert", cpf);
                 session.setAttribute("idFornecedorInsert", idFornecedor);

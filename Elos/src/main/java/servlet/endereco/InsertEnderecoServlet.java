@@ -1,11 +1,6 @@
-package servlet.fornecedor;
+package servlet.endereco;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
-
-import java.util.Enumeration;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import exception.GenericExceptionEnum;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,17 +9,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import service.fornecedor.FornecedorDadosDTO;
-import service.fornecedor.FornecedorService;
-import exception.GenericExceptionEnum;
+import service.EnderecoService;
 
-@WebServlet("/crudFornecedor-insert")
-public final class InsertFornecedorServlet extends HttpServlet {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+
+import static exception.ErrosGerais.ERRO_GENERICO;
+
+@WebServlet("/crudEndereco-insert")
+public class InsertEnderecoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath()+"/crudFornecedor");
+        response.sendRedirect(request.getContextPath()+"/crudEndereco");
     }
 
     @Override
@@ -40,27 +39,34 @@ public final class InsertFornecedorServlet extends HttpServlet {
             }
 
             String idUsuario = request.getParameter("idUsuarioInsert");
-            String tipoFornecedor = request.getParameter("tipoFornecedorInsert");
-            String cnpj = request.getParameter("cnpjInsert");
-            String razaoSocial = request.getParameter("razaoSocialInsert");
+            String estado = request.getParameter("estadoInsert");
+            String cidade = request.getParameter("cidadeInsert");
+            String bairro = request.getParameter("bairroInsert");
+            String cep = request.getParameter("cepInsert");
+            String logradouro = request.getParameter("logradouroInsert");
+            String numero = request.getParameter("numeroInsert");
+            String complemento = request.getParameter("complementoInsert");
 
-            FornecedorDadosDTO fornecedorDadosDto = new FornecedorDadosDTO(null, idUsuario, tipoFornecedor, cnpj, razaoSocial);
-            List<GenericExceptionEnum> mensagens = FornecedorService.realizarInsert(fornecedorDadosDto);
+            ArrayList<GenericExceptionEnum> mensagens = EmpresaDemandanteService.realizarInsert(idUsuario, estado, cidade, bairro, cep, logradouro, numero, complemento);
 
             if(!mensagens.isEmpty()){
                 session.setAttribute("mensagensInsert", mensagens);
-                session.setAttribute("tipoUsuarioInsert", tipoUsuario);
-                session.setAttribute("tipoFornecedorInsert", tipoFornecedor);
-                session.setAttribute("cnpjInsert", cnpj);
-                session.setAttribute("razaoSocialInsert", razaoSocial);
+                session.setAttribute("estadoInsert", estado);
+                session.setAttribute("idUsuarioInsert", idUsuario);
+                session.setAttribute("cidadeInsert", cidade);
+                session.setAttribute("bairroInsert", bairro);
+                session.setAttribute("cepInsert", cep);
+                session.setAttribute("logradouroInsert", logradouro);
+                session.setAttribute("numeroInsert", numero);
+                session.setAttribute("complementoInsert", complemento);
 
                 //Atributo usado no javascript para abrir o pop-up
                 session.setAttribute("abrirInsert", true);
 
-                response.sendRedirect(request.getContextPath()+"/crudFornecedor");
+                response.sendRedirect(request.getContextPath()+"/crudEndereco");
             } else{
                 session.setAttribute("mensagemInsert", "O cadastro foi efetuado com sucesso");
-                response.sendRedirect(request.getContextPath() + "/crudFornecedor");
+                response.sendRedirect(request.getContextPath() + "/crudEndereco");
             }
         } catch (Exception exception){
             HttpSession session = request.getSession();
@@ -71,11 +77,11 @@ public final class InsertFornecedorServlet extends HttpServlet {
                 session.removeAttribute(attributes.nextElement());
             }
 
-            List<GenericExceptionEnum> mensagens = new ArrayList<>();
+            ArrayList<GenericExceptionEnum> mensagens = new ArrayList<>();
             mensagens.add(ERRO_GENERICO);
 
             session.setAttribute("mensagensInsert", mensagens);
-            response.sendRedirect(request.getContextPath() + "/crudFornecedor");
+            response.sendRedirect(request.getContextPath() + "/crudEndereco");
         }
     }
 }

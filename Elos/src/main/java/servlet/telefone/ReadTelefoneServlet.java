@@ -1,4 +1,4 @@
-package servlet.empresaDemandante;
+package servlet.telefone;
 
 import exception.GenericExceptionEnum;
 
@@ -10,9 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import model.EmpresaDemandante;
-import service.empresaDemandante.EmpresaDemandanteDadosDePesquisaDTO;
-import service.empresaDemandante.EmpresaDemandanteService;
+import model.Telefone;
+import service.TelefoneService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,8 +20,8 @@ import java.util.List;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
-@WebServlet("/crudEmpresaDemandante")
-public final class ReadEmpresaDemandanteServlet extends HttpServlet {
+@WebServlet("/crudTelefone")
+public class ReadTelefoneServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,32 +40,31 @@ public final class ReadEmpresaDemandanteServlet extends HttpServlet {
 
             String clausulaWhereNome = request.getParameter("clausulaWhereNome");
             String clausulaWhereValor = request.getParameter("clausulaWhereValor");
+            String clausulaWhereValor2 = request.getParameter("clausulaWhereValor2");
             String orderBy = request.getParameter("orderBy");
             String ordenacao = request.getParameter("ordenacao");
 
-            List<GenericExceptionEnum> errosRead = new ArrayList<>();
-            List<EmpresaDemandante> empresaDemandanteRead = new ArrayList<>();
+            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
+            List<Telefone> telefoneRead = new ArrayList<>();
 
-            EmpresaDemandanteDadosDePesquisaDTO empresaDemandanteDadosDePesquisaDTO = new EmpresaDemandanteDadosDePesquisaDTO(clausulaWhereNome, clausulaWhereValor, orderBy, ordenacao);
-            empresaDemandanteRead.addAll(EmpresaDemandanteService.realizarSelect(empresaDemandanteDadosDePesquisaDTO, errosRead));
+            telefoneRead.addAll(TelefoneService.realizarSelect(clausulaWhereNome, clausulaWhereValor, clausulaWhereValor2, orderBy, ordenacao, errosRead));
 
             request.setAttribute("errosRead", errosRead);
-            request.setAttribute("usuariosRead", empresaDemandanteRead);
+            request.setAttribute("telefoneRead", telefoneRead);
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/empresaDemandante/crudEmpresaDemandante.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/telefone/crudTelefone.jsp");
             dispatcher.forward(request, response);
 
         } catch (Exception e){
-            List<GenericExceptionEnum> errosRead = new ArrayList<>();
+            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
             errosRead.add(ERRO_GENERICO);
 
-            EmpresaDemandanteDadosDePesquisaDTO dadosDePesquisaDTO = new EmpresaDemandanteDadosDePesquisaDTO(null, null, null, null);
-            List<EmpresaDemandante> empresaDemandanteRead = EmpresaDemandanteService.realizarSelect(dadosDePesquisaDTO, errosRead);
+            List<Telefone> telefoneRead = TelefoneService.realizarSelect(null, null, null, null, null, errosRead);
 
             request.setAttribute("errosRead", errosRead);
-            request.setAttribute("empresaDemandanteRead", empresaDemandanteRead);
+            request.setAttribute("telefoneRead", telefoneRead);
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/empresaDemandante/crudEmpresaDemandante.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/telefone/crudTelefone.jsp");
             dispatcher.forward(request, response);
         }
     }

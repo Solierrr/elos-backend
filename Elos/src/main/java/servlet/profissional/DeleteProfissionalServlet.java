@@ -1,6 +1,7 @@
 package servlet.profissional;
 
 import exception.GenericExceptionEnum;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -40,7 +41,7 @@ public final class DeleteProfissionalServlet extends HttpServlet {
 
             GenericExceptionEnum erro = ProfissionalService.realizarDelete(id);
 
-            if(erro != null && erro != SUCESSO){
+            if(erro != null){
                 session.setAttribute("mensagemDelete", erro.exibirMensagem());
                 response.sendRedirect(request.getContextPath() + "/crudProfissional");
             } else {

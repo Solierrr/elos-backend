@@ -1,6 +1,7 @@
-package servlet.empresaDemandante;
+package servlet.telefone;
 
 import exception.GenericExceptionEnum;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -8,20 +9,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import service.empresaDemandante.EmpresaDemandanteService;
+import service.TelefoneService;
 
 import java.io.IOException;
 import java.util.Enumeration;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 
-@WebServlet("/crudEmpresaDemandante-delete")
-public class DeleteEmpresaDemandanteServlet extends HttpServlet {
+@WebServlet("/crudTelefone-delete")
+public class DeleteTelefoneServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath() + "/crudEmpresaDemandante");
+        response.sendRedirect(request.getContextPath() + "/crudTelefone");
     }
 
     @Override
@@ -38,14 +39,14 @@ public class DeleteEmpresaDemandanteServlet extends HttpServlet {
 
             String id = request.getParameter("idDelete");
 
-            GenericExceptionEnum erro = EmpresaDemandanteService.realizarDelete(id);
+            GenericExceptionEnum erro = TelefoneService.realizarDelete(id);
 
             if(erro != null){
                 session.setAttribute("mensagemDelete", erro.exibirMensagem());
-                response.sendRedirect(request.getContextPath() + "/crudEmpresaDemandante");
+                response.sendRedirect(request.getContextPath() + "/crudTelefone");
             } else {
                 session.setAttribute("mensagemDelete", "O usuário foi deletado com sucesso!");
-                response.sendRedirect(request.getContextPath() + "/crudEmpresaDemandante");
+                response.sendRedirect(request.getContextPath() + "/crudTelefone");
             }
         } catch (Exception e){
 
@@ -58,7 +59,7 @@ public class DeleteEmpresaDemandanteServlet extends HttpServlet {
             }
 
             session.setAttribute("mensagemDelete", ERRO_GENERICO.exibirMensagem());
-            response.sendRedirect(request.getContextPath() + "/crudEmpresaDemandante");
+            response.sendRedirect(request.getContextPath() + "/crudTelefone");
         }
     }
 }
