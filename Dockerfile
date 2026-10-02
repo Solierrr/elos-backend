@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk AS builder
+FROM eclipse-temurin:25-jdk AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 
-FROM tomcat:11.0-jdk25
+FROM tomcat:11.0-jdk25-temurin-jammy
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
