@@ -34,6 +34,7 @@ public final class LoginServlet extends HttpServlet {
         Admin admin = loginService.realizarLogin(email, senha, userAgent, ip);
 
         System.out.println(userAgent);
+        System.out.println(ip);
 
         if(admin == null){
             System.out.println("deu erro");
