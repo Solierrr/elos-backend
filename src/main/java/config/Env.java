@@ -5,7 +5,9 @@ import java.util.Base64;
 
 public abstract class Env {
 
-    private static final Dotenv DOTENV = Dotenv.load();
+    private static final Dotenv DOTENV = Dotenv.configure()
+            .ignoreIfMissing()
+            .load();
 
     private static final String DB_URL     = obterEnvGenerico("DB_URL");
     private static final String DB_USUARIO = obterEnvGenerico("DB_USUARIO");
