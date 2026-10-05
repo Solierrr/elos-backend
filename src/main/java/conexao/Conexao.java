@@ -12,23 +12,31 @@ public class Conexao extends Env {
 
     private static HikariDataSource criarDataSource(){
 
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName("org.postgresql.Driver");
-        config.setJdbcUrl(getDbUrl());
-        config.setUsername(getDbUsuario());
-        config.setPassword(getDbSenha());
-        config.setConnectionTimeout(15000L);
-        config.setIdleTimeout(300000L);
-        config.setMaxLifetime(600000L);
-        config.setMinimumIdle(3);
-        config.setMaximumPoolSize(4);
-        config.setPoolName("elos-pool");
+        try {
+            HikariConfig config = new HikariConfig();
+            config.setDriverClassName("org.postgresql.Driver");
+            config.setJdbcUrl(getDbUrl());
+            config.setUsername(getDbUsuario());
+            config.setPassword(getDbSenha());
+            config.setConnectionTimeout(15000L);
+            config.setIdleTimeout(300000L);
+            config.setMaxLifetime(600000L);
+            config.setMinimumIdle(3);
+            config.setMaximumPoolSize(4);
+            config.setPoolName("elos-pool");
 
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
-        return new HikariDataSource(config);
+            return new HikariDataSource(config);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            Throwable c = e;
+            while (c.getCause() != null) c = c.getCause();
+            System.out.println("CAUSA RAIZ: " + c);
+            return null;
+        }
     }
 
     public static Connection getConnection() throws SQLException {

@@ -17,7 +17,15 @@ public enum ErrosGeraisDados implements GenericExceptionEnum{
     CNPJ_INVALIDO(11, "O CNPJ inserido é inválido", "cpnj"),
     RAZAO_SOCIAL_VAZIA(12, "Nenhuma razão social foi inserida", "razao-social"),
     RAZAO_SOCIAL_TAMANHO_INVALIDO(13, "A razão social inserida excede o tamanho limite de 150 caracteres", "razao-social"),
-    RAZAO_SOCIAL_INVALIDA(14, "A razão social inserida é inválida", "razao-social");
+    RAZAO_SOCIAL_INVALIDA(14, "A razão social inserida é inválida", "razao-social"),
+    SENHA_VAZIA(15, "Nenhuma senha foi inserida", "senha"),
+    SENHA_MENOR_QUE_OITO(16, "Insira uma senha com ao menos 8 caracteres", "senha"),
+    SENHA_TAMANHO_INVALIDO(17, "A senha inserida possui um tamanho maior que o permitido, insira uma senha com até 60 caracteres", "senha"),
+    SENHA_FRACA(18, "A senha deve possuir uma letra maiúscula, uma minuscula, um número e um caractere especial", "senha"),
+    EMAIL_INVALIDO(19, "O email inserido é inválido", "email"),
+    EMAIL_VAZIO(20, "Nenhum email foi inserido", "email"),
+    EMAIL_TAMANHO_INVALIDO(21, "O email inserido possui um tamanho maior que o permitido, insira um email com até 256 caracteres", "email"),
+    ;
 
     private final int codigo;
     private final String mensagem;

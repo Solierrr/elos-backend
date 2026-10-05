@@ -1,0 +1,170 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--orange);
+    background: linear-gradient(180deg, var(--orange) 50%, rgba(255, 255, 255, 0.75) 50%);
+    position: relative;
+}
+
+header {
+    margin-left: 3.25rem;
+    margin-top: 3.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.containerP {
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    margin: 0;
+    width: 100%;
+    height: 100dvh;
+    position: relative;
+}
+
+.container {
+    background: var(--white);
+    width: 40%;
+    height: 75%;
+    max-width: 600px;
+    min-width: 400px;
+    min-height: 400px;
+    min-height: auto;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    border-style: solid;
+    border-color: var(--gray);
+    border-width: 0.125rem;
+    border-radius: 10px;
+    padding-top: 4rem;
+    position: fixed;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    margin: 0;
+}
+
+.tela-login{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    border-bottom: 1rem;
+}
+
+input {
+    background-color: rgba(236, 236, 236, 0.6);
+    border-width: 0.125rem;
+    border-color: var(--gray);
+    width: 100%;
+    max-width: 31.875rem;
+    height: 4.25rem;
+    border-radius: 10px;
+    border-style: solid;
+    outline: none;
+    padding-left: 1.625rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3.125rem ;
+}
+
+::placeholder {
+    color: rgba(43, 43, 43, 0.40);
+    font-weight: 500;
+    font-size: 1.125rem;
+}
+
+.text-input {
+    color: rgba(43, 43, 43, 0.70);
+    font-weight: 500;
+    font-size: 1.125rem;
+}
+
+p.subTitle {
+    color: rgba(43, 43, 43, 0.40);
+    padding-bottom: 2.0625rem;
+}
+
+p.title {
+    font-size: 1.875rem;
+    color: var(--black);
+    padding-bottom: 2.8125rem;
+}
+
+p.little-title {
+    font-size: 1.125rem;
+    color: var(--orange);
+}
+
+button {
+    background-color: var(--orange);
+    color: var(--white);
+    width: 13.125rem;
+    height: 3.25rem;
+    gap: 0.625rem;
+    border-radius: 10px;
+    border-style: none;
+    justify-content: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.direction {
+    display: flex;
+    flex-direction: row-reverse;
+    cursor: pointer;
+}
+
+.button-text-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    padding-top: 7%;
+    gap: 0.625rem;
+}
+
+.color {
+    color: var(--black);
+}
+
+.link-cadastro {
+    color: var(--orange);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.span-erro{
+    /*color: #DC3545;*/
+    color: #D9021E;
+}
+
+#informacoes-caixa-senha{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}

@@ -1,11 +1,12 @@
 package model;
 
 public enum FuncoesAdmin {
-    SUPERADMIN("WINDOWS"),
-    REVISOR("MAC"),
-    GERENTE("LINUX"),
-    ANALISTA("ANDROID"),
-    MODELADOR("IOS");
+
+    SUPERADMIN("SUPERADMIN"),
+    REVISOR("REVISOR"),
+    GERENTE("GERENTE"),
+    ANALISTA("ANALISTA"),
+    MODELADOR("MODELADOR");
 
     private final String funcao;
 

@@ -1,13 +1,13 @@
 package model;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class LogAcessosAdmin {
 
     //Atributos
     private final Long id;
     private final Long idAdmin;
-    private LocalDate dataAcesso;
+    private OffsetDateTime dataAcesso;
     private Boolean sucesso;
     private String enderecoIp;
     private String motivoFalha;
@@ -15,7 +15,7 @@ public class LogAcessosAdmin {
     private SistemasOperacionaisAdmin sistemaOperacional;
 
     //Construtor
-    public LogAcessosAdmin(Long id, Long idAdmin, LocalDate dataAcesso, Boolean sucesso, String enderecoIp, String motivoFalha, NavegadoresAdmin navegador, SistemasOperacionaisAdmin sistemaOperacional) {
+    public LogAcessosAdmin(Long id, Long idAdmin, OffsetDateTime dataAcesso, Boolean sucesso, String enderecoIp, String motivoFalha, NavegadoresAdmin navegador, SistemasOperacionaisAdmin sistemaOperacional) {
         this.id = id;
         this.idAdmin = idAdmin;
         this.dataAcesso = dataAcesso;
@@ -35,11 +35,11 @@ public class LogAcessosAdmin {
         return idAdmin;
     }
 
-    public LocalDate getDataAcesso() {
+    public OffsetDateTime getDataAcesso() {
         return dataAcesso;
     }
 
-    public void setDataAcesso(LocalDate dataAcesso) {
+    public void setDataAcesso(OffsetDateTime dataAcesso) {
         this.dataAcesso = dataAcesso;
     }
 

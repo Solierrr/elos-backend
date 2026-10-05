@@ -3,25 +3,25 @@ package model;
 public class Admin {
 
     //Atributos
-    private final long id;
+    private final Long id;
     private String email;
     private String nome;
     private String senha;
     private FuncoesAdmin funcao;
-    private boolean emAtividade;
+    private Boolean emAtividade;
 
     //Construtor
-    public Admin(long id, String email, String senha, String nome, FuncoesAdmin funcao, boolean emAtividade) {
+    public Admin(Long id, String email, String nome, String senha, FuncoesAdmin funcao, Boolean emAtividade) {
         this.id = id;
         this.email = email;
-        this.senha = senha;
         this.nome = nome;
+        this.senha = senha;
         this.funcao = funcao;
         this.emAtividade = emAtividade;
     }
 
     //Getters e Setters
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -57,11 +57,11 @@ public class Admin {
         this.funcao = funcao;
     }
 
-    public boolean isEmAtividade() {
+    public Boolean isEmAtividade() {
         return emAtividade;
     }
 
-    public void setEmAtividade(boolean emAtividade) {
+    public void setEmAtividade(Boolean emAtividade) {
         this.emAtividade = emAtividade;
     }
 

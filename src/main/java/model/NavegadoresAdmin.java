@@ -1,12 +1,13 @@
 package model;
 
 public enum NavegadoresAdmin {
-    CHROME("WINDOWS"),
-    FIREFOX("MAC"),
-    EDGE("LINUX"),
-    EXPLORER("ANDROID"),
-    OPERA("IOS"),
-    SAFARI("SAFARI");
+    CHROME("CHROME"),
+    FIREFOX("FIREFOX"),
+    EDGE("EDGE"),
+    EXPLORER("EXPLORER"),
+    OPERA("OPERA"),
+    SAFARI("SAFARI"),
+    NAVEGADOR_INVALIDO("NAVEGADOR_INVALIDO");
 
     private final String navegador;
 
@@ -18,13 +19,18 @@ public enum NavegadoresAdmin {
         return navegador;
     }
 
-    public static NavegadoresAdmin descobrirNavegadorAdmin(String navegadorRecebido){
-        for(NavegadoresAdmin navegador : NavegadoresAdmin.values()){
-            if(navegador.getNavegador().equalsIgnoreCase(navegadorRecebido)){
-                return navegador;
-            }
-        }
-        return null;
+    public static NavegadoresAdmin descobrirNavegadorAdmin(String userAgent) throws IllegalArgumentException{
+        if (userAgent == null || userAgent.isBlank())
+            return NAVEGADOR_INVALIDO;
+
+        if (userAgent.contains("OPR/") || userAgent.contains("Opera")) return OPERA;
+        if (userAgent.contains("Edg/") || userAgent.contains("Edge/")) return EDGE;
+        if (userAgent.contains("MSIE") || userAgent.contains("Trident/")) return EXPLORER;
+        if (userAgent.contains("Firefox/")) return FIREFOX;
+        if (userAgent.contains("Chrome/")) return CHROME;
+        if (userAgent.contains("Safari/")) return SAFARI;
+
+        return NAVEGADOR_INVALIDO;
     }
 
 }

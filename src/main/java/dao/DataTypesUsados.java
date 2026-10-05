@@ -83,6 +83,36 @@ public enum DataTypesUsados {
                         "DataType fornecido incompatível com o valor inserido");
             }
         }
+    },
+    JSON(Types.OTHER){
+        @Override
+        public void realizarSet(PreparedStatement preparedStatement, int index, Object object) throws SQLException{
+            if (object == null) {
+                preparedStatement.setNull(index, Types.OTHER);
+            } else if (object instanceof com.google.gson.JsonElement) {
+                preparedStatement.setObject(index, object.toString(), Types.OTHER);
+            } else if (object instanceof String) {
+                preparedStatement.setObject(index, (String) object, Types.OTHER);
+            } else {
+                throw new IllegalArgumentException(
+                        "DataType fornecido incompatível com o valor inserido");
+            }
+        }
+    },
+    INET(-1000){
+        @Override
+        public void realizarSet(PreparedStatement preparedStatement, int index, Object object) throws SQLException{
+            if (object == null) {
+                preparedStatement.setNull(index, Types.OTHER);
+            } else if (object instanceof java.net.InetAddress) {
+                preparedStatement.setObject(index, ((java.net.InetAddress) object).getHostAddress(), Types.OTHER);
+            } else if (object instanceof String) {
+                preparedStatement.setObject(index, (String) object, Types.OTHER);
+            } else {
+                throw new IllegalArgumentException(
+                        "DataType fornecido incompatível com o valor inserido");
+            }
+        }
     };
 
     private final int dataType;

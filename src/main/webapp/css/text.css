@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+
+*{
+    font-family: 'Lexend Deca';
+    letter-spacing: 0;
+    word-spacing: 0;
+}
+
+.title{
+    font-size: 5rem;
+    font-weight: 600;
+}
+
+.subTitle{
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+.little-title{
+    font-size: 1.4rem;
+    font-weight: 400;
+}

@@ -1,23 +1,22 @@
 package model;
 
-import com.google.gson.Gson;
-import java.time.LocalDate;
+import com.google.gson.JsonObject;
+import java.time.OffsetDateTime;
 
 public class HistoricoAlteracoesAdmin {
 
     //Atributos
     private final Long id;
     private final Long idAdmin;
-    private Long idRegistro;
+    private final Long idRegistro;
     private String tabelaModificada;
     private String acao;
-    private final Gson dadosAntigos; //Vira JSON
-    private final Gson dadosAtualizados; //Vira JSON
-    private LocalDate dataAlteracao;
+    private final JsonObject dadosAntigos;
+    private final JsonObject dadosAtualizados;
+    private OffsetDateTime dataAlteracao;
 
     //Construtor
-
-    public HistoricoAlteracoesAdmin(Long id, Long idAdmin, Long idRegistro, String tabelaModificada, String acao, Gson dadosAntigos, Gson dadosAtualizados, LocalDate dataAlteracao) {
+    public HistoricoAlteracoesAdmin(Long id, Long idAdmin, Long idRegistro, String tabelaModificada, String acao, JsonObject dadosAntigos, JsonObject dadosAtualizados, OffsetDateTime dataAlteracao) {
         this.id = id;
         this.idAdmin = idAdmin;
         this.idRegistro = idRegistro;
@@ -41,10 +40,6 @@ public class HistoricoAlteracoesAdmin {
         return idRegistro;
     }
 
-    public void setIdRegistro(Long idRegistro) {
-        this.idRegistro = idRegistro;
-    }
-
     public String getTabelaModificada() {
         return tabelaModificada;
     }
@@ -61,19 +56,19 @@ public class HistoricoAlteracoesAdmin {
         this.acao = acao;
     }
 
-    public Gson getDadosAntigos() {
+    public JsonObject getDadosAntigos() {
         return dadosAntigos;
     }
 
-    public Gson getDadosAtualizados() {
+    public JsonObject getDadosAtualizados() {
         return dadosAtualizados;
     }
 
-    public LocalDate getDataAlteracao() {
+    public OffsetDateTime getDataAlteracao() {
         return dataAlteracao;
     }
 
-    public void setDataAlteracao(LocalDate dataAlteracao) {
+    public void setDataAlteracao(OffsetDateTime dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
     }
 

@@ -18,99 +18,57 @@ import java.util.ArrayList;
 import java.util.List;
 import model.EmpresaDemandante;
 
-public class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
+public final class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
 
     private static final String TABELA = "empresa_demandante";
 
     @Override
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica) {
-        try (Connection connection = Conexao.getConnection()) {
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
+    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
 
-            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
+        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
-        } catch (SQLException sqlException) {
-            if (foiCausadoPorCnpjCadastrado(sqlException)) return CNPJ_INVALIDO;
-
-            if (foiCausadoPorUsuarioCadastrado(sqlException)) return ID_USUARIO_INVALIDO;
-
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState())
-                    ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD
-                    : ERRO_GENERICO_NO_BD;
-        }
+        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
     }
 
     @Override
-    public List<EmpresaDemandante> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica) {
+    public List<EmpresaDemandante> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
         List<EmpresaDemandante> empresaDemandantes = new ArrayList<>();
 
-        try (Connection connection = Conexao.getConnection()) {
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
 
-            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
+        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                empresaDemandantes.add(
-                        new EmpresaDemandante(
-                                resultSet.getLong("id"),
-                                resultSet.getLong("id_usuario"),
-                                resultSet.getString("cnpj"),
-                                resultSet.getString("razao_social"),
-                                resultSet.getBoolean("eh_mandante")));
-            }
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            empresaDemandantes.add(
+                    new EmpresaDemandante(
+                            resultSet.getLong("id"),
+                            resultSet.getLong("id_usuario"),
+                            resultSet.getString("cnpj"),
+                            resultSet.getString("razao_social"),
+                            resultSet.getBoolean("eh_mandante")));
         }
         return empresaDemandantes;
     }
 
     @Override
-    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica) {
-        try (Connection connection = Conexao.getConnection()) {
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
+    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)  throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
+        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
-        } catch (SQLException sqlException) {
-            if (foiCausadoPorCnpjCadastrado(sqlException)) return CNPJ_INVALIDO;
-
-            if (foiCausadoPorUsuarioCadastrado(sqlException)) return ID_USUARIO_INVALIDO;
-
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState())
-                    ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD
-                    : ERRO_GENERICO_NO_BD;
-        }
+        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
     }
 
     @Override
-    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica) {
-        try (Connection connection = Conexao.getConnection()) {
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
+    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
-            criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
+        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
-        } catch (SQLException sqlException) {
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState())
-                    ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD
-                    : ERRO_GENERICO_NO_BD;
-        }
+        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
     }
 
-    // Métodos auxiliares que são usados para ver se o erro foi causado por um valor unique jácadastrado,
-    // isso foi usado para não realizar consultas desnecessárias para algo que o banco conseguiria barrar
-    private boolean foiCausadoPorCnpjCadastrado(SQLException sqlException) {
-        return "empresa_demandante_cnpj_key".contains(sqlException.getMessage());
-    }
-
-    private boolean foiCausadoPorUsuarioCadastrado(SQLException sqlException) {
-        return "empresa_demandante_id_usuario_key".contains(sqlException.getMessage());
-    }
 }
