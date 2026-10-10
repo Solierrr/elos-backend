@@ -25,7 +25,7 @@ public final class LoginServlet extends HttpServlet {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
 
-        HttpSession sessionAtual = request.getSession(false);
+        HttpSession sessionAtual = request.getSession(true);
         sessionAtual.invalidate();
         request.getRequestDispatcher("/WEB-INF/view/login/login.jsp").forward(request, response);
     }
