@@ -9,9 +9,10 @@ public class Profissional {
     private final String cpfHmac;
     private final byte[] cpfAes;
     private Long idFornecedor;
+    private String documentoContrato;
 
     public Profissional(Long id, Long idUsuario, TiposUsuario tipoUsuario, String profissao,
-                        String cpfHmac, byte[] cpfAes, Long idFornecedor) {
+                        String cpfHmac, byte[] cpfAes, Long idFornecedor, String documentoContrato) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.tipoUsuario = tipoUsuario;
@@ -19,6 +20,7 @@ public class Profissional {
         this.cpfHmac = cpfHmac;
         this.cpfAes = cpfAes;
         this.idFornecedor = idFornecedor;
+        this.documentoContrato = documentoContrato;
     }
 
     public Long getId() {
@@ -55,6 +57,14 @@ public class Profissional {
 
     public void setIdFornecedor(Long idFornecedor) {
         this.idFornecedor = idFornecedor;
+    }
+
+    public String getDocumentoContrato() {
+        return documentoContrato;
+    }
+
+    public void setDocumentoContrato(String documentoContrato) {
+        this.documentoContrato = documentoContrato;
     }
 
     @Override

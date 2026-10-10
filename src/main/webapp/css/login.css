@@ -42,7 +42,7 @@ header {
     padding-left: 4rem;
     padding-right: 4rem;
     border-style: solid;
-    border-color: var(--gray);
+    border-color: var(--grey);
     border-width: 0.125rem;
     border-radius: 10px;
     padding-top: 4rem;
@@ -71,7 +71,7 @@ form {
 input {
     background-color: rgba(236, 236, 236, 0.6);
     border-width: 0.125rem;
-    border-color: var(--gray);
+    border-color: var(--grey);
     width: 100%;
     max-width: 31.875rem;
     height: 4.25rem;
@@ -80,6 +80,27 @@ input {
     outline: none;
     padding-left: 1.625rem;
 }
+
+#conteiner-senha{
+    display: flex;
+    align-items: center
+}
+
+#input-senha{
+    position: relative;
+}
+
+#olho-senha{
+    position: absolute;
+    left: calc(79%);
+
+    cursor: pointer;
+}
+
+.caixa-erro{
+    border-color: var(--red) !important;
+}
+
 
 .form-group {
     display: flex;
@@ -156,8 +177,8 @@ button {
 }
 
 .span-erro{
-    /*color: #DC3545;*/
-    color: #D9021E;
+    color: var(--red);
+    padding-left: 1rem !important;
 }
 
 #informacoes-caixa-senha{
@@ -165,6 +186,7 @@ button {
     flex-direction: row;
     justify-content: space-between;
     padding-top: 0.5rem;
-    padding-left: 1rem;
+
     padding-right: 1rem;
 }
+

@@ -1,6 +1,7 @@
 package service.logAcessosAdmin;
 
-import static exception.ErrosDadosAdmin.SENHA_INVALIDA;
+import static exception.ErrosGerais.ADMIN_INATIVO;
+import static exception.ErrosGerais.SENHA_INVALIDA;
 import static exception.ErrosLogAcessosAdmin.NAVEGADOR_INVALIDO;
 import static exception.ErrosLogAcessosAdmin.SISTEMA_OPERACIONAL_INVALIDO;
 import static service.logAcessosAdmin.CamposLogAcessosAdmin.ENDERECO_IP;
@@ -42,6 +43,13 @@ public final class LogAcessosAdminService {
 
         StringBuilder mensagemErro = new StringBuilder();
 
+        if(idAdmin == null){
+            return;
+        }
+
+        criarInstrucaoDinamica.setCampo(ID_ADMIN.getCampoLogAcessosAdmin(),idAdmin, Types.BIGINT);
+
+
         if(erros.contains(NAVEGADOR_INVALIDO)) {
             criarInstrucaoDinamica.setCampo(NAVEGADOR.getCampoLogAcessosAdmin(), NavegadoresAdmin.NAVEGADOR_INVALIDO.getNavegador(), Types.VARCHAR);
             mensagemErro.append("Navegador inválido");
@@ -64,6 +72,14 @@ public final class LogAcessosAdminService {
                     Types.VARCHAR);
         }
 
+        if(erros.contains(ADMIN_INATIVO)){
+            if(mensagemErro.isEmpty()){
+                mensagemErro.append("A conta do administrator está desativada");
+            }else{
+                mensagemErro.append("e a conta do administrator está desativada");
+            }
+        }
+
         if(erros.contains(SENHA_INVALIDA)){
             if(mensagemErro.isEmpty()){
                 mensagemErro.append("Senha inválida");
@@ -72,20 +88,7 @@ public final class LogAcessosAdminService {
             }
         }
 
-        if(idAdmin == null){
-            criarInstrucaoDinamica.setCampo(ID.getCampoLogAcessosAdmin(),
-                    idAdmin,
-                    Types.BIGINT);
-            if(mensagemErro.isEmpty()){
-                mensagemErro.append("Registro do administrador não encontrado");
-            }else{
-                mensagemErro.append("e registro do administrador não encontrado");
-            }
-        }else{
-            criarInstrucaoDinamica.setCampo(ID_ADMIN.getCampoLogAcessosAdmin(),
-                    idAdmin,
-                    Types.BIGINT);
-        }
+
 
         criarInstrucaoDinamica.setCampo(ENDERECO_IP.getCampoLogAcessosAdmin(), ip, INET);
 

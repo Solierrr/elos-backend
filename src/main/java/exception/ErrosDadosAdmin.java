@@ -2,8 +2,6 @@ package exception;
 
 public enum ErrosDadosAdmin implements GenericExceptionEnum {
 
-    ADMIN_NAO_REGISTRADO(901, "Tentativa de login em um adm inexistente ", null),
-    SENHA_INVALIDA(902, "A senha inserida pelo usuário não corresponde com a registrada no banco", null)
     ;
 
     private final int codigo;

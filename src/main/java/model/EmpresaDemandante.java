@@ -4,14 +4,15 @@ public class EmpresaDemandante {
 
     private final Long id;
     private final Long idUsuario;
-    private final TiposUsuario tipoUsuario = TiposUsuario.EMPRESA_DEMANDANTE;
+    private final TiposUsuario tipoUsuario;
     private final String cnpj;
     private String razaoSocial;
     private Boolean ehMandante;
 
-    public EmpresaDemandante(Long id, Long idUsuario, String cnpj, String razaoSocial, Boolean ehMandante) {
+    public EmpresaDemandante(Long id, Long idUsuario, TiposUsuario tipoUsuario, String cnpj, String razaoSocial, Boolean ehMandante) {
         this.id = id;
         this.idUsuario = idUsuario;
+        this.tipoUsuario = tipoUsuario;
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.ehMandante = ehMandante;

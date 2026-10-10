@@ -1,6 +1,7 @@
 package service.login;
 
-import static exception.ErrosDadosAdmin.SENHA_INVALIDA;
+import static exception.ErrosGerais.ADMIN_INATIVO;
+import static exception.ErrosGerais.SENHA_INVALIDA;
 
 import conexao.Conexao;
 import dao.AcoesInstrucao;
@@ -34,16 +35,19 @@ public final class LoginService {
             Admin admin = buscarAdminPorEmail(email, connection);
             Long idAdmin;
             if(admin != null){
-                if(!senhaCerta(admin.getSenha(), senha))
+                if(!admin.isEmAtividade())
+                    erros.add(ADMIN_INATIVO);
+                else if(!senhaCerta(admin.getSenha(), senha))
                     erros.add(SENHA_INVALIDA);
                 idAdmin = admin.getId();
+                admin = new Admin(admin.getId(), admin.getEmail(), admin.getNome(), "SENHA_SECRETA", admin.getFuncao(), admin.isEmAtividade());
             }else{
                 idAdmin = null;
             }
 
             logAcessosAdminService.salvarAcessoDoAdmin(erros, userAgent, ip, idAdmin, connection);
 
-            return admin;
+            return erros.isEmpty() ? admin : null;
             //Essa escolha foi feita para que o usuário só saiba que não deu certo, garantindo que ele não saiba se foi o email ou senha
         }catch (SQLException | IllegalArgumentException exception){
             exception.printStackTrace();
@@ -55,11 +59,8 @@ public final class LoginService {
         AdminDAO dao = new AdminDAO();
         CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
 
-
         criarInstrucaoDinamica.setWhere("email", AcoesInstrucao.IGUAL, AcoesInstrucao.VAZIO, email.strip(), Types.VARCHAR);
         List<Admin> admins = dao.readAll(criarInstrucaoDinamica, connection);
-
-
 
         return !admins.isEmpty() ? admins.getFirst() : null;
     }

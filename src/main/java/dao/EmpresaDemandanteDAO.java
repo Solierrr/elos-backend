@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.EmpresaDemandante;
+import model.TiposUsuario;
 
 public final class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
 
@@ -46,6 +47,7 @@ public final class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante>
                     new EmpresaDemandante(
                             resultSet.getLong("id"),
                             resultSet.getLong("id_usuario"),
+                            TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
                             resultSet.getString("cnpj"),
                             resultSet.getString("razao_social"),
                             resultSet.getBoolean("eh_mandante")));

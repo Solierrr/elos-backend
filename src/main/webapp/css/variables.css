@@ -1,6 +1,13 @@
-:root {
+:root{
+    /* Paleta de cores */
     --orange: #F58A07;
-    --black: #2b2b2b;
-    --white: #FFFFFF;
-    --gray: #ECECEC
+    --dark-orange: #F18A07;
+    --black: #2B2B2B;
+    --white: #fff;
+    --grey: #ECECEC;
+    --beige: #FCF5ED;
+    --red: #D9021E;
+
+    /*Tipografia*/
+    --sublinhado: underline;
 }

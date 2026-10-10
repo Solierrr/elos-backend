@@ -1,14 +1,8 @@
 package dao;
 
-import static exception.ErrosDadosProfissional.CPF_INVALIDO;
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
 import static exception.ErrosGerais.SUCESSO;
-import static exception.ErrosGeraisDados.ID_USUARIO_INVALIDO;
 
-import conexao.Conexao;
-import exception.ErrosDoSQL;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,7 +43,8 @@ public final class ProfissionalDAO implements GenericDAO<Profissional> {
                     resultSet.getString("profissao"),
                     resultSet.getString("cpf_hmac"),
                     resultSet.getBytes("cpf_aes"),
-                    resultSet.getLong("id_fornecedor")
+                    resultSet.getLong("id_fornecedor"),
+                    resultSet.getString("documento_contrato")
             ));
         }
         return profissionais;
