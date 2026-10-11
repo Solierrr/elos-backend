@@ -7,18 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tela de login</title>
 
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/text.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/style.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/text.css">
     <link rel="stylesheet" type="text/css"
-          href="${pageContext.request.contextPath}/css/variables.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/login.css">
-    <link rel="icon" type="image/svg" href="${pageContext.request.contextPath}/asset/icone/LOGO.svg">
+          href="${pageContext.request.contextPath}/style/variables.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/login.css">
+    <link rel="icon" type="image/svg" href="${pageContext.request.contextPath}/assets/icone/LOGO.svg">
 
 </head>
 <body>
 <div class="containerP">
     <header>
-        <img src="${pageContext.request.contextPath}/asset/icone/Logo_com_nome.svg" alt="logo-elos">
+        <img src="${pageContext.request.contextPath}/assets/icone/Logo_com_nome.svg" alt="logo-elos">
     </header>
     <div class="container">
         <div class="tela-login">
@@ -30,17 +30,17 @@
                     <div>
                         <input class="text-input" type="email" name="email"
                                placeholder="Coloque o seu e-mail aqui" value="" autocomplete="on"
-                               required>
+                               required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
                         <span id="erro-email" class="span-erro"></span>
                     </div>
                     <div>
                         <div id="conteiner-senha">
                             <input class="text-input" id="input-senha" type="password" name="senha"
-                                   placeholder="Coloque sua senha" required>
+                                   placeholder="Coloque sua senha" required pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                             <img id="olho-senha"
-                                 src="${pageContext.request.contextPath}/asset/icone/olho-oculto.svg"
-                                 data-url-olho="${pageContext.request.contextPath}/asset/icone/olho.svg"
-                                 data-url-oculto="${pageContext.request.contextPath}/asset/icone/olho-oculto.svg"
+                                 src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
+                                 data-url-olho="${pageContext.request.contextPath}/assets/icone/olho.svg"
+                                 data-url-oculto="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
                                  alt="Mostrar senha">
                         </div>
 

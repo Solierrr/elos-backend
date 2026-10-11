@@ -86,19 +86,28 @@ input {
     align-items: center
 }
 
-#input-senha{
+#conteiner-senha {
     position: relative;
+    display: inline-block;
+    width: 100%;
 }
 
-#olho-senha{
+#senha {
+    width: 100%;
+    padding: 10px;
+    padding-right: 40px;
+
+    border-width: 0.125rem;
+    border-style: solid;
+    border-color: var(--grey);
+}
+
+#olho-senha {
     position: absolute;
-    left: calc(79%);
-
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     cursor: pointer;
-}
-
-.caixa-erro{
-    border-color: var(--red) !important;
 }
 
 
@@ -179,6 +188,14 @@ button {
 .span-erro{
     color: var(--red);
     padding-left: 1rem !important;
+}
+
+.caixa-erro{
+    border-color: var(--red) !important;
+}
+
+.caixa-erro:focus{
+    outline: none;
 }
 
 #informacoes-caixa-senha{

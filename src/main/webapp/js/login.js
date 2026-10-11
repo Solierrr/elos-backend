@@ -22,9 +22,7 @@ const erroSenha = document.getElementById('erro-senha');
 
 formulario.addEventListener('invalid', event => {
     event.preventDefault();
-
-
-
+    
     const input = event.target;
 
     const span = document.getElementById(`erro-${input.name}`);

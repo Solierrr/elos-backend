@@ -1,307 +1,218 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<html>
+<!doctype html>
+<html lang="pt-br">
 <head>
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Usuário</title>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/variables.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/text.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/landing.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/crud.css" />
+    <link rel="icon" type="image/svg" href="${pageContext.request.contextPath}/assets/icone/LOGO.svg" >
+
 </head>
-
-<style>
-
-    th{
-
-        background: green;
-        color: white;
-    }
-
-    /* Alinha todos os elementos em uma única linha horizontal */
-    .formulario-linha {
-        display: flex;
-        flex-wrap: wrap; /* Permite quebrar a linha se a tela for muito pequena */
-        gap: 15px;       /* Cria um espaçamento igual entre os campos */
-        align-items: flex-end; /* Alinha os fundos dos campos na mesma altura */
-    }
-
-    /* Organiza o rótulo acima de cada respectivo campo */
-    .campo {
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Estilização básica para os inputs e selects ficarem padronizados */
-    .campo input, .campo select {
-        padding: 6px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-</style>
-
 <body>
+<div class="conteiner">
+    <nav class="side-bar">
+        <div class="conteiner-logo">
+            <a>
+                <img src="${pageContext.request.contextPath}/assets/icone/LOGO.svg" id="logo" alt="botão para a tela inicial"/>
+            </a>
+            <div class="traco-abaixo-logo"></div>
+        </div>
 
-<!-- Exibe mensagens de erro vindas do ReadUsuarioServlet, se houver -->
-<c:if test="${not empty sessionScope.errosRead}">
-    <div style="border:1px solid red; background:#ffe6e6; padding:10px; margin-bottom:10px;">
-        <ul>
-            <c:forEach var="erro" items="${sessionScope.errosRead}">
-                <li>${erro.exibirMensagem()}</li>
-            </c:forEach>
-        </ul>
-    </div>
-</c:if>
+        <div class="caixa-sidebar">
+            <img src="${pageContext.request.contextPath}/assets/icone/crud/abrir_sidebar.svg" alt="abrir side bar" id="botao-abrir-sidebar">
+        </div>
 
-<table border="3px">
-    <tr>
-        <th>ID</th>
-        <th>Tipo de Usuário</th>
-        <th>Email</th>
-        <th>Nome</th>
-        <th>Raio de procura em km</th>
-        <th>Ações</th>
+        <div id="botoes-navegacao" class="caixa-sidebar">
+            <a class="opcao-side-bar-selecionada">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/usuario.svg"  alt="Ir para tela do CRUD do usuário"/>
+            </a>
+            <a>
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/empresa_demandante.svg" alt="Ir para tela do CRUD da empresa demandante"/>
+            </a>
+            <a>
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/fornecedor.svg" alt="Ir para tela do CRUD do fornecedor"/>
+            </a>
+            <a href="">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/profissional.svg" alt="Ir para tela do CRUD do profissional"/>
+            </a>
+        </div>
 
-    </tr>
+        <div id="botoes-localizacao" class="caixa-sidebar">
+            <a>
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/telefone.svg" alt="Ir para tela do CRUD do telefone"/>
+            </a>
+            <a>
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/endereco.svg" alt="Ir para tela do CRUD do endereço"/>
+            </a>
+        </div>
 
-    <!-- Read -->
-    <c:choose>
-        <c:when test="${not empty usuariosRead}">
-            <c:forEach var="usuario" items="${usuariosRead}">
+        <div id="botoes-admin" class="caixa-sidebar">
+            <a href="">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/admin.svg" alt="Ir para tela do CRUD do admin">
+            </a>
+            <a href="">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/telefone.svg" alt="Ir para tela do CRUD do telefone do admin">
+            </a>
+            <a href="">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_altecacoes.svg" alt="Ir para tela do CRUD do histórico de alterações">
+            </a>
+            <a href="">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/acesso admin.svg" alt="Ir para tela do CRUD do histórico de acessos dos admins">
+            </a>
+        </div>
+
+        <div class="caixa-sidebar">
+            <a href="">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/sair.svg" alt="Deslogar do CRUD">
+            </a>
+        </div>
+    </nav>
+
+    <div id="conteiner-do-conteudo">
+        <div id="conteiner-botoes">
+            <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar</button>
+            <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">Adicionar registro</button>
+        </div>
+
+        <div id="caixa-tabela">
+            <table>
                 <tr>
-                    <td>${usuario.id}</td>
-                    <td>${usuario.tipoUsuario.tipoDoUsuario}</td>
-                    <td>${usuario.email}</td>
-                    <td>${usuario.nome}</td>
-                    <td>${usuario.raioProcuraKm}</td>
-                    <td>
-                        <form action="${pageContext.request.contextPath}/crudUsuario-delete" method="post" style="margin: 0;">
-
-                        <input type="hidden" name="idDelete" value="${usuario.id}">
-
-                        <!-- Seu botão vermelho X -->
-                        <button type="submit" style="background-color: red; color: black; font-weight: bold;">
-                            X
-                        </button>
-
-                        </form>
-
-                        <form action="${pageContext.request.contextPath}/crudUsuario-update" method="get" style="margin: 0;">
-
-                            <input type="hidden" name="idUpdate" value="${usuario.id}">
-
-                            <!-- Seu botão vermelho X -->
-                            <button id="editar" type="submit" style="background-color: red; color: black; font-weight: bold;">
-                                Editar
-                            </button>
-
-                        </form>
-
-                    </td>
-
+                    <th class="littleText">ID</th>
+                    <th class="littleText">Email</th>
+                    <th class="littleText">Nome</th>
+                    <th class="littleText">Tipo do Usuario</th>
+                    <th class="littleText">Raio de Procura em km</th>
+                    <th class="littleText">Ações</th>
                 </tr>
-            </c:forEach>
-        </c:when>
+                <tr>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                </tr>
 
-        <c:otherwise>
-            <tr>
-                <td colspan="6" style="text-align:center;">Nenhum usuário encontrado</td>
-            </tr>
-        </c:otherwise>
-    </c:choose>
-</table>
-
-<!-- pop up editar-->
-<dialog id="dialog1">
-    <form action="${pageContext.request.contextPath}/crudUsuario-update" method="post">
-
-        <input type="hidden" id="idUpdate" name="idUpdate" value="${sessionScope.usuarioUpdate.id}">
-        <input type="hidden" id="tipoUsuarioUpdate" name="tipoUsuarioUpdate" value="${sessionScope.usuarioUpdate.tipoUsuario.tipoDoUsuario}">
-
-        <table border="3px">
-            <tr>
-                <th><label for="idUpdate">ID</label></th>
-                <th><label for="tipoUsuarioUpdate">Tipo do usuário</label></th>
-                <th><label for="emailUpdate">Email</label></th>
-                <th><label for="senhaUpdate">Senha</label></th>
-                <th><label for="nomeUpdate">Nome</label></th>
-                <th><label for="raioProcuraKmUpdate">Raio de procura em km</label></th>
-            </tr>
-            <tr>
-                <td>${sessionScope.usuarioUpdate.id}</td>
-                <td>${sessionScope.usuarioUpdate.tipoUsuario.tipoDoUsuario}</td>
-                <td><input type="text" id="emailUpdate" name="emailUpdate" value="${sessionScope.usuarioUpdate.email}"required></td>
-                <td><input type="text" id="senhaUpdate" name="senhaUpdate"></td>
-                <td><input type="text" id="nomeUpdate" name="nomeUpdate" value="${sessionScope.usuarioUpdate.nome}" required></td>
-                <td><input type="text" id="raioProcuraKmUpdate" name="raioProcuraKmUpdate" value="${sessionScope.usuarioUpdate.raioProcuraKm}"required></td>
-            </tr>
-        </table>
-
-        <div style="margin-top: 10px;">
-            <button type="submit">Enviar</button>
-            <button type="button" id="fechar">Sair</button>
-        </div>
-    </form>
-</dialog>
-
-
-<!-- read caixas-->
-<div class="formulario-linha">
-    <form action="${pageContext.request.contextPath}/crudUsuario" method="post">
-
-        <!-- Campo 1: Seleção (Existente) -->
-        <div class="campo">
-            <label for="clausulaWhereNome">clausulaWhereNome:</label>
-            <select id="clausulaWhereNome" name="clausulaWhereNome">
-                <option value="nenhuma">Nenhuma</option>
-                <option value="id">ID</option>
-                <option value="nome">Nome</option>
-                <option value="email">Email</option>
-                <option value="tipo_usuario">Tipo usuário</option>
-                <option value="raio_procura_km">Raio de procura em km</option>
-            </select>
+            </table>
         </div>
 
-        <!-- Campo 2: Texto (Novo) -->
-        <div class="campo">
-            <label for="clausulaWhereValor">clausulaWhereValor:</label>
-            <input type="text" id="clausulaWhereValor" name="clausulaWhereValor" placeholder="Digite seu nome">
-        </div>
+        <dialog class="pop-up" id="pop-up-insert" >
+            <form id="formulario-insert" method="POST" action="${pageContext.request.contextPath}/crudUsuario-insert">
+                <div id="conteiner-superior-insert" class="conteiner-superior-pop-up">
+                    <button type="submit" name="enviar-insert" id="enviar-insert" class="botoes-insert-laranjas">Adicionar usuário</button>
+                    <button id="insert-sair" class="botoes-sair"><img src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg" alt="" class="icone-sair"></button>
+                </div>
 
-        <div class="campo">
-            <label for="clausulaWhereValor2">clausulaWhereValor2:</label>
-            <input type="text" id="clausulaWhereValor2" name="clausulaWhereValor2">
-        </div>
+                <div id="conteudo-insert">
+                    <div>
+                        <div class="label-e-input">
+                            <label for="email">E-mail</label>
+                            <input type="email" name="email" id="email" required placeholder="ex: meu.email@gmail.com">
+                        </div>
+                        <span id="erro-email" class="span-erro"></span>
+                    </div>
 
-        <!-- Campo 3: Seleção (Novo) -->
-        <div class="campo">
-            <label for="orderBy">orderBy:</label>
-            <select id="orderBy" name="orderBy">
-                <option value="nenhuma">Nenhuma</option>
-                <option value="id">ID</option>
-                <option value="nome">Nome</option>
-                <option value="email">Email</option>
-                <option value="tipo_usuario">Tipo usuário</option>
-                <option value="raio_procura_km">Raio de procura em km</option>
-            </select>
-        </div>
-
-        <div class="campo">
-            <label for="ordenacao">Ordenação:</label>
-            <select id="ordenacao" name="ordenacao">
-                <option value="asc">Crescente</option>
-                <option value="desc">Decrescente</option>
-            </select>
-        </div>
+                    <div>
+                        <div class="label-e-input">
+                            <label for="senha">Senha</label>
+                            <div id="senha-container">
 
 
-        <div style="margin-top: 10px;">
-            <button type="submit">Enviar</button>
-        </div>
-    </form>
+                                <input class="text-input" id="senha" type="password" name="senha"
+                                       placeholder="Coloque a senha do usuário" required pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
+                                <img id="olho-senha"
+                                     src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
+                                     data-url-olho="${pageContext.request.contextPath}/assets/icone/olho.svg"
+                                     data-url-oculto="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
+                                     alt="Mostrar senha">
+                            </div>
+
+                        </div>
+                        <span id="erro-senha" class="span-erro"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-e-input">
+                            <label for="nome">Nome</label>
+                            <input type="text" name="nome" id="nome" required placeholder="ex: Roger dos santos">
+                        </div>
+                        <span id="erro-nome" class="span-erro"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-e-input">
+                            <label for="raio-procura-km">Raio de procura (KM)</label>
+                            <input type="text" placeholder="ex: 10" name="raio-procura-km" id="raio-procura-km" required>
+                        </div>
+                        <span id="erro-raio-procura-km" class="span-erro"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-e-input">
+                            <label for="tipo-usuario">Tipo do usuário</label>
+                            <select name="tipo-usuario" id="tipo-usuario" required>
+                                <option value="" disabled selected hidden>Selecione o tipo de usuário</option>
+                                <option value="EMPRESA_DEMANDANTE">Empresa demandante</option>
+                                <option value="FORNECEDOR">Fornecedor</option>
+                                <option value="PROFISSIONAL">Profissional</option>
+                            </select>
+                        </div>
+                        <span id="erro-tipo-usuario" class="span-erro"></span>
+                    </div>
+
+                    <div id="dados-mutaveis">
+                    </div>
+
+                </div>
+            </form>
+        </dialog>
+
+        <dialog class="pop-up" id="pop-up-filtro">
+            <div id="conteiner-filtro" class="conteiner-pop-up">
+
+                <div id="conteiner-sair-filtro" class="conteiner-superior-pop-up">
+                    <div id="botoes-filtro">
+                        <select name="campo-filtro" id="campo-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden id="campo-filtro-estado-vazio">Campo: </option>
+                            <option value="ID">ID</option>
+                            <option value="EMAIL">E-mail</option>
+                            <option value="NOME">Nome</option>
+                            <option value="TIPO_USUARIO">Tipo do usuário</option>
+                            <option value="RAIO_PROCURA_KM">Raio de procura em km</option>
+                        </select>
+                        <button id="adicionar-filtro" class="botoes-laranjas">Adicionar filtro</button>
+                        <button id="enviar-filtro" class="botoes-laranjas">Filtrar</button>
+                    </div>
+                    <button id="filtro-sair" class="botoes-sair"><img src="assets/icone/icone_sair.svg" alt="" class="icone-sair"></button>
+                </div>
+
+                <div id="conteudo-filtro">
+                    <form action="POST" id="formulario-filtro">
+
+
+
+                    </form>
+                </div>
+            </div>
+        </dialog>
+    </div>
 </div>
 
 
-
-
-<br>
-<br>
-
-<button id="butao">Inserir</button>
-
-
-
-
-<!-- pop up inserir -->
-<dialog id="dialog">
-    <form action="${pageContext.request.contextPath}/crudUsuario-insert" method="post">
-        <table border="3px">
-            <tr>
-                <th><label for="tipoUsuarioInsert">Tipo do usuário</label></th>
-                <th><label for="email">Email</label></th>
-                <th><label for="senha">Senha</label></th>
-                <th><label for="nome">Nome</label></th>
-                <th><label for="raioProcuraKm">Raio de procura em km</label></th>
-            </tr>
-            <tr>
-                <td>
-                    <select id="tipoUsuarioInsert" name="tipoUsuarioInsert" >
-                        <option value="FORNECEDOR" ${sessionScope.tipoUsuario.tipoDoUsuario == "FORNECEDOR" ? "selected" : ""}>Fornecedor</option>
-                        <option value="EMPRESA_DEMANDANTE" ${sessionScope.tipoUsuario.tipoDoUsuario == "EMPRESA_DEMANDANTE" ? "selected" : ""}>Empresa demandante</option>
-                        <option value="PROFISSIONAL" ${sessionScope.tipoUsuario.tipoDoUsuario == "PROFISSIONAL" ? "selected" : ""}>Profissional</option>
-                    </select>
-                </td>
-                <td><input type="text" id="emailInsert" name="emailInsert" required value="${sessionScope.emailInsert}"></td>
-                <td><input type="text" id="senhaInsert" name="senhaInsert" required ></td>
-                <td><input type="text" id="nomeInsert" name="nomeInsert" required value="${sessionScope.nomeInsert}"></td>
-                <td><input type="text" id="raioProcuraKmInsert" name="raioProcuraKmInsert" value="${sessionScope.raioProcuraKmInsert}"></td>
-            </tr>
-        </table>
-
-        <div style="margin-top: 10px;">
-            <button type="submit">Enviar</button>
-            <button type="button" id="close">Sair</button>
-        </div>
-    </form>
-</dialog>
-
-<form id="casoSair" action="${pageContext.request.contextPath}/crudUsuario" method="post">
-
-    <input type="hidden" id="sairPressionado" name="sairPressionado">
-
-</form>
-
-<script>
-
-    const butao = document.getElementById("butao");
-    const modal = document.getElementById("dialog");
-    const butao1 = document.getElementById("close");
-
-    const abrirInsert = ${not empty sessionScope.abrirInsert ? sessionScope.abrirInsert : false};
-
-    const abrirUpdate = ${not empty sessionScope.abrirUpdate ? sessionScope.abrirUpdate : false};
-
-    const modal1 = document.getElementById("dialog1");
-
-    console.log(abrirUpdate);
-    console.log(abrirInsert);
-
-    const butao4 = document.getElementById("fechar");
-
-
-    butao4.onclick = function(){
-        document.getElementById("sairPressionado").value = "true";
-        document.getElementById("casoSair").submit();
-    }
-
-    window.addEventListener('load', function (){
-
-        if(abrirInsert === true){
-
-            modal.showModal();
-
-        }
-
-        if(abrirUpdate === true){
-
-            modal1.showModal();
-
-        }
-
-    })
-
-    // Abre o modal manualmente
-    butao.onclick = function(){
-        modal.showModal();
-    }
-
-
-
-    // Fecha o modal manualmente
-    butao1.onclick = function(){
-        document.getElementById("sairPressionado").value = "true";
-        document.getElementById("casoSair").submit();
-
-    }
-
-</script>
-
+<script src="${pageContext.request.contextPath}/js/crud.js" defer></script>
 </body>
 </html>
