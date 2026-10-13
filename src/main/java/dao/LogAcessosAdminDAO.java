@@ -1,14 +1,11 @@
 package dao;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.SUCESSO;
-
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +18,19 @@ public final class LogAcessosAdminDAO implements GenericDAO<LogAcessosAdmin> {
     private static final String TABELA = "log_acessos_admin";
 
     @Override
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
+    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS
+        );
 
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        if(preparedStatement.executeUpdate() >= 1){
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            return resultSet.getLong(1);
+        }
+
+        return null;
     }
 
     @Override

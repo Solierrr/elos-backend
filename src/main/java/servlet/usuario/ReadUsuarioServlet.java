@@ -36,13 +36,11 @@ public final class ReadUsuarioServlet extends HttpServlet {
             HttpSession httpSession = request.getSession();
             Admin admin = (Admin) httpSession.getAttribute("adm");
 
-
             if(admin == null){
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
 
-            System.out.println(admin);
 
 //            String clausulaWhereNome = request.getParameter("clausulaWhereNome");
 //            String clausulaWhereValor = request.getParameter("clausulaWhereValor");

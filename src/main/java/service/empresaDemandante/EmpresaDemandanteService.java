@@ -193,7 +193,7 @@ public final class EmpresaDemandanteService {
 
         CamposEmpresaDemandante clausulaWhere = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
 
-        if(!clausulaWhere.isMultiplosRetornos()){
+        if(!clausulaWhere.isAcessivel()){
             EmpresaDemandante fornecedor = lerEmpresaDemandanteUnicoRetorno(clausulaWhere, empresaDemandanteDadosDePesquisaDto.clausulaWhereValor());
 
             List<EmpresaDemandante> fornecedores = new ArrayList<>();

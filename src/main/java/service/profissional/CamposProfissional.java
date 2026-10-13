@@ -1,32 +1,51 @@
 package service.profissional;
 
 
+import static dao.AcoesInstrucao.IGUAL;
+import static dao.AcoesInstrucao.ILIKE;
+import static dao.AcoesInstrucao.VAZIO;
+
+import dao.AcoesInstrucao;
+import java.sql.Types;
 import service.GenericEnumCampos;
 
 public enum CamposProfissional implements GenericEnumCampos {
 
-    ID("id", false),
-    ID_USUARIO("id_usuario", false),
-    PROFISSAO("profissao", true),
-    CPF("cpf", false),
-    ID_FORNECEDOR("id_fornecedor", true),
-    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true),
-    INVALIDO("campo_do_profissional_invalido", false);
+    ID("id", true, IGUAL, Types.BIGINT),
+    ID_USUARIO("id_usuario", true, IGUAL, Types.BIGINT),
+    TIPO_USUARIO("tipo_usuario", true, IGUAL, Types.BIGINT),
+    PROFISSAO("profissao", true, ILIKE, Types.VARCHAR),
+    CPF("cpf", true, IGUAL, Types.VARCHAR),
+    ID_FORNECEDOR("id_fornecedor", true, IGUAL, Types.BIGINT),
+    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true, VAZIO, null),
+    INVALIDO("campo_do_profissional_invalido", true, VAZIO, null);
 
     private final String campoProfissional;
-    private final boolean multiplosRetornos;
+    private final boolean acessivel;
+    private final AcoesInstrucao acao;
+    private final Integer dataType;
 
-    CamposProfissional(String campoProfissional, boolean multiplosRetornos) {
+    CamposProfissional(String campoProfissional, boolean acessivel, AcoesInstrucao acao, Integer dataType) {
         this.campoProfissional = campoProfissional;
-        this.multiplosRetornos = multiplosRetornos;
+        this.acessivel = acessivel;
+        this.acao = acao;
+        this.dataType = dataType;
     }
 
     public String getCampoProfissional() {
         return campoProfissional;
     }
 
-    public boolean isMultiplosRetornos() {
-        return multiplosRetornos;
+    public boolean isAcessivel() {
+        return acessivel;
+    }
+
+    public AcoesInstrucao getAcao() {
+        return acao;
+    }
+
+    public Integer getDataType() {
+        return dataType;
     }
 
     public static CamposProfissional descobrirCampoProfissional(String campoProfissionalEntrada){

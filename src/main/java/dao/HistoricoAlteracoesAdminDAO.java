@@ -1,8 +1,5 @@
 package dao;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.SUCESSO;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import exception.GenericExceptionEnum;
@@ -10,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +18,18 @@ public final class HistoricoAlteracoesAdminDAO implements GenericDAO<HistoricoAl
     private static final String TABELA = "historico_alteracoes";
 
     @Override
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
-
+    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS
+        );
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        if(preparedStatement.executeUpdate() >= 1){
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            return resultSet.getLong(1);
+        }
+
+        return null;
     }
 
     @Override

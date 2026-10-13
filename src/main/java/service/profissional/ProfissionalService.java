@@ -176,7 +176,7 @@ public final class ProfissionalService {
 
         CamposProfissional clausulaWhere = CamposProfissional.descobrirCampoProfissional(profissionalDadosDePesquisaDTO.clausulaWhereNome().strip().toLowerCase());
 
-        if(!clausulaWhere.isMultiplosRetornos()){
+        if(!clausulaWhere.isAcessivel()){
             Profissional profissional= lerProfissionalUnicoRetorno(clausulaWhere, profissionalDadosDePesquisaDTO.clausulaWhereValor());
 
             List<Profissional> profissionais = new ArrayList<>();

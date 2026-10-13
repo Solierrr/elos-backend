@@ -1,6 +1,8 @@
 package servlet.usuario;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exception.GenericExceptionEnum;
 import jakarta.servlet.ServletException;
@@ -10,16 +12,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.Admin;
 import model.FuncoesAdmin;
 import service.usuario.UsuarioService;
 
 @WebServlet("/crudUsuario-insert")
 public final class InsertUsuarioServlet extends HttpServlet {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+            .create();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,12 +37,23 @@ public final class InsertUsuarioServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
 
+        System.out.println("chegou no servlet");
+
         HttpSession session = request.getSession();
 
-        FuncoesAdmin funcaoAdm = (FuncoesAdmin) session.getAttribute("funcaoAdm");
+        Admin admin = (Admin) session.getAttribute("adm");
+
+        if(admin == null)
+            response.sendRedirect(request.getContextPath()+"/login");
 
         request.setCharacterEncoding("UTF-8");
-        List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(gson.fromJson(request.getReader(), JsonObject.class));
+
+        JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
+
+        System.out.println(jsonObject.toString());
+
+        List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(jsonObject, admin.getId());
+
 
         if(!mensagensInsert.isEmpty()){
             Map<String, String> mapaJson = new HashMap<>();

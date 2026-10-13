@@ -3,6 +3,7 @@ package dao;
 import static exception.ErrosDadosTelefone.TELEFONE_INVALIDO;
 import static exception.ErrosGerais.*;
 
+import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -21,12 +22,18 @@ public final class TelefoneDAO implements GenericDAO<Telefone> {
     private static final String TABELA = "telefone";
 
     @Override
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
-
+    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS
+        );
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        if(preparedStatement.executeUpdate() >= 1){
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            return resultSet.getLong(1);
+        }
+
+        return null;
     }
 
     @Override

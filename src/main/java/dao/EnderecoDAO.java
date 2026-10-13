@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Endereco;
@@ -22,12 +23,18 @@ public final class EnderecoDAO implements GenericDAO<Endereco> {
     private static final String TABELA = "endereco";
 
     @Override
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA));
-
+    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS
+        );
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+        if(preparedStatement.executeUpdate() >= 1){
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            return resultSet.getLong(1);
+        }
+
+        return null;
     }
 
     @Override

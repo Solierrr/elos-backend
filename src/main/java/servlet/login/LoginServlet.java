@@ -57,8 +57,6 @@ public final class LoginServlet extends HttpServlet {
                 dadosFormulario.has("userAgent") && !dadosFormulario.get("userAgent").isJsonNull() ? dadosFormulario.get("userAgent").getAsString() : null,
                 ip);
 
-        System.out.println("Ip conectado: "+ip);
-
         if (admin == null) {
             HttpSession httpSession = request.getSession(true);
             httpSession.setAttribute("adm", null);

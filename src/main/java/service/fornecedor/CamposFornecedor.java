@@ -1,32 +1,52 @@
 package service.fornecedor;
 
 
+import static dao.AcoesInstrucao.IGUAL;
+import static dao.AcoesInstrucao.ILIKE;
+import static dao.AcoesInstrucao.VAZIO;
+
+import dao.AcoesInstrucao;
+import java.sql.Types;
 import service.GenericEnumCampos;
 
 public enum CamposFornecedor implements GenericEnumCampos {
 
-    ID("id", false),
-    ID_USUARIO("id_usuario", false),
-    TIPO_FORNECEDOR("tipo_fornecedor", true),
-    CNPJ("cnpj", false),
-    RAZAO_SOCIAL("razao_social", true),
-    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true),
-    INVALIDO("campo_do_fornecedor_invalido", false);
+    ID("id", true, IGUAL, Types.BIGINT),
+    ID_USUARIO("id_usuario", true, IGUAL, Types.BIGINT),
+    TIPO_USUARIO("tipo_usuario", true, IGUAL, Types.VARCHAR),
+    TIPO_FORNECEDOR("tipo_fornecedor", true, IGUAL, Types.VARCHAR),
+    CNPJ("cnpj", true, IGUAL, Types.VARCHAR),
+    RAZAO_SOCIAL("razao_social", true, ILIKE, Types.VARCHAR),
+    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true, VAZIO, null),
+    INVALIDO("campo_do_fornecedor_invalido", true, VAZIO, null);
 
     private final String campoFornecedor;
-    private final boolean multiplosRetornos;
+    private final boolean acessivel;
+    private final AcoesInstrucao acao;
+    private final Integer dataType;
 
-    CamposFornecedor(String campoFornecedor, boolean multiplosRetornos) {
+    CamposFornecedor(String campoFornecedor, boolean acessivel, AcoesInstrucao acao, Integer dataType) {
         this.campoFornecedor = campoFornecedor;
-        this.multiplosRetornos = multiplosRetornos;
+        this.acessivel = acessivel;
+        this.acao = acao;
+        this.dataType = dataType;
     }
+
 
     public String getCampoFornecedor() {
         return campoFornecedor;
     }
 
-    public boolean isMultiplosRetornos() {
-        return multiplosRetornos;
+    public boolean isAcessivel() {
+        return acessivel;
+    }
+
+    public AcoesInstrucao getAcao() {
+        return acao;
+    }
+
+    public Integer getDataType() {
+        return dataType;
     }
 
     public static CamposFornecedor descobrirCampoFornecedor(String campoFornecedorEntrada){

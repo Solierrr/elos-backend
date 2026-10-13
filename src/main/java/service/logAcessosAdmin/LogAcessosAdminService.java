@@ -92,14 +92,13 @@ public final class LogAcessosAdminService {
 
         criarInstrucaoDinamica.setCampo(ENDERECO_IP.getCampoLogAcessosAdmin(), ip, INET);
 
+
         if(erros.isEmpty()){
             criarInstrucaoDinamica.setCampo(SUCESSO.getCampoLogAcessosAdmin(), true, Types.BOOLEAN);
             criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getCampoLogAcessosAdmin(), null, Types.VARCHAR);
-            System.out.println("deu certo");
         }else{
             criarInstrucaoDinamica.setCampo(SUCESSO.getCampoLogAcessosAdmin(), false, Types.BOOLEAN);
             criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getCampoLogAcessosAdmin(), mensagemErro.toString(), Types.VARCHAR);
-            System.out.println("deu errado");
         }
 
         LogAcessosAdminDAO logAcessosAdminDAO = new LogAcessosAdminDAO();

@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +20,16 @@ public final class UsuarioDAO implements GenericDAO {
     private static String TABELA = "usuario";
 
     @Override
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws IllegalArgumentException{
+    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws IllegalArgumentException{
         throw new IllegalArgumentException("Existe parametros faltando!");
     }
 
-    public GenericExceptionEnum insert(CriarInstrucaoDinamica criarInstrucaoDinamicaUsuario,
+    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamicaUsuario,
                                        CriarInstrucaoDinamica criarInstrucaoDinamicaFilho,
                                        String tabelaFilho, Connection connection) throws SQLException{
 
-        PreparedStatement preparedStatementUsuario = connection.prepareStatement(criarInstrucaoDinamicaUsuario.construirInsert(TABELA));
+        PreparedStatement preparedStatementUsuario = connection.prepareStatement(criarInstrucaoDinamicaUsuario.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS
+        );
         criarInstrucaoDinamicaUsuario.aplicarValoresDoPreparedStatement(preparedStatementUsuario);
         preparedStatementUsuario.executeUpdate();
 
@@ -42,9 +44,9 @@ public final class UsuarioDAO implements GenericDAO {
         criarInstrucaoDinamicaFilho.aplicarValoresDoPreparedStatement(preparedStatementFilho);
 
         if (preparedStatementFilho.executeUpdate() < 1) {
-            return ERRO_GENERICO;
+            return null;
         }
-        return SUCESSO;
+        return idCriado;
     }
 
     @Override

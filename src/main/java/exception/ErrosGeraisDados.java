@@ -14,7 +14,7 @@ public enum ErrosGeraisDados implements GenericExceptionEnum{
     CNPJ_VAZIO(8, "Nenhum CNPJ foi inserido", "cnpj"),
     CNPJ_TAMANHO_INVALIDO(9, "O CNPJ inserido não possui 14 dígitos", "cnpj"),
     CNPJ_FORMATO_INVALIDO(10, "O CNPJ inserido não possuí um formato de um CNPJ", "cnpj"),
-    CNPJ_INVALIDO(11, "O CNPJ inserido é inválido", "cpnj"),
+    CNPJ_INVALIDO(11, "O CNPJ inserido é inválido", "cnpj"),
     RAZAO_SOCIAL_VAZIA(12, "Nenhuma razão social foi inserida", "razao-social"),
     RAZAO_SOCIAL_TAMANHO_INVALIDO(13, "A razão social inserida excede o tamanho limite de 150 caracteres", "razao-social"),
     RAZAO_SOCIAL_INVALIDA(14, "A razão social inserida é inválida", "razao-social"),

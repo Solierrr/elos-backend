@@ -3,43 +3,53 @@ package service.usuario;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
 import static exception.ErrosGerais.REGISTROS_NAO_ENCONTRADOS;
-import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
 import static exception.ErrosGerais.SUCESSO;
-import static exception.ErrosGerais.descobrirErroGeral;
 import static exception.ErrosGeraisDados.ATRIBUTO_NULL;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
-import static exception.ErrosGeraisDados.WHERE_INVALIDO;
 import static service.ValidacoesComunsService.validarId;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import conexao.Conexao;
+import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
-import dao.GenericDAO;
 import dao.UsuarioDAO;
 import exception.ErrosDadosUsuario;
 import exception.ErrosGerais;
 import exception.ErrosGeraisDados;
 import exception.GenericExceptionEnum;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.imageio.plugins.tiff.TIFFTagSet;
+import model.EmpresaDemandante;
+import model.Fornecedor;
+import model.HistoricoAlteracoesAdmin;
+import model.Profissional;
 import model.TiposUsuario;
 import model.Usuario;
 import service.ValidacoesComunsService;
+import service.empresaDemandante.CamposEmpresaDemandante;
 import service.empresaDemandante.EmpresaDemandanteParaInsertDTO;
 import service.empresaDemandante.EmpresaDemandanteService;
+import service.fornecedor.CamposFornecedor;
 import service.fornecedor.FornecedorParaInsertDTO;
 import service.fornecedor.FornecedorService;
+import service.historicoAlteracoesAdmin.HistoricoAlteracoesAdminService;
+import service.profissional.CamposProfissional;
 import service.profissional.ProfissionalParaInsertDTO;
 import service.profissional.ProfissionalService;
 
 public final class UsuarioService {
 
     //Atributo usado para operações json no código
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
+            .create();
 
     //Constantes para evitar valores mágicos ou instancia desnecessária de objetos
     private static final double TAMANHO_MAXIMO_RAIO_PROCURA_KM = 999.99;
@@ -350,10 +360,11 @@ public final class UsuarioService {
     }
 
     //Métodos relacionados ao insert
-    public static List<GenericExceptionEnum> realizarInsert(JsonObject jsonObject){
+    public static List<GenericExceptionEnum> realizarInsert(JsonObject jsonObject, Long idAdmin){
         List<GenericExceptionEnum> mensagens = validarUsuarioInsert(jsonObject);
+        System.out.println(mensagens);
         if (mensagens.isEmpty()) {
-            GenericExceptionEnum resultado = persistirUsuario(jsonObject);
+            GenericExceptionEnum resultado = persistirUsuario(jsonObject, idAdmin);
             if (resultado != SUCESSO) {
                 mensagens.add(resultado);
             }
@@ -404,26 +415,72 @@ public final class UsuarioService {
         return listaDeErros;
     }
 
-    private static GenericExceptionEnum persistirUsuario(JsonObject jsonObject){
+    private static GenericExceptionEnum persistirUsuario(JsonObject jsonObject, Long idAdmin){
         UsuarioDAO dao = new UsuarioDAO();
         CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
-        Usuario usuario = GSON.fromJson(jsonObject, Usuario.class);
+        Usuario usuario = GSON.fromJson(jsonObject, UsuarioParaInsertDTO.class).construirUsuario();
+        String tabelaFilho = null;
 
-        if(usuario.getRaioProcuraKm() != null)
-            criarInstrucaoDinamica.setCampo(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(), usuario.getRaioProcuraKm(), Types.DOUBLE);
+        try(Connection connection = Conexao.getConnection()){
+            connection.setAutoCommit(false);
 
-        criarInstrucaoDinamica.setCampo(CamposUsuario.EMAIL.getCampoUsuario(), usuario.getEmail(), Types.VARCHAR);
-        criarInstrucaoDinamica.setCampo(CamposUsuario.SENHA.getCampoUsuario(), usuario.getSenha(), Types.VARCHAR);
-        criarInstrucaoDinamica.setCampo(CamposUsuario.TIPO_USUARIO.getCampoUsuario(), usuario.getTipoUsuario().getTipoDoUsuario(), Types.VARCHAR);
-        criarInstrucaoDinamica.setCampo(CamposUsuario.NOME.getCampoUsuario(), usuario.getNome(), Types.VARCHAR);
+            try {
 
-        CriarInstrucaoDinamica criarInstrucaoDinamicaCadastroFilha = new CriarInstrucaoDinamica();
+                if (usuario.getRaioProcuraKm() != null)
+                    criarInstrucaoDinamica.setCampo(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(), usuario.getRaioProcuraKm(), Types.DOUBLE);
 
-        if(usuario.getTipoUsuario() == TiposUsuario.EMPRESA_DEMANDANTE){
-            
+                criarInstrucaoDinamica.setCampo(CamposUsuario.EMAIL.getCampoUsuario(), usuario.getEmail(), Types.VARCHAR);
+                criarInstrucaoDinamica.setCampo(CamposUsuario.SENHA.getCampoUsuario(), usuario.getSenha(), Types.VARCHAR);
+                criarInstrucaoDinamica.setCampo(CamposUsuario.TIPO_USUARIO.getCampoUsuario(), usuario.getTipoUsuario().getTipoDoUsuario(), Types.VARCHAR);
+                criarInstrucaoDinamica.setCampo(CamposUsuario.NOME.getCampoUsuario(), usuario.getNome(), Types.VARCHAR);
+
+                CriarInstrucaoDinamica criarInstrucaoDinamicaCadastroFilha = new CriarInstrucaoDinamica();
+
+                if (usuario.getTipoUsuario() == TiposUsuario.EMPRESA_DEMANDANTE) {
+                    EmpresaDemandante empresaDemandante = GSON.fromJson(jsonObject, EmpresaDemandanteParaInsertDTO.class).construirEmpresaDemandante();
+
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposEmpresaDemandante.TIPO_USUARIO.getCamposEmpresaDemandante(), empresaDemandante.getTipoUsuario().getTipoDoUsuario(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposEmpresaDemandante.CNPJ.getCamposEmpresaDemandante(), empresaDemandante.getCnpj(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposEmpresaDemandante.RAZAO_SOCIAL.getCamposEmpresaDemandante(), empresaDemandante.getRazaoSocial(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposEmpresaDemandante.EH_MANDANTE.getCamposEmpresaDemandante(), empresaDemandante.isEhMandante(), Types.BOOLEAN);
+                    tabelaFilho = "empresa_demandante";
+                }else if(usuario.getTipoUsuario() == TiposUsuario.FORNECEDOR) {
+                    Fornecedor fornecedor = GSON.fromJson(jsonObject, FornecedorParaInsertDTO.class).construirFornecedor();
+
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposFornecedor.TIPO_USUARIO.getCampoFornecedor(), fornecedor.getTipoUsuario().getTipoDoUsuario(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposFornecedor.TIPO_FORNECEDOR.getCampoFornecedor(), fornecedor.getTipoFornecedor().getTipoFornecedor(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposFornecedor.CNPJ.getCampoFornecedor(), fornecedor.getCnpj(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposFornecedor.RAZAO_SOCIAL.getCampoFornecedor(), fornecedor.getRazaoSocial(), Types.VARCHAR);
+                    tabelaFilho = "fornecedor";
+                }else if(usuario.getTipoUsuario() == TiposUsuario.PROFISSIONAL){
+                    Profissional profissional = GSON.fromJson(jsonObject, ProfissionalParaInsertDTO.class).construirProfissional();
+
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposProfissional.TIPO_USUARIO.getCampoProfissional(), profissional.getTipoUsuario().getTipoDoUsuario(), Types.VARCHAR);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposProfissional.PROFISSAO.getCampoProfissional(), profissional.getProfissao(), Types.BIGINT);
+                    criarInstrucaoDinamicaCadastroFilha.setCampo(CamposProfissional.ID_FORNECEDOR.getCampoProfissional(), profissional.getIdFornecedor(), Types.BIGINT);
+                    tabelaFilho = "profissional";
+                }
+
+                Long idRegistro = dao.insert(criarInstrucaoDinamica, criarInstrucaoDinamicaCadastroFilha, tabelaFilho, connection);
+
+                if(idRegistro == null)
+                    throw new IllegalArgumentException("Ocorreu algum erro e o usuário não foi registrado!");
+
+                HistoricoAlteracoesAdminService.salvarAcao(new HistoricoAlteracoesAdmin(null, idAdmin, idRegistro, "USUARIO", "insert", new JsonObject(), jsonObject, null), connection);
+
+                connection.commit();
+                return SUCESSO;
+            }catch (SQLException | IllegalArgumentException exception){
+                connection.rollback();
+                throw exception;
+            }
+
+        }catch (SQLException | IllegalArgumentException exception){
+            if(exception instanceof  SQLException)
+                return ConstraintsBanco.foiCausadoPorQual((SQLException) exception);
+
+            return ERRO_GENERICO;
         }
-
-        return SUCESSO;//dao.insert(criarInstrucaoDinamica);
     }
 
 

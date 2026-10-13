@@ -32,23 +32,32 @@ public final class LoginService {
         List<GenericExceptionEnum> erros = logAcessosAdminService.validarDados(userAgent);
 
         try(Connection connection = Conexao.getConnection()){
-            Admin admin = buscarAdminPorEmail(email, connection);
-            Long idAdmin;
-            if(admin != null){
-                if(!admin.isEmAtividade())
-                    erros.add(ADMIN_INATIVO);
-                else if(!senhaCerta(admin.getSenha(), senha))
-                    erros.add(SENHA_INVALIDA);
-                idAdmin = admin.getId();
-                admin = new Admin(admin.getId(), admin.getEmail(), admin.getNome(), "SENHA_SECRETA", admin.getFuncao(), admin.isEmAtividade());
-            }else{
-                idAdmin = null;
+            connection.setAutoCommit(false);
+
+            try {
+                Admin admin = buscarAdminPorEmail(email, connection);
+                Long idAdmin;
+                if (admin != null) {
+                    if (!admin.isEmAtividade())
+                        erros.add(ADMIN_INATIVO);
+                    else if (!senhaCerta(admin.getSenha(), senha))
+                        erros.add(SENHA_INVALIDA);
+                    idAdmin = admin.getId();
+                    admin = new Admin(admin.getId(), admin.getEmail(), admin.getNome(), "SENHA_SECRETA", admin.getFuncao(), admin.isEmAtividade());
+                } else {
+                    idAdmin = null;
+                }
+
+
+                logAcessosAdminService.salvarAcessoDoAdmin(erros, userAgent, ip, idAdmin, connection);
+
+                connection.commit();
+                return erros.isEmpty() ? admin : null;
+                //Essa escolha foi feita para que o usuário só saiba que não deu certo, garantindo que ele não saiba se foi o email ou senha
+            }catch (SQLException | IllegalArgumentException exception){
+                connection.rollback();
+                throw exception;
             }
-
-            logAcessosAdminService.salvarAcessoDoAdmin(erros, userAgent, ip, idAdmin, connection);
-
-            return erros.isEmpty() ? admin : null;
-            //Essa escolha foi feita para que o usuário só saiba que não deu certo, garantindo que ele não saiba se foi o email ou senha
         }catch (SQLException | IllegalArgumentException exception){
             exception.printStackTrace();
             return null;
