@@ -10,7 +10,8 @@ public enum ErrosDadosProfissional implements GenericExceptionEnum{
     CPF_VAZIO(206, "Nenhum CPF foi inserido", "cpf"),
     CPF_TAMANHO_INVALIDO(207, "O CPF inserido não possui 11 dígitos", "cpf"),
     CPF_INVALIDO(208, "O CPF inserido é inválido", "cpf"),
-    CPF_NAO_NUMERICO(209, "O CPF inserido não possuí apenas valores numéricos", "cpf");
+    CPF_NAO_NUMERICO(209, "O CPF inserido não possuí apenas valores numéricos", "cpf"),
+    DOCUMENTO_CONTRATO_VAZIO(210, "O documento de contrato não pode ser vazio!", "documento-contrato");
 
     private final int codigo;
     private final String mensagem;

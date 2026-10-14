@@ -23,12 +23,11 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
 
     padding: 1rem 0;
 
-    gap: 2.5rem;
 
     position: fixed;
     top:0;
@@ -141,7 +140,7 @@
 }
 
 .caixa-sidebar:has(> img){
-    height: 4.5%;
+    height: 2rem;
     width: 80%;
 }
 
@@ -317,11 +316,15 @@ th {
     padding: 0 10px;
 
     align-items: center;
-
 }
 
 td {
     height: 2.5rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+    text-align: center;
+    align-items: center;
+
 }
 
 tbody tr:nth-child(even) {
@@ -330,6 +333,41 @@ tbody tr:nth-child(even) {
 
 tbody tr:nth-child(odd) {
     background-color: rgb(from var(--black) r g b / 0.1);
+}
+
+td:has(.editar, .excluir){
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.2rem;
+
+}
+
+.editar, .excluir{
+    background-color: inherit;
+    border: none;
+    padding: 0;
+
+    height: 1.25rem;
+    aspect-ratio: 1/1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer !important;
+    flex-shrink: 0;
+}
+
+.editar img, .excluir img {
+    height: 100%;
+    width: 100%;
+    display: block;
+    object-fit: contain;
+
+    cursor: pointer !important;
 }
 
 /* Pop-ups */
@@ -425,7 +463,7 @@ tbody tr:nth-child(odd) {
     outline: none;
 }
 
-select, input{
+select, input,  .div-update{
     background-color: var(--grey);
     color: rgb(from var(--black) r g b / 0.6);
 
@@ -455,7 +493,7 @@ label{
     color: var(--black);
 }
 
-input::placeholder{
+input::placeholder,  .div-update{
     color: rgb(from var(--black) r g b / 0.7);
 }
 
@@ -464,13 +502,15 @@ option{
 }
 
 /* Pop-up insert */
-#pop-up-insert{
+#pop-up-insert, #pop-up-update{
     width: 35%;
 
-    max-height: 80dvh;
+    max-height: 90dvh;
+
+    overflow: auto;
 }
 
-#conteiner-superior-insert {
+#conteiner-superior-insert, #conteiner-superior-update {
     box-sizing: border-box;
 
     display: flex;
@@ -484,12 +524,12 @@ option{
     position: relative;
 }
 
-#insert-sair {
+#insert-sair, #update-sair {
     position: absolute;
     right: 1rem;
 }
 
-#conteudo-insert{
+#conteudo-insert, #conteudo-update {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -499,7 +539,7 @@ option{
     gap: 1rem;
 }
 
-#conteudo-insert> div{
+#conteudo-insert> div, #conteudo-update> div{
     display: flex;
     flex-direction: column;
 }
@@ -518,7 +558,7 @@ option{
     flex-direction: column;
 }
 
-.label-e-input> :is(input, select, textarea){
+.label-e-input> :is(input, select, textarea), .div-update{
     height: 2rem;
     padding: 0 0.5rem;
 
@@ -527,7 +567,7 @@ option{
     border-color: var(--grey);
 }
 
-#senha-container {
+.senha-container {
     position: relative;
     display: inline-block;
 
@@ -535,7 +575,7 @@ option{
     height: 2rem;
 }
 
-#senha {
+#senha, #senha-update {
     width: 100%;
     padding: 10px;
     padding-right: 40px;
@@ -545,7 +585,7 @@ option{
     border-color: var(--grey);
 }
 
-#olho-senha {
+#olho-senha, #olho-senha-update {
     position: absolute;
     right: 12px;
     top: 50%;
@@ -560,11 +600,12 @@ option{
 #pop-up-filtro{
     box-sizing: border-box;
 
-    width: 40%;
+    width: 60%;
 
     max-height: 80dvh;
     padding: 1rem 2rem;
 
+    overflow: auto;
 }
 
 #conteiner-superior-filtro{
@@ -576,6 +617,7 @@ option{
 
     padding-bottom: 1rem;
     height: auto;
+    width: 100%;
 }
 
 #conteudo-filtro{
@@ -597,12 +639,8 @@ option{
 }
 
 #enviar-filtro{
-    width: 5rem;
+    width: auto;
 }
-
-
-
-
 
 #formulario-filtro{
 
@@ -670,19 +708,43 @@ option{
     aspect-ratio: 1/1;
 }
 
-
-
-
-/* @media(max-width: 767px){
-    .side-bar {
-        width: 14.5%;
+@media(max-width: 1000px){
+    #pop-up-filtro{
+        width: 90% !important;
+        height: max-content;
     }
+
+    #pop-up-filtro .botoes-pop-up-laranjas {
+        min-width: max-content;
+        white-space: normal;
+        overflow-wrap: break-word;
+    }
+
+
+
+    #conteiner-superior-filtro{
+        flex-wrap: wrap;
+
+        height: auto;
+        gap: 0.5rem;
+    }
+
+}
+
+
+@media(max-width: 767px){
+
 
     #conteiner-botoes {
         height: 6%;
 
         padding-bottom: 0.5%;
         padding-left: 10% ;
+    }
+
+    .botoes-brancos, .botoes-laranjas{
+        width: max-content !important;
+        padding: 0 0.5rem !important;
     }
 
     .botoes-pop-up{
@@ -694,5 +756,28 @@ option{
         height: 84%;
     }
 
+    #pop-up-insert{
+        width: 90%;
+    }
 
-} */
+    #pop-up-insert .botoes-pop-up-laranjas {
+        white-space: normal;
+        overflow-wrap: break-word;
+    }
+
+    #conteiner-superior-insert{
+        height: max-content;
+        justify-content: space-between;
+    }
+}
+
+@media(max-width: 500px){
+
+    #botoes-filtro{
+        flex: 1 0 calc(50% - 10px) !important;
+        flex-wrap: wrap;
+
+        height: max-content;
+    }
+
+}

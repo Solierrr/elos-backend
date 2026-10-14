@@ -18,7 +18,7 @@ public final class HistoricoAlteracoesAdminService {
         criarInstrucaoDinamica.setCampo("tabela_modificada", historicoAlteracoesAdmin.getTabelaModificada(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo("acao", historicoAlteracoesAdmin.getAcao(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo("dados_antigos", historicoAlteracoesAdmin.getDadosAntigos(), Types.OTHER);
-        criarInstrucaoDinamica.setCampo("dados_atualizados", historicoAlteracoesAdmin.getDadosAntigos(), Types.OTHER);
+        criarInstrucaoDinamica.setCampo("dados_atualizados", historicoAlteracoesAdmin.getDadosAtualizados(), Types.OTHER);
 
         HistoricoAlteracoesAdminDAO dao = new HistoricoAlteracoesAdminDAO();
 

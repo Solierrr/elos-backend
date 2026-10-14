@@ -20,6 +20,15 @@ public class Usuario {
         this.raioProcuraKm = raioProcuraKm;
     }
 
+    public Usuario(Long id, TiposUsuario tipoUsuario, String email, String nome,
+        Double raioProcuraKm) {
+        this.id = id;
+        this.tipoUsuario = tipoUsuario;
+        this.email = email;
+        this.nome = nome;
+        this.raioProcuraKm = raioProcuraKm;
+    }
+
     //Getters e Setters
     public Long getId() {
         return id;

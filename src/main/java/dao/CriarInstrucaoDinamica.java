@@ -77,8 +77,8 @@ public final class CriarInstrucaoDinamica {
         String camposEmString = camposEmStringBuilder.toString();
 
         return ("insert into " + tabela
-                + "(" + camposEmString + ")"
-                + " values(" + listaInterrogacoes + ")").trim();
+            + "(" + camposEmString + ")"
+            + " values(" + listaInterrogacoes + ")").trim();
     }
 
     public String construirUpdate(String tabela) {
@@ -113,8 +113,9 @@ public final class CriarInstrucaoDinamica {
     }
 
     public void setWhere(String campoWhere, AcoesInstrucao operacaoWhere, AcoesInstrucao operadorLogico,
-                         Object valorWhere, int dataType) {
-        condicoesWhere.add(new CondicaoWhere(campoWhere, operacaoWhere, operadorLogico, valorWhere, dataType));
+        Object valorWhere, int dataType) {
+        Object valorTratado = tratarValorWhere(operacaoWhere, valorWhere);
+        condicoesWhere.add(new CondicaoWhere(campoWhere, operacaoWhere, operadorLogico, valorTratado, dataType));
     }
 
     public void setOrderBy(String campo, AcoesInstrucao sentido) {
@@ -168,8 +169,8 @@ public final class CriarInstrucaoDinamica {
             }
 
             sb.append(condicaoWhere.campo())
-                    .append(condicaoWhere.operacao().getAcao())
-                    .append("? ");
+                .append(condicaoWhere.operacao().getAcao())
+                .append("? ");
         }
         return sb.toString().strip();
     }
@@ -200,10 +201,18 @@ public final class CriarInstrucaoDinamica {
             }
 
             sb.append(join.tipo().getAcao())
-                    .append(" ").append(join.tabela())
-                    .append(" on ").append(join.condicao());
+                .append(" ").append(join.tabela())
+                .append(" on ").append(join.condicao());
         }
         return sb.toString();
+    }
+
+    //Utilitários para tratar valores das condições
+    private Object tratarValorWhere(AcoesInstrucao operacaoWhere, Object valorWhere) {
+        if (operacaoWhere == AcoesInstrucao.ILIKE && valorWhere instanceof String valorString) {
+            return "%" + valorString + "%";
+        }
+        return valorWhere;
     }
 
     //Utilitários para caso de erro

@@ -1,6 +1,7 @@
 package dao;
 
 import static exception.ErrosDadosProfissional.CPF_INVALIDO;
+import static exception.ErrosDadosProfissional.DOCUMENTO_CONTRATO_VAZIO;
 import static exception.ErrosDadosProfissional.ID_FORNECEDOR_NAO_REGISTRADO;
 import static exception.ErrosDadosTelefone.TELEFONE_INVALIDO;
 import static exception.ErrosGerais.ERRO_GENERICO;
@@ -34,7 +35,8 @@ public enum ConstraintsBanco {
     HISTORICO_ALTERACOES_ID_ADMIN_FKEY("historico_alteracoes_id_admin_fkey", null),
     LOG_ACESSOS_ADMIN_ID_ADMIN_FKEY("log_acessos_admin", null),
     TELEFONE_ADMIN_ID_ADMIN_FKEY("telefone_admin_id_admin_fkey", TELEFONE_INVALIDO),
-    TELEFONE_ADMIN_TELEFONE_KEY("telefone_admin_telefone_key", ID_USUARIO_NAO_REGISTRADO);
+    TELEFONE_ADMIN_TELEFONE_KEY("telefone_admin_telefone_key", ID_USUARIO_NAO_REGISTRADO),
+    VINCULO_FORNECEDOR_COM_DOCUMENTO("vinculo_fornecedor_com_documento", DOCUMENTO_CONTRATO_VAZIO);
 
     private final String constraint;
     private final GenericExceptionEnum enumAssociado;

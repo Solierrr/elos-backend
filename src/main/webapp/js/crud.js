@@ -13,7 +13,7 @@ formularioInsert.addEventListener('invalid', event => {
     const span = document.getElementById(`erro-${input.name}`);
 
     span.textContent = mensagensInsertSpans[span.id];
-    
+
     input.classList.add("caixa-erro");
 
 }, true);
@@ -37,7 +37,7 @@ formularioInsert.addEventListener('submit', (event) =>{
     const todosInputs = formularioInsert.querySelectorAll('input, select, textarea');
     todosInputs.forEach(input => {
         input.classList.remove('caixa-erro'); // Remove a classe de erro se existir
-        
+
         // Se você colocou span com texto de erro embaixo, pode limpá-lo também:
         const spanErro = formularioInsert.querySelector(`#erro-${input.name}`);
         if (spanErro){ spanErro.textContent = '';}
@@ -74,6 +74,7 @@ formularioInsert.addEventListener('submit', (event) =>{
             if (resultado.ok && !temErros) {
                 alert('Usuário cadastrado com sucesso!');
                 formularioInsert.reset();
+                document.getElementById("dados-mutaveis").innerHTML = "";
             } else {
                 Object.entries(errosNoServlet).forEach(([nomeDoCampo, mensagemDeErro]) => {
 
@@ -96,7 +97,7 @@ formularioInsert.addEventListener('submit', (event) =>{
         });
 });
 
-import { camposValores } from './variacoesFiltros.js'; 
+import { camposValores } from './variacoesFiltros.js';
 
 let camposTotais;
 let camposDisponiveis;
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (elementoNomeArquivo) {
         const nomeTela = elementoNomeArquivo.value;
-        
+
         camposTotais = camposValores(nomeTela);
         camposDisponiveis = camposValores(nomeTela);
 
@@ -129,7 +130,7 @@ botaoAdicionarFiltro.addEventListener('click', () => {
     }
 
     const valores = camposDisponiveis[valorCampoFiltro];
-    
+
     if(!valores){
         return;
     }else{
@@ -190,19 +191,18 @@ const recriarOptionNoSelect = (chave) => {
 
 const popUpFiltro = document.getElementById("pop-up-filtro");
 
-formularioFiltro.addEventListener("submit", event => {
-    event.preventDefault();
-
+// Função que faz o envio (extraída do listener)
+const enviarFiltro = () => {
     const todosInputs = formularioFiltro.querySelectorAll('input, select, textarea');
     todosInputs.forEach(input => {
         input.classList.remove('caixa-erro');
 
-        const spanErro = formularioFiltro.querySelector(`#filtro-erro-${input.name}`);
+        const nomeBase = input.name.replace(/-filtro$/, '');
+        const spanErro = formularioFiltro.querySelector(`#filtro-erro-${nomeBase}`);
         if (spanErro) { spanErro.textContent = ''; }
     });
 
     const dadosFormulario = new FormData(formularioFiltro);
-
     const objetoJs = Object.fromEntries(dadosFormulario);
     const dadosJSON = JSON.stringify(objetoJs);
 
@@ -213,42 +213,58 @@ formularioFiltro.addEventListener("submit", event => {
         },
         body: dadosJSON
     })
-        .then(respostaServlet => {
-            return respostaServlet.text().then(texto => {
-                return {
-                    ok: respostaServlet.ok,
-                    estaVazio: texto.trim() === '',
-                    texto: texto
-                };
-            });
-        })
-        .then(resultado => {
-            if (resultado.ok && resultado.estaVazio) {
-                popUpFiltro.close();
-                return;
-            }
-
-            if (resultado.estaVazio) { return; }
-
-            const dadosResposta = JSON.parse(resultado.texto);
-
-            if (Array.isArray(dadosResposta.valores)) {
-                // Resposta de sucesso com dados para a tabela
-                preencherTabela(dadosResposta.valores);
-            } else {
-                // Resposta de erro: { nome-campo: msg, ... }
-                preencherErros(dadosResposta);
-            }
-        })
-        .catch(erro => {
-            console.error('Erro ao processar requisição:', erro);
+    .then(respostaServlet => {
+        return respostaServlet.text().then(texto => {
+            return {
+                ok: respostaServlet.ok,
+                estaVazio: texto.trim() === '',
+                texto: texto
+            };
         });
+    })
+    .then(resultado => {
+        if (resultado.ok && resultado.estaVazio) {
+            popUpFiltro.close();
+            return;
+        }
+
+        if (resultado.estaVazio) { return; }
+
+        const dadosResposta = JSON.parse(resultado.texto);
+
+        if (Array.isArray(dadosResposta.valores)) {
+            preencherTabela(dadosResposta.valores);
+        } else if (Object.keys(dadosResposta).length === 0) {
+            alert('Nenhum registro encontrado.');
+        } else {
+            preencherErros(dadosResposta);
+        }
+    })
+    .catch(erro => {
+        console.error('Erro ao processar requisição:', erro);
+    });
+};
+
+// Listener do submit do form continua chamando a mesma função
+formularioFiltro.addEventListener("submit", event => {
+    event.preventDefault();
+    enviarFiltro();
 });
+
+const botaoEnviarFiltro = document.getElementById("enviar-filtro");
+
+botaoEnviarFiltro.addEventListener("click", event => {
+    enviarFiltro()
+})
+
+// Dispara o envio automaticamente ao carregar a página,
+// com o FormData ainda vazio (nenhum filtro preenchido)
+enviarFiltro();
 
 // Preenche os spans de erro de cada campo do formulário
 const preencherErros = (errosNoServlet) => {
     Object.entries(errosNoServlet).forEach(([nomeDoCampo, mensagemDeErro]) => {
-        const inputDoForm = formularioFiltro.querySelector(`[name="${nomeDoCampo}"]`);
+        const inputDoForm = formularioFiltro.querySelector(`[name="${nomeDoCampo}-filtro"]`);
 
         if (inputDoForm) {
             inputDoForm.classList.add('caixa-erro');
@@ -260,6 +276,8 @@ const preencherErros = (errosNoServlet) => {
         }
     });
 };
+
+const imagensTabela = document.getElementById("imagens-tabela");
 
 // Preenche o cabeçalho e o corpo da tabela dinamicamente,
 // a partir das chaves presentes nos objetos de "valores"
@@ -307,8 +325,8 @@ const preencherTabela = (valores) => {
         const tdAcoes = document.createElement('td');
         tdAcoes.className = 'littleText';
         tdAcoes.innerHTML = `
-            <button type="button" class="editar-usuario" data-id="${item.id ?? ''}">Editar</button>
-            <button type="button" class="excluir-usuario" data-id="${item.id ?? ''}">Excluir</button>
+            <button class="editar" data-id="${item.id ?? ''}"><img src="${imagensTabela.dataset.urlEditar}" alt="editar"></button>
+            <button class="excluir" data-id="${item.id ?? ''}"><img src="${imagensTabela.dataset.urlApagar}" alt="apagar"></button>
         `;
         linha.appendChild(tdAcoes);
 
@@ -324,30 +342,48 @@ const formatarNomeColuna = (chave) => {
         .replace(/\b\w/g, letra => letra.toUpperCase());
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    carregarDadosIniciais();
-});
 
-const carregarDadosIniciais = () => {
-    const formDadosIniciais = document.getElementById('receber-dados-iniciais');
-    if (!formDadosIniciais) return;
+const formularioDelete = document.getElementById("formulario-delete");
+const corpoTabelaGlobal = document.querySelector('#caixa-tabela table tbody');
 
-    fetch(formDadosIniciais.action, {
-        method: 'GET'
+corpoTabelaGlobal.addEventListener("click", event => {
+    const botao = event.target.closest('.excluir');
+    if (!botao) return;
+
+    const id = botao.dataset.id;
+
+    const dadoFormulario = new FormData();
+    dadoFormulario.append('id', id);
+
+    const objetoJs = Object.fromEntries(dadoFormulario);
+    const dadosJSON = JSON.stringify(objetoJs);
+
+    fetch(formularioDelete.action, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: dadosJSON
     })
-        .then(resposta => resposta.text())
-        .then(texto => {
-            if (texto.trim() === '') return;
-
-            const dadosResposta = JSON.parse(texto);
-
-            if (Array.isArray(dadosResposta.valores)) {
-                preencherTabela(dadosResposta.valores);
-            } else {
-                preencherErros(dadosResposta);
-            }
-        })
-        .catch(erro => {
-            console.error('Erro ao carregar dados iniciais:', erro);
+    .then(respostaServlet => {
+        return respostaServlet.text().then(texto => {
+            return {
+                ok: respostaServlet.ok,
+                estaVazio: texto.trim() === '',
+                texto: texto
+            };
         });
-};
+    })
+    .then(resultado => {
+        if (resultado.estaVazio) {
+            alert("Exclusão feita com sucesso!");
+            enviarFiltro();
+        } else {
+            alert("Erro na exclusão, tente novamente!");
+        }
+    })
+    .catch(erro => {
+        console.error('Erro ao excluir:', erro);
+        alert("Erro na exclusão, tente novamente!");
+    });
+});

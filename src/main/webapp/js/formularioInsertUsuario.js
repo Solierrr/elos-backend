@@ -129,6 +129,13 @@ document.addEventListener('change', event => {
                     </div>
                     <span id="erro-id-fornecedor" class="span-erro"></span>
                 </div>
+                <div>
+                    <div class="label-e-input">
+                        <label for="documento-contrato">Link do documento do contrato</label>
+                        <input type="text" name="documento-contrato" id="documento-contrato" required>                
+                    </div>
+                    <span id="erro-documento-contrato" class="span-erro"></span>
+                </div>
             `;
         } else {
             conteinerIdFornecedor.innerHTML = '';
@@ -139,7 +146,9 @@ document.addEventListener('change', event => {
 
 //Partes relacionadas ao botão da senha:
 const botaoSenha = document.getElementById('olho-senha');
+const botaoSenhaUpdate = document.getElementById('olho-senha-update');
 const inputSenha = document.getElementById('senha');
+const inputSenhaUpdate = document.getElementById('senha-update');
 
 //Botão de mostrar a senha
 botaoSenha.addEventListener('click', () => {
@@ -154,4 +163,15 @@ botaoSenha.addEventListener('click', () => {
     inputSenha.type = tipo;
 });
 
+botaoSenhaUpdate.addEventListener('click', () => {
+    const tipo = inputSenhaUpdate.type === 'password' ? 'text' : 'password';
+
+    if (tipo === 'text') {
+        botaoSenhaUpdate.src = botaoSenhaUpdate.dataset.urlOlho;
+    } else {
+        botaoSenhaUpdate.src = botaoSenhaUpdate.dataset.urlOculto;
+    }
+
+    inputSenhaUpdate.type = tipo;
+});
 

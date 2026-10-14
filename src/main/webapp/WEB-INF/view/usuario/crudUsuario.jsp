@@ -16,6 +16,8 @@
 </head>
 <body>
 <input type="hidden" value="usuario" id="nome-do-arquivo">
+<span id="imagens-tabela" data-url-editar="${pageContext.request.contextPath}/assets/icone/crud/caneta_editar.svg"
+      data-url-apagar="${pageContext.request.contextPath}/assets/icone/crud/lixeira_apagar.svg"></span>
 
 <div class="conteiner">
     <nav class="side-bar" id="side-bar-id">
@@ -129,33 +131,88 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                    <td>a</td>
-                </tr>
+
                 </tbody>
             </table>
         </div>
 
+        <dialog class="pop-up" id="pop-up-update">
+            <form id="formulario-update" method="POST"
+                  action="${pageContext.request.contextPath}/crudUsuario-update">
+                <div id="conteiner-superior-update">
+                    <button type="submit" name="enviar-insert" id="enviar-update"
+                            class="botoes-pop-up-laranjas">Atualizar usuário
+                    </button>
+                    <button id="update-sair" type="button" class="botoes-sair"><img
+                            src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
+                            alt="" class="icone-sair"></button>
+                </div>
+
+                <div id="conteudo-update">
+                    <div>
+                        <div class="label-e-input">
+                            <label for="email">E-mail</label>
+                            <input type="email" name="email" id="email-update"
+                                   placeholder="ex: meu.email@gmail.com">
+                        </div>
+                        <span id="erro-email" class="span-erro"></span>
+                    </div>
+                    <div>
+                        <div class="label-e-input">
+                            <label for="senha">Senha</label>
+                            <div class="senha-container">
+                                <input id="senha-update" type="password" name="senha"
+                                       placeholder="Coloque a senha do usuário"
+                                       pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
+                                <img id="olho-senha-update"
+                                     src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
+                                     data-url-olho="${pageContext.request.contextPath}/assets/icone/olho.svg"
+                                     data-url-oculto="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
+                                     alt="Mostrar senha">
+                            </div>
+
+                        </div>
+                        <span id="erro-senha" class="span-erro"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-e-input">
+                            <label for="nome">Nome</label>
+                            <input type="text" name="nome" id="nome-update"
+                                   placeholder="ex: Roger dos santos"
+                            >
+                        </div>
+                        <span id="erro-nome" class="span-erro"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-e-input">
+                            <label for="raio-procura-km">Raio de procura (KM)</label>
+                            <input type="text" placeholder="ex: 10" name="raio-procura-km-update"
+                                   id="raio-procura-km"  pattern="[0-9.,]+">
+                        </div>
+                        <span id="erro-raio-procura-km" class="span-erro"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-e-input">
+                            <label for="tipo-usuario">Tipo do usuário</label>
+                            <div for="tipo-usuario" class="div-update" id="tipo-usuario-update"></div>
+                        </div>
+                        <span id="erro-tipo-usuario" class="span-erro"></span>
+                    </div>
+                </div>
+            </form>
+        </dialog>
+
         <dialog class="pop-up" id="pop-up-insert">
-            <form id="formulario-insert" method="POST" action="${pageContext.request.contextPath}/crudUsuario-insert">
+            <form id="formulario-insert" method="POST"
+                  action="${pageContext.request.contextPath}/crudUsuario-insert">
                 <div id="conteiner-superior-insert">
                     <button type="submit" name="enviar-insert" id="enviar-insert"
                             class="botoes-pop-up-laranjas">Adicionar usuário
                     </button>
-                    <button id="insert-sair" class="botoes-sair"><img
+                    <button id="insert-sair" type="button" class="botoes-sair"><img
                             src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
                             alt="" class="icone-sair"></button>
                 </div>
@@ -172,10 +229,10 @@
                     <div>
                         <div class="label-e-input">
                             <label for="senha">Senha</label>
-                            <div id="senha-container">
+                            <div class="senha-container">
 
 
-                                <input class="text-input" id="senha" type="password" name="senha"
+                                <input  id="senha" type="password" name="senha"
                                        placeholder="Coloque a senha do usuário" required
                                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                                 <img id="olho-senha"
@@ -194,7 +251,7 @@
                             <label for="nome">Nome</label>
                             <input type="text" name="nome" id="nome" required
                                    placeholder="ex: Roger dos santos"
-                                   pattern="[\p{Script=Latin}0-9&,.;\u0027\-\s]+">
+                                  >
                         </div>
                         <span id="erro-nome" class="span-erro"></span>
                     </div>
@@ -248,23 +305,25 @@
                     </button>
                     <button id="enviar-filtro" class="botoes-pop-up-laranjas">Filtrar</button>
                 </div>
-                <button id="filtro-sair" class="botoes-sair"><img
+                <button id="filtro-sair" type="button" class="botoes-sair"><img
                         src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
                         alt="" class="icone-sair"></button>
             </div>
 
             <div id="conteudo-filtro">
-                <form action="POST" id="formulario-filtro" action="${pageContext.request.contextPath}/crudUsuario">
+                <form method="POST" id="formulario-filtro"
+                      action="${pageContext.request.contextPath}/crudUsuario">
 
                 </form>
             </div>
         </dialog>
     </div>
 
-    <form action="GET" id="receber-dados-iniciais" action="${pageContext.request.contextPath}/crudUsuario">
-    </form>
-
 </div>
+
+<form action="${pageContext.request.contextPath}/crudUsuario-delete" method="POST" id="formulario-delete">
+
+</form>
 
 <script type="module" src="${pageContext.request.contextPath}/js/crud.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>

@@ -42,6 +42,8 @@ public final class ProfissionalService {
 
     //Validação do id fornecedor
     private static GenericExceptionEnum validarIdFornecedor(String idFornecedor){
+        if(idFornecedor == null)
+            return VALIDACAO_OK;
         if(ValidacoesComunsService.validarId(idFornecedor) != VALIDACAO_OK){
             return ID_FORNECEDOR_INVALIDO;
         }
@@ -277,7 +279,7 @@ public final class ProfissionalService {
             clausulaWhereValorValidacao = validarProfissao(clausulaWhereValor);
         }
 
-        if (clausulaWhere == CPF){
+        if (clausulaWhere == CPF_AES){
             clausulaWhereValorValidacao = validarCpf(clausulaWhereValor, false);
         }
 

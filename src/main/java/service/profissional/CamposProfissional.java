@@ -15,8 +15,10 @@ public enum CamposProfissional implements GenericEnumCampos {
     ID_USUARIO("id_usuario", true, IGUAL, Types.BIGINT),
     TIPO_USUARIO("tipo_usuario", true, IGUAL, Types.BIGINT),
     PROFISSAO("profissao", true, ILIKE, Types.VARCHAR),
-    CPF("cpf", true, IGUAL, Types.VARCHAR),
+    CPF_AES("cpf_aes", true, VAZIO, Types.BINARY),
+    CPF_HMAC("cpf_hmac", true, IGUAL, Types.VARCHAR),
     ID_FORNECEDOR("id_fornecedor", true, IGUAL, Types.BIGINT),
+    DOCUMENTO_CONTRATO("documento_contrato", true, VAZIO, Types.VARCHAR),
     GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true, VAZIO, null),
     INVALIDO("campo_do_profissional_invalido", true, VAZIO, null);
 

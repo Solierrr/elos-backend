@@ -54,7 +54,6 @@ public final class InsertUsuarioServlet extends HttpServlet {
 
         List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(jsonObject, admin.getId());
 
-
         if(!mensagensInsert.isEmpty()){
             Map<String, String> mapaJson = new HashMap<>();
             for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {
