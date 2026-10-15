@@ -33,7 +33,7 @@ public class Criptografia extends Env {
         return BCrypt.checkpw(senhaSemHash, senhaComHash);
     }
 
-    public  String criptografarHmac(String stringParaHmac) {
+    public String criptografarHmac(String stringParaHmac) {
         try {
             Mac gerarMac = Mac.getInstance(NOME_ALGORITMO_HMAC);
             gerarMac.init(new SecretKeySpec(HMAC_KEY, NOME_ALGORITMO_HMAC));

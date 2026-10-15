@@ -16,7 +16,7 @@ public final class CriarInstrucaoDinamica {
 
     private record OrderBy(String campo, AcoesInstrucao sentido) {}
 
-    private record JoinInfo(AcoesInstrucao tipo, String tabela, String condicao) {}
+    private record DadosJoin(AcoesInstrucao tipo, String tabelaDestino, String conectorOrigem, String conectorDestino) {}
 
     //Atributos
     private final List<CampoComValor> camposInsertOuUpdate = new ArrayList<>();
@@ -25,21 +25,27 @@ public final class CriarInstrucaoDinamica {
 
     private final List<OrderBy> orderBys = new ArrayList<>();
 
-    private final List<JoinInfo> joins = new ArrayList<>();
+    private final List<DadosJoin> joins = new ArrayList<>();
 
     //metodos para construir as instruções
     public String construirSelect(String tabela) {
         exigirTabela(tabela);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("select * from ").append(tabela);
+        sb.append("select ")
+                .append(tabela).append(".* ");
+
+        for(DadosJoin dadosJoin : joins)
+            sb.append(", ").append(dadosJoin.tabelaDestino()).append(".* ");
+
+        sb.append(" from ").append(tabela);
 
         if (!joins.isEmpty()) {
-            sb.append(" ").append(construirJoin());
+            sb.append(" ").append(construirJoin(tabela));
         }
 
         if (!condicoesWhere.isEmpty()) {
-            sb.append(" where ").append(construirWhere());
+            sb.append(" where ").append(construirWhere(tabela));
         }
 
         if (!orderBys.isEmpty()) {
@@ -53,7 +59,7 @@ public final class CriarInstrucaoDinamica {
         exigirTabela(tabela);
         exigirWhere();
 
-        return ("delete from " + tabela + " where " + construirWhere()).strip();
+        return ("delete from " + tabela + " where " + construirWhere(tabela)).strip();
     }
 
     public String construirInsert(String tabela) {
@@ -78,7 +84,7 @@ public final class CriarInstrucaoDinamica {
 
         return ("insert into " + tabela
             + "(" + camposEmString + ")"
-            + " values(" + listaInterrogacoes + ")").trim();
+            + " values(" + listaInterrogacoes + ")").strip();
     }
 
     public String construirUpdate(String tabela) {
@@ -102,7 +108,7 @@ public final class CriarInstrucaoDinamica {
 
             sb.append(campo).append(" = coalesce(?, ").append(campo).append(")");
         }
-        sb.append(" where ").append(construirWhere());
+        sb.append(" where ").append(construirWhere(tabela));
 
         return sb.toString().strip();
     }
@@ -122,14 +128,17 @@ public final class CriarInstrucaoDinamica {
         orderBys.add(new OrderBy(campo, sentido));
     }
 
-    public void setJoin(AcoesInstrucao tipo, String tabela, String condicao) {
-        if (tabela == null || tabela.isBlank()) {
+    public void setJoin(AcoesInstrucao tipo, String tabelaDestino, String conectorOrigem, String conectorDestino) {
+        if (tabelaDestino == null || tabelaDestino.isBlank()) {
             throw new IllegalArgumentException("Nenhuma tabela de join inserida");
         }
-        if (condicao == null || condicao.isBlank()) {
-            throw new IllegalArgumentException("Nenhuma condição de join inserida");
+        if (conectorOrigem == null || conectorOrigem.isBlank()) {
+            throw new IllegalArgumentException("O  conector 1 não foi inserido");
         }
-        joins.add(new JoinInfo(tipo, tabela, condicao));
+        if (conectorDestino == null || conectorDestino.isBlank()) {
+            throw new IllegalArgumentException("O  conector 2 não foi inserido");
+        }
+        joins.add(new DadosJoin(tipo, tabelaDestino, conectorOrigem, conectorDestino ));
     }
 
     public void aplicarValoresDoPreparedStatement(PreparedStatement preparedStatement) throws SQLException {
@@ -148,17 +157,16 @@ public final class CriarInstrucaoDinamica {
         return index;
     }
 
-    private int aplicarValoresWhere(PreparedStatement preparedStatement, int index) throws SQLException {
+    private void aplicarValoresWhere(PreparedStatement preparedStatement, int index) throws SQLException {
         for (CondicaoWhere condicaoWhere : condicoesWhere) {
             DataTypesUsados dataTypeAtual = DataTypesUsados.descobrirDataType(condicaoWhere.dataType());
             dataTypeAtual.realizarSet(preparedStatement, index, condicaoWhere.valor());
             index++;
         }
-        return index;
     }
 
     //Utilitários para construir partes da instrução
-    private String construirWhere() {
+    private String construirWhere(String tabela) {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < condicoesWhere.size(); i++) {
@@ -168,7 +176,9 @@ public final class CriarInstrucaoDinamica {
                 sb.append(condicaoWhere.operadorLogico().getAcao()).append(" ");
             }
 
-            sb.append(condicaoWhere.campo())
+            sb.append(tabela)
+                .append(".")
+                .append(condicaoWhere.campo())
                 .append(condicaoWhere.operacao().getAcao())
                 .append("? ");
         }
@@ -190,19 +200,26 @@ public final class CriarInstrucaoDinamica {
         return sb.toString();
     }
 
-    private String construirJoin() {
+    private String construirJoin(String tabelaOrigem) {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < joins.size(); i++) {
-            JoinInfo join = joins.get(i);
+            DadosJoin join = joins.get(i);
 
             if (i > 0) {
                 sb.append(" ");
             }
 
             sb.append(join.tipo().getAcao())
-                .append(" ").append(join.tabela())
-                .append(" on ").append(join.condicao());
+                .append(" ").append(join.tabelaDestino())
+                .append(" on ")
+                .append(tabelaOrigem)
+                .append(".")
+                .append(join.conectorOrigem())
+                .append("=")
+                .append(join.tabelaDestino())
+                .append(".")
+                .append(join.conectorDestino());
         }
         return sb.toString();
     }

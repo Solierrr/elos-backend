@@ -1,24 +1,20 @@
 package dao;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
 import static exception.ErrosGerais.SUCESSO;
-import static exception.ErrosGeraisDados.CNPJ_INVALIDO;
-import static exception.ErrosGeraisDados.ID_USUARIO_INVALIDO;
 
-import conexao.Conexao;
-import exception.ErrosDoSQL;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.EmpresaDemandante;
-import model.TiposUsuario;
 
 public final class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
 
@@ -40,26 +36,29 @@ public final class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante>
     }
 
     @Override
-    public List<EmpresaDemandante> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<EmpresaDemandante> empresaDemandantes = new ArrayList<>();
+    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        List<Map<String, Object>> dados = new ArrayList<>();
 
-        PreparedStatement preparedStatement =
-                connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-
+        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            empresaDemandantes.add(
-                    new EmpresaDemandante(
-                            resultSet.getLong("id"),
-                            resultSet.getLong("id_usuario"),
-                            TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                            resultSet.getString("cnpj"),
-                            resultSet.getString("razao_social"),
-                            resultSet.getBoolean("eh_mandante")));
+            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+
+            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+                String nomeColuna = resultSetMetaData.getColumnName(i);
+
+                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+                else
+                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+            }
+
+            dados.add(valoresRegistroAtual);
         }
-        return empresaDemandantes;
+        return dados;
     }
 
     @Override

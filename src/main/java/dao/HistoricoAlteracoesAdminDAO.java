@@ -6,11 +6,13 @@ import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.HistoricoAlteracoesAdmin;
 
 public final class HistoricoAlteracoesAdminDAO implements GenericDAO<HistoricoAlteracoesAdmin> {
@@ -33,27 +35,29 @@ public final class HistoricoAlteracoesAdminDAO implements GenericDAO<HistoricoAl
     }
 
     @Override
-    public List<HistoricoAlteracoesAdmin> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<HistoricoAlteracoesAdmin> historicoAlteracoesAdmins = new ArrayList<>();
+    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        List<Map<String, Object>> dados = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            historicoAlteracoesAdmins.add(new HistoricoAlteracoesAdmin(
-                    resultSet.getLong("id"),
-                    resultSet.getLong("id_admin"),
-                    resultSet.getLong("id_registro"),
-                    resultSet.getString("tabela_modificada"),
-                    resultSet.getString("acao"),
-                    lerJson(resultSet.getString("dados_antigos")),
-                    lerJson(resultSet.getString("dados_atualizados")),
-                    resultSet.getObject("data_alteracao", OffsetDateTime.class)
-            ));
+            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+
+            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+                String nomeColuna = resultSetMetaData.getColumnName(i);
+
+                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+                else
+                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+            }
+
+            dados.add(valoresRegistroAtual);
         }
-        return historicoAlteracoesAdmins;
+        return dados;
     }
 
     @Override

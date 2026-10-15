@@ -1,6 +1,6 @@
 package service.usuario;
 
-public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nomeFiltro, String tipoUsuarioFiltro, String raioProcuraKmFiltro){
+public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nomeFiltro, String tipoUsuarioFiltro, String raioProcuraKmFiltro, String joinFiltro){
 
   public Long formatarId(){
     return Long.parseLong(idFiltro.strip());
@@ -20,6 +20,10 @@ public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nome
 
   public Double formatarRaioProcura(){
     return Double.parseDouble(raioProcuraKmFiltro.strip().replace(',', '.'));
+  }
+
+  public String formatarJoin(){
+    return joinFiltro.strip().toLowerCase();
   }
 
 }

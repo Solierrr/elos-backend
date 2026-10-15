@@ -258,7 +258,6 @@ botaoEnviarFiltro.addEventListener("click", event => {
 })
 
 // Dispara o envio automaticamente ao carregar a página,
-// com o FormData ainda vazio (nenhum filtro preenchido)
 enviarFiltro();
 
 // Preenche os spans de erro de cada campo do formulário
@@ -342,7 +341,6 @@ const formatarNomeColuna = (chave) => {
         .replace(/\b\w/g, letra => letra.toUpperCase());
 };
 
-
 const formularioDelete = document.getElementById("formulario-delete");
 const corpoTabelaGlobal = document.querySelector('#caixa-tabela table tbody');
 
@@ -369,13 +367,12 @@ corpoTabelaGlobal.addEventListener("click", event => {
         return respostaServlet.text().then(texto => {
             return {
                 ok: respostaServlet.ok,
-                estaVazio: texto.trim() === '',
                 texto: texto
             };
         });
     })
     .then(resultado => {
-        if (resultado.estaVazio) {
+        if (resultado.texto.length === 2) {
             alert("Exclusão feita com sucesso!");
             enviarFiltro();
         } else {

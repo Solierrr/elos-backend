@@ -67,6 +67,25 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-raio-procura-km" class="span-erro"></span>
 
+                </div>`,
+            "JOIN":`
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="TELEFONE">Telefone</option>
+                            <option value="ENDERECO">Endereço</option>
+                            <option value="EMPRESA_DEMANDANTE">Empresa demandante</option>
+                            <option value="FORNECEDOR">Fornecedor</option>
+                            <option value="PROFISSIONAL">Profissional</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+
                 </div>`
         }
     };

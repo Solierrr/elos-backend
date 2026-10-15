@@ -4,14 +4,14 @@ import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.LogAcessosAdmin;
-import model.NavegadoresAdmin;
-import model.SistemasOperacionaisAdmin;
 
 public final class LogAcessosAdminDAO implements GenericDAO<LogAcessosAdmin> {
 
@@ -34,27 +34,29 @@ public final class LogAcessosAdminDAO implements GenericDAO<LogAcessosAdmin> {
     }
 
     @Override
-    public List<LogAcessosAdmin> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<LogAcessosAdmin> logAcessosAdmins = new ArrayList<>();
+    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        List<Map<String, Object>> dados = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            logAcessosAdmins.add(new LogAcessosAdmin(
-                    resultSet.getLong("id"),
-                    resultSet.getLong("id_admin"),
-                    resultSet.getObject("data_alteracao", OffsetDateTime.class),
-                    resultSet.getBoolean("sucesso"),
-                    resultSet.getString("endereco_ip"),
-                    resultSet.getString("motivo_falha"),
-                    NavegadoresAdmin.descobrirNavegadorAdmin(resultSet.getString("navegador")),
-                    SistemasOperacionaisAdmin.descobrirSistemaOperacionalAdmin(resultSet.getString("sistema_operacional"))
-            ));
+            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+
+            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+                String nomeColuna = resultSetMetaData.getColumnName(i);
+
+                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+                else
+                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+            }
+
+            dados.add(valoresRegistroAtual);
         }
-        return logAcessosAdmins;
+        return dados;
     }
 
     @Override

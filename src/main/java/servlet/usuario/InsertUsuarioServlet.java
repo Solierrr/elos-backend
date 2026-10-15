@@ -27,6 +27,8 @@ public final class InsertUsuarioServlet extends HttpServlet {
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
             .create();
 
+    private final UsuarioService usuarioService = new UsuarioService();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -37,23 +39,15 @@ public final class InsertUsuarioServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
 
-        System.out.println("chegou no servlet");
-
-        HttpSession session = request.getSession();
-
+        HttpSession session = request.getSession(true);
         Admin admin = (Admin) session.getAttribute("adm");
-
         if(admin == null)
             response.sendRedirect(request.getContextPath()+"/login");
 
         request.setCharacterEncoding("UTF-8");
-
         JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-        System.out.println(jsonObject.toString());
-
-        List<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(jsonObject, admin.getId());
-
+        List<GenericExceptionEnum> mensagensInsert = usuarioService.realizarInsert(jsonObject, admin.getId());
         if(!mensagensInsert.isEmpty()){
             Map<String, String> mapaJson = new HashMap<>();
             for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {

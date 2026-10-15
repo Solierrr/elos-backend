@@ -21,7 +21,7 @@ public final class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        //Fazemos isso para garantir que o usuario depois de sair da tela do crud não consiga voltar pelas setinhas do navegador
+        //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
 

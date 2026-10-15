@@ -1,25 +1,20 @@
 package dao;
 
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
 import static exception.ErrosGerais.SUCESSO;
-import static exception.ErrosGeraisDados.CNPJ_INVALIDO;
-import static exception.ErrosGeraisDados.ID_USUARIO_INVALIDO;
 
-import conexao.Conexao;
-import exception.ErrosDoSQL;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Fornecedor;
-import model.TiposFornecedor;
-import model.TiposUsuario;
 
 public final class FornecedorDAO implements GenericDAO<Fornecedor> {
 
@@ -41,26 +36,29 @@ public final class FornecedorDAO implements GenericDAO<Fornecedor> {
     }
 
     @Override
-    public List<Fornecedor> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<Fornecedor> fornecedores = new ArrayList<>();
+    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        List<Map<String, Object>> dados = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            fornecedores.add(new Fornecedor(
-                    resultSet.getLong("id"),
-                    resultSet.getLong("id_usuario"),
-                    TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                    TiposFornecedor.descobrirTipoFornecedor(resultSet.getString("tipo_fornecedor")),
-                    resultSet.getString("cnpj"),
-                    resultSet.getString("razao_social")
-            ));
-        }
+            Map<String, Object> valoresRegistroAtual = new HashMap<>();
 
-        return fornecedores;
+            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+                String nomeColuna = resultSetMetaData.getColumnName(i);
+
+                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+                else
+                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+            }
+
+            dados.add(valoresRegistroAtual);
+        }
+        return dados;
     }
 
     @Override

@@ -7,12 +7,14 @@ import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Profissional;
-import model.TiposUsuario;
 
 public final class ProfissionalDAO implements GenericDAO<Profissional> {
 
@@ -34,27 +36,29 @@ public final class ProfissionalDAO implements GenericDAO<Profissional> {
     }
 
     @Override
-    public List<Profissional> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<Profissional> profissionais = new ArrayList<>();
+    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        List<Map<String, Object>> dados = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            profissionais.add(new Profissional(
-                    resultSet.getLong("id"),
-                    resultSet.getLong("id_usuario"),
-                    TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                    resultSet.getString("profissao"),
-                    resultSet.getString("cpf_hmac"),
-                    resultSet.getBytes("cpf_aes"),
-                    resultSet.getLong("id_fornecedor"),
-                    resultSet.getString("documento_contrato")
-            ));
+            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+
+            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+                String nomeColuna = resultSetMetaData.getColumnName(i);
+
+                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+                else
+                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+            }
+
+            dados.add(valoresRegistroAtual);
         }
-        return profissionais;
+        return dados;
     }
 
     @Override

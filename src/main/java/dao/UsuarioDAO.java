@@ -7,13 +7,14 @@ import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import model.TiposUsuario;
-import model.Usuario;
+import java.util.Map;
 
 public final class UsuarioDAO implements GenericDAO {
 
@@ -50,25 +51,29 @@ public final class UsuarioDAO implements GenericDAO {
     }
 
     @Override
-    public List<Usuario> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<Usuario> usuarios = new ArrayList<>();
+    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
+        List<Map<String, Object>> dados = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-
         criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            usuarios.add(new Usuario(
-                    resultSet.getLong("id"),
-                    resultSet.getString("email"),
-                    resultSet.getString("senha"),
-                    resultSet.getString("nome"),
-                    TiposUsuario.descobrirTipoUsuario(resultSet.getString("tipo_usuario")),
-                    resultSet.getDouble("raio_procura_km")
-            ));
+            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+
+            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+                String nomeColuna = resultSetMetaData.getColumnName(i);
+
+                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+                else
+                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+            }
+
+            dados.add(valoresRegistroAtual);
         }
-        return usuarios;
+        return dados;
     }
 
     @Override
@@ -88,23 +93,4 @@ public final class UsuarioDAO implements GenericDAO {
 
         return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
     }
-
-    //        } catch (SQLException sqlException) {
-//            if (foiCausadoPorCpfCadastradoProfissional(sqlException))
-//                return CPF_INVALIDO;
-//
-//            if (foiCausadoPorUsuarioCadastradoEmpresaDemandante(sqlException)
-//                    || foiCausadoPorUsuarioCadastradoFornecedor(sqlException)
-//                    || foiCausadoPorUsuarioCadastradoProfissional(sqlException))
-//                return ID_USUARIO_INVALIDO;
-//
-//            if (foiCausadoPorCnpjCadastradoFornecedor(sqlException) || foiCausadoPorCnpjCadastradoEmpresaDemandante(sqlException))
-//                return CNPJ_INVALIDO;
-//
-//            if (foiCausadoPorEmailCadastrado(sqlException))
-//                return EMAIL_INVALIDO;
-//
-//            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
-//        }
-
 }

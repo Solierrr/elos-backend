@@ -300,6 +300,7 @@
                         <option value="NOME">Nome</option>
                         <option value="TIPO_USUARIO">Tipo do usuário</option>
                         <option value="RAIO_PROCURA_KM">Raio de procura em km</option>
+                        <option value="JOIN">Conectar com registro interligado</option>
                     </select>
                     <button id="adicionar-filtro" class="botoes-pop-up-laranjas">Adicionar filtro
                     </button>

@@ -25,7 +25,7 @@ public enum ErrosGeraisDados implements GenericExceptionEnum{
     EMAIL_INVALIDO(19, "O email inserido é inválido", "email"),
     EMAIL_VAZIO(20, "Nenhum email foi inserido", "email"),
     EMAIL_TAMANHO_INVALIDO(21, "O email inserido possui um tamanho maior que o permitido, insira um email com até 256 caracteres", "email"),
-    ;
+    JOIN_INVALIDO(22, "Os registros que se deseja conectar não possuem conexão!", "join");
 
     private final int codigo;
     private final String mensagem;

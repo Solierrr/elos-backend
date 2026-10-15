@@ -30,7 +30,7 @@
                     <div>
                         <input class="text-input" type="email" name="email"
                                placeholder="Coloque o seu e-mail aqui" value="" autocomplete="on"
-                               required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+                               required>
                         <span id="erro-email" class="span-erro"></span>
                     </div>
                     <div>
