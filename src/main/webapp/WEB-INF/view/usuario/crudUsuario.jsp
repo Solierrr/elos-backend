@@ -140,7 +140,7 @@
             <form id="formulario-update" method="POST"
                   action="${pageContext.request.contextPath}/crudUsuario-update">
                 <div id="conteiner-superior-update">
-                    <button type="submit" name="enviar-insert" id="enviar-update"
+                    <button type="submit" name="enviar-update" id="enviar-update"
                             class="botoes-pop-up-laranjas">Atualizar usuário
                     </button>
                     <button id="update-sair" type="button" class="botoes-sair"><img
@@ -148,21 +148,22 @@
                             alt="" class="icone-sair"></button>
                 </div>
 
+                <input id="id-update" name="id-update" type="hidden" value="">
                 <div id="conteudo-update">
                     <div>
                         <div class="label-e-input">
-                            <label for="email">E-mail</label>
-                            <input type="email" name="email" id="email-update"
+                            <label for="email-update">E-mail</label>
+                            <input type="email" name="email-update" id="email-update"
                                    placeholder="ex: meu.email@gmail.com">
                         </div>
-                        <span id="erro-email" class="span-erro"></span>
+                        <span id="erro-email-update" class="span-erro"></span>
                     </div>
                     <div>
                         <div class="label-e-input">
-                            <label for="senha">Senha</label>
+                            <label for="senha-update">Senha</label>
                             <div class="senha-container">
-                                <input id="senha-update" type="password" name="senha"
-                                       placeholder="Coloque a senha do usuário"
+                                <input id="senha-update" type="password" name="senha-update"
+                                       placeholder="Coloque a nova senha do usuário (opicional)" autocomplete="new-password"
                                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                                 <img id="olho-senha-update"
                                      src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
@@ -170,36 +171,34 @@
                                      data-url-oculto="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
                                      alt="Mostrar senha">
                             </div>
-
                         </div>
-                        <span id="erro-senha" class="span-erro"></span>
+                        <span id="erro-senha-update" class="span-erro"></span>
                     </div>
 
                     <div>
                         <div class="label-e-input">
-                            <label for="nome">Nome</label>
-                            <input type="text" name="nome" id="nome-update"
-                                   placeholder="ex: Roger dos santos"
-                            >
+                            <label for="nome-update">Nome</label>
+                            <input type="text" name="nome-update" id="nome-update"
+                                   placeholder="ex: Roger dos santos">
                         </div>
-                        <span id="erro-nome" class="span-erro"></span>
+                        <span id="erro-nome-update" class="span-erro"></span>
                     </div>
 
                     <div>
                         <div class="label-e-input">
-                            <label for="raio-procura-km">Raio de procura (KM)</label>
+                            <label for="raio-procura-km-update">Raio de procura (KM)</label>
                             <input type="text" placeholder="ex: 10" name="raio-procura-km-update"
-                                   id="raio-procura-km"  pattern="[0-9.,]+">
+                                   id="raio-procura-km-update"  pattern="[0-9.,]+">
                         </div>
-                        <span id="erro-raio-procura-km" class="span-erro"></span>
+                        <span id="erro-raio-procura-km-update" class="span-erro"></span>
                     </div>
 
                     <div>
                         <div class="label-e-input">
-                            <label for="tipo-usuario">Tipo do usuário</label>
-                            <div for="tipo-usuario" class="div-update" id="tipo-usuario-update"></div>
+                            <label for="tipo-usuario-update">Tipo do usuário</label>
+                            <div for="tipo-usuario-update" class="div-update" id="tipo-usuario-update"></div>
                         </div>
-                        <span id="erro-tipo-usuario" class="span-erro"></span>
+                        <span id="erro-tipo-usuario-update" class="span-erro"></span>
                     </div>
                 </div>
             </form>
@@ -230,10 +229,8 @@
                         <div class="label-e-input">
                             <label for="senha">Senha</label>
                             <div class="senha-container">
-
-
                                 <input  id="senha" type="password" name="senha"
-                                       placeholder="Coloque a senha do usuário" required
+                                       placeholder="Coloque a senha do usuário" autocomplete="new-password"
                                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                                 <img id="olho-senha"
                                      src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
@@ -323,7 +320,9 @@
 </div>
 
 <form action="${pageContext.request.contextPath}/crudUsuario-delete" method="POST" id="formulario-delete">
+</form>
 
+<form action="${pageContext.request.contextPath}/crudUsuario-update" method="GET" id="formulario-update-dados">
 </form>
 
 <script type="module" src="${pageContext.request.contextPath}/js/crud.js" defer></script>

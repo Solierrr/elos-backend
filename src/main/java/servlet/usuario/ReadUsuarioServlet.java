@@ -34,41 +34,29 @@ public final class ReadUsuarioServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
 
-            //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
+        //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
 
-            System.out.println("chegou no read usuario get");
+        HttpSession httpSession = request.getSession();
+        Admin admin = (Admin) httpSession.getAttribute("adm");
 
-            HttpSession httpSession = request.getSession();
-            Admin admin = (Admin) httpSession.getAttribute("adm");
-
-            if (admin == null) {
-                response.sendRedirect(request.getContextPath() + "/login");
-                return;
-            }
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
-            dispatcher.forward(request, response);
-
-        } catch (Exception e) {
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
-            dispatcher.forward(request, response);
+        if (admin == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
         }
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
+        dispatcher.forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println("chegou no read usuario post");
-
-        HttpSession session = request.getSession();
-
+        HttpSession session = request.getSession(true);
         Admin admin = (Admin) session.getAttribute("adm");
-
         if (admin == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -90,7 +78,6 @@ public final class ReadUsuarioServlet extends HttpServlet {
         List<GenericExceptionEnum> erros = new ArrayList<>();
 
         List<Map<String, Object>> usuario = usuarioService.realizarSelect(gson.fromJson(jsonObject, FiltrosUsuarioDTO.class), erros);
-
         if (erros.isEmpty()) {
             if (!usuario.isEmpty())
                 json.put("valores", usuario);
@@ -109,7 +96,5 @@ public final class ReadUsuarioServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(gson.toJson(json));
-
-
     }
 }

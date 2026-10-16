@@ -7,7 +7,7 @@ import util.Criptografia;
 public record UsuarioParaInsertDTO(String tipoUsuario, String email, String senha, String nome, String raioProcuraKm){
 
     public Usuario construirUsuario(){
-        Double raioProcuraKmTratado = raioProcuraKm == null || raioProcuraKm.isEmpty() ? null : Double.parseDouble(raioProcuraKm.strip().replace(',', '.'));
+        Double raioProcuraKmTratado = raioProcuraKm == null || raioProcuraKm.isBlank() ? null : Double.parseDouble(raioProcuraKm.strip().replace(',', '.'));
 
         String emailTratado = email.toLowerCase().strip();
         String senhaTratada = senha == null || senha.isBlank() ? null : senha.strip();

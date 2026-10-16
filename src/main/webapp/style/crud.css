@@ -313,7 +313,7 @@ th {
     background-color: var(--orange);
     color: var(--white);
 
-    padding: 10px 10px;
+    padding: 10px;
 
     align-items: center;
 }
@@ -325,6 +325,7 @@ td {
     text-align: center;
     align-items: center;
 
+    padding: 10px;
 }
 
 tbody tr:nth-child(even) {
@@ -470,6 +471,11 @@ select, input,  .div-update{
     border: 0;
     border-radius: 5px;
     height: 100%;
+}
+
+.div-update{
+    display: flex;
+    align-items: center;
 }
 
 select {

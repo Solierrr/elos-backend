@@ -22,8 +22,4 @@ public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nome
     return Double.parseDouble(raioProcuraKmFiltro.strip().replace(',', '.'));
   }
 
-  public String formatarJoin(){
-    return joinFiltro.strip().toLowerCase();
-  }
-
 }
