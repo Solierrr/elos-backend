@@ -154,7 +154,7 @@
                         <div class="label-e-input">
                             <label for="email-update">E-mail</label>
                             <input type="email" name="email-update" id="email-update"
-                                   placeholder="ex: meu.email@gmail.com">
+                                   placeholder="Deixe em branco caso não for alterar">
                         </div>
                         <span id="erro-email-update" class="span-erro"></span>
                     </div>
@@ -163,7 +163,7 @@
                             <label for="senha-update">Senha</label>
                             <div class="senha-container">
                                 <input id="senha-update" type="password" name="senha-update"
-                                       placeholder="Coloque a nova senha do usuário (opicional)" autocomplete="new-password"
+                                       placeholder="Deixe em branco caso não for alterar" autocomplete="new-password"
                                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                                 <img id="olho-senha-update"
                                      src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
@@ -179,7 +179,7 @@
                         <div class="label-e-input">
                             <label for="nome-update">Nome</label>
                             <input type="text" name="nome-update" id="nome-update"
-                                   placeholder="ex: Roger dos santos">
+                                   placeholder="Deixe em branco caso não for alterar">
                         </div>
                         <span id="erro-nome-update" class="span-erro"></span>
                     </div>
@@ -187,7 +187,7 @@
                     <div>
                         <div class="label-e-input">
                             <label for="raio-procura-km-update">Raio de procura (KM)</label>
-                            <input type="text" placeholder="ex: 10" name="raio-procura-km-update"
+                            <input type="text" placeholder="Deixe em branco caso não for alterar" name="raio-procura-km-update"
                                    id="raio-procura-km-update"  pattern="[0-9.,]+">
                         </div>
                         <span id="erro-raio-procura-km-update" class="span-erro"></span>

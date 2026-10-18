@@ -60,9 +60,9 @@ public final class EmpresaDemandanteService {
         }
 
         String cnpjTratado = cnpj.strip().toUpperCase()
-                .replace(".", "")
-                .replace("-", "")
-                .replace("/", "");
+                .replaceAll(".", "")
+                .replaceAll("-", "")
+                .replaceAll("/", "");
 
         if(cnpjTratado.length() != TAMANHO_CNPJ){
             return CNPJ_TAMANHO_INVALIDO;

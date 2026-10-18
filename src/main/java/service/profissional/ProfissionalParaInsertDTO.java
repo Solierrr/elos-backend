@@ -12,8 +12,8 @@ public record ProfissionalParaInsertDTO(String tipoUsuario, String profissao, St
         String tipoUsuarioTratado = tipoUsuario.strip().toUpperCase();
         String profissaoTratada = profissao.strip();
         String cpfTratado = cpf.strip()
-                    .replace(".", "")
-                    .replace("-", "");
+                    .replaceAll("\\.", "")
+                    .replaceAll("-", "");
 
         String documentoContratoTratado = documentoContrato != null && !documentoContrato.isBlank() ? documentoContrato.strip() : null;
 
@@ -21,6 +21,6 @@ public record ProfissionalParaInsertDTO(String tipoUsuario, String profissao, St
 
         return new Profissional(null, null, TiposUsuario.descobrirTipoUsuario(tipoUsuarioTratado),
                 profissaoTratada, criptografia.criptografarHmac(cpfTratado),
-                criptografia.criptografarCpfAes(cpfTratado), idFornecedorTratado, documentoContratoTratado);
+                criptografia.criptografarAes(cpfTratado), idFornecedorTratado, documentoContratoTratado);
     }
 }

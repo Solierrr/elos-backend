@@ -21,9 +21,8 @@ import service.usuario.UsuarioService;
 @WebServlet("/crudUsuario-update")
 public final class UpdateUsuarioServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-      .create();
+  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
+      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final UsuarioService usuarioService = new UsuarioService();
 
@@ -40,10 +39,7 @@ public final class UpdateUsuarioServlet extends HttpServlet {
 
     String id = request.getParameter("id");
 
-    System.out.println(id);
-
-    List<Map<String, Object>> usuario = usuarioService.exibirUsuarioParaUpdate(id);
-
+    List<Map<String, Object>> usuario = usuarioService.exibirUsuarioParaUpdate(id, admin);
     if (usuario.isEmpty()) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
@@ -87,6 +83,5 @@ public final class UpdateUsuarioServlet extends HttpServlet {
       response.setCharacterEncoding("UTF-8");
       response.getWriter().write("{}");
     }
-
   }
 }

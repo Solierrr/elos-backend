@@ -67,7 +67,7 @@ public final class ReadUsuarioServlet extends HttpServlet {
 
         Map<String, Object> json = new HashMap<>();
         if (jsonObject.isEmpty()) {
-            json.put("valores", usuarioService.realizarSelectIncial());
+            json.put("valores", usuarioService.realizarSelectIncial(admin));
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -77,7 +77,7 @@ public final class ReadUsuarioServlet extends HttpServlet {
 
         List<GenericExceptionEnum> erros = new ArrayList<>();
 
-        List<Map<String, Object>> usuario = usuarioService.realizarSelect(gson.fromJson(jsonObject, FiltrosUsuarioDTO.class), erros);
+        List<Map<String, Object>> usuario = usuarioService.realizarSelect(gson.fromJson(jsonObject, FiltrosUsuarioDTO.class), erros, admin);
         if (erros.isEmpty()) {
             if (!usuario.isEmpty())
                 json.put("valores", usuario);

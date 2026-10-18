@@ -11,7 +11,7 @@ import static exception.ErrosGerais.SUCESSO;
 import static exception.ErrosGeraisDados.ATRIBUTO_NULL;
 import static exception.ErrosGeraisDados.JOIN_INVALIDO;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
-import static service.JoinsPossiveis.PROFISSIONAL;
+import static service.JoinsPossiveis.EMPRESA_DEMANDANTE;
 import static service.ValidacoesComunsService.validarId;
 
 import com.google.gson.FieldNamingPolicy;
@@ -33,8 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import model.Admin;
 import model.EmpresaDemandante;
 import model.Fornecedor;
+import model.FuncoesAdmin;
 import model.HistoricoAlteracoesAdmin;
 import model.Profissional;
 import model.TiposUsuario;
@@ -50,7 +52,7 @@ import service.historicoAlteracoesAdmin.HistoricoAlteracoesAdminService;
 import service.profissional.CamposProfissional;
 import service.profissional.ProfissionalParaInsertDTO;
 import service.profissional.ProfissionalService;
-import util.Criptografia;
+import util.Anonimizador;
 
 public final class UsuarioService {
 
@@ -70,6 +72,8 @@ public final class UsuarioService {
 
   private static final int TAMANHO_MINIMO_SENHA = 8;
   private static final int TAMANHO_MAXIMO_SENHA = 60;
+
+  //Exige uma maiúscula, minuscula, número e caractere especial
   private static final Pattern PATTERN_SENHA = Pattern.compile(
       "(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{8,}");
 
@@ -252,25 +256,24 @@ public final class UsuarioService {
   }
 
   //Métodos relacionados ao select
-  public List<Map<String, Object>> realizarSelectIncial() {
+  public List<Map<String, Object>> realizarSelectIncial(Admin admin) {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     UsuarioDAO dao = new UsuarioDAO();
 
     try (Connection connection = Conexao.getConnection()) {
       List<Map<String, Object>> usuarios = dao.readAll(criarInstrucaoDinamica, connection);
 
-      for (Map<String, Object> usuario : usuarios) {
-        usuario.remove("senha");
-      }
+      Anonimizador anonimizador = new Anonimizador();
+      anonimizador.anonimizarDadosLidos(usuarios, admin);
 
       return usuarios;
-    } catch (SQLException sqlException) {
+    } catch (SQLException | ClassCastException exception) {
       return new ArrayList<>();
     }
   }
 
   public List<Map<String, Object>> realizarSelect(FiltrosUsuarioDTO filtrosUsuarioDTO,
-      List<GenericExceptionEnum> errosEncontrados) {
+      List<GenericExceptionEnum> errosEncontrados, Admin admin) {
     if (filtrosUsuarioDTO == null) {
       return new ArrayList<>();
     }
@@ -279,10 +282,10 @@ public final class UsuarioService {
     if (!errosEncontrados.isEmpty()) {
       return new ArrayList<>();
     }
-    return lerUsuarios(filtrosUsuarioDTO);
+    return lerUsuarios(filtrosUsuarioDTO, admin);
   }
 
-  private List<Map<String, Object>> lerUsuarios(FiltrosUsuarioDTO filtrosUsuarioDTO) {
+  private List<Map<String, Object>> lerUsuarios(FiltrosUsuarioDTO filtrosUsuarioDTO, Admin admin) {
     try (Connection connection = Conexao.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       UsuarioDAO dao = new UsuarioDAO();
@@ -332,18 +335,8 @@ public final class UsuarioService {
 
       List<Map<String, Object>> usuarios = dao.readAll(criarInstrucaoDinamica, connection);
 
-      if (tabelaConectada == PROFISSIONAL) {
-        Criptografia criptografia = new Criptografia();
-        for (Map<String, Object> usuario : usuarios) {
-          usuario.remove("senha");
-          usuario.remove("cpf_hmac");
-          usuario.put("cpf", criptografia.descriptografarCpfAes((byte[]) usuario.get("cpf_aes")));
-          usuario.remove("cpf_aes");
-        }
-      }else{
-        for (Map<String, Object> usuario : usuarios)
-          usuario.remove("senha");
-      }
+      Anonimizador anonimizador = new Anonimizador();
+      anonimizador.anonimizarDadosLidos(usuarios, admin);
 
       return usuarios;
     } catch (SQLException | ClassCastException exception) {
@@ -416,40 +409,39 @@ public final class UsuarioService {
       try {
 
         Usuario usuario = GSON.fromJson(jsonObject, UsuarioParaUpdateDTO.class).construirUsuario();
-
         Long id = usuario.getId();
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaRead = new CriarInstrucaoDinamica();
-
         criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
         List<Map<String, Object>> usuarioLido = dao.readAll(criarInstrucaoDinamicaRead, connection);
-
         if (usuarioLido.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
         }
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
-        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.EMAIL.getCampoUsuario(), usuario.getEmail(), Types.VARCHAR);
-        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.SENHA.getCampoUsuario(), usuario.getSenha(), Types.VARCHAR);
-        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.NOME.getCampoUsuario(), usuario.getNome(), Types.VARCHAR);
-        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(), usuario.getRaioProcuraKm(), Types.DOUBLE);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.EMAIL.getCampoUsuario(),
+            usuario.getEmail(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.SENHA.getCampoUsuario(),
+            usuario.getSenha(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.NOME.getCampoUsuario(),
+            usuario.getNome(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(),
+            usuario.getRaioProcuraKm(), Types.DOUBLE);
 
         criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
         dao.update(criarInstrucaoDinamicaUpdate, connection);
 
-        jsonObject.entrySet().removeIf(campo ->
-            campo.getValue() != null &&
-            !campo.getValue().isJsonNull() &&
-            (campo.getValue().isJsonPrimitive() && campo.getValue().getAsString().trim().isEmpty())
-        );
+        jsonObject.entrySet().removeIf(
+            campo -> campo.getValue() != null && !campo.getValue().isJsonNull() && (
+                campo.getValue().isJsonPrimitive() && campo.getValue().getAsString().trim()
+                    .isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(null, idAdmin, id, "USUARIO", "UPDATE",
-                GSON.toJsonTree(usuarioLido.getFirst()).getAsJsonObject(),     jsonObject
-                , null),
+                GSON.toJsonTree(usuarioLido.getFirst()).getAsJsonObject(), jsonObject, null),
             connection);
 
         connection.commit();
@@ -458,7 +450,6 @@ public final class UsuarioService {
         connection.rollback();
         throw exception;
       }
-
     } catch (SQLException | IllegalArgumentException exception) {
       if (exception instanceof SQLException) {
         return ConstraintsBanco.foiCausadoPorQual((SQLException) exception);
@@ -475,32 +466,36 @@ public final class UsuarioService {
         UsuarioParaUpdateDTO.class);
 
     GenericExceptionEnum emailValidacao = validarEmail(usuarioParaUpdateDTO.emailUpdate());
-    if (emailValidacao != VALIDACAO_OK && (usuarioParaUpdateDTO.emailUpdate() != null && !usuarioParaUpdateDTO.emailUpdate().isBlank())) {
+    if (emailValidacao != VALIDACAO_OK && (usuarioParaUpdateDTO.emailUpdate() != null
+        && !usuarioParaUpdateDTO.emailUpdate().isBlank())) {
       erros.add(emailValidacao);
     }
 
     GenericExceptionEnum senhaValidacao = validarSenhaUpdate(usuarioParaUpdateDTO.senhaUpdate());
-    if (senhaValidacao != VALIDACAO_OK && (usuarioParaUpdateDTO.senhaUpdate() != null && !usuarioParaUpdateDTO.senhaUpdate().isBlank())) {
+    if (senhaValidacao != VALIDACAO_OK && (usuarioParaUpdateDTO.senhaUpdate() != null
+        && !usuarioParaUpdateDTO.senhaUpdate().isBlank())) {
       erros.add(senhaValidacao);
     }
 
+    //Uso de um patter mais permissivo para garantir englobar qualquer tipo de usuário na validação
     GenericExceptionEnum nomeValidacao = validarNome(usuarioParaUpdateDTO.nomeUpdate(),
-        usuarioParaUpdateDTO.nomeUpdate());
-    if (nomeValidacao != VALIDACAO_OK && (usuarioParaUpdateDTO.nomeUpdate() != null && !usuarioParaUpdateDTO.nomeUpdate().isBlank())) {
+        EMPRESA_DEMANDANTE.getNomeTabela());
+    if (nomeValidacao != VALIDACAO_OK && (usuarioParaUpdateDTO.nomeUpdate() != null
+        && !usuarioParaUpdateDTO.nomeUpdate().isBlank())) {
       erros.add(nomeValidacao);
     }
 
     GenericExceptionEnum raioProcuraKmValidacao = validarRaioProcuraKm(
         usuarioParaUpdateDTO.raioProcuraKmUpdate());
-    if (raioProcuraKmValidacao != VALIDACAO_OK
-        && (usuarioParaUpdateDTO.raioProcuraKmUpdate() != null
-        && !usuarioParaUpdateDTO.raioProcuraKmUpdate().isBlank())) {
+    if (raioProcuraKmValidacao != VALIDACAO_OK && (
+        usuarioParaUpdateDTO.raioProcuraKmUpdate() != null
+            && !usuarioParaUpdateDTO.raioProcuraKmUpdate().isBlank())) {
       erros.add(raioProcuraKmValidacao);
     }
     return erros;
   }
 
-  public List<Map<String, Object>> exibirUsuarioParaUpdate(String id) {
+  public List<Map<String, Object>> exibirUsuarioParaUpdate(String id, Admin admin) {
     if (validarId(id) != VALIDACAO_OK) {
       return new ArrayList<>();
     }
@@ -513,8 +508,16 @@ public final class UsuarioService {
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);
 
-      for (Map<String, Object> registro : resultados) {
-        registro.remove("senha");
+      if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
+        for (Map<String, Object> registro : resultados) {
+          registro.remove("senha");
+          registro.remove("nome");
+          registro.remove("email");
+        }
+      } else {
+        for (Map<String, Object> registro : resultados) {
+          registro.remove("senha");
+        }
       }
 
       return resultados;
@@ -526,7 +529,6 @@ public final class UsuarioService {
   //Métodos relacionados ao insert
   public List<GenericExceptionEnum> realizarInsert(JsonObject jsonObject, Long idAdmin) {
     List<GenericExceptionEnum> mensagens = validarUsuarioInsert(jsonObject);
-    System.out.println(mensagens);
     if (mensagens.isEmpty()) {
       GenericExceptionEnum resultado = persistirUsuario(jsonObject, idAdmin);
       if (resultado != SUCESSO) {

@@ -85,7 +85,7 @@ public final class LoginService {
                             (String) adminMap.get(CamposAdmin.EMAIL.getCampoAdmin()),
                             (String) adminMap.get(CamposAdmin.NOME.getCampoAdmin()),
                             (String) adminMap.get(CamposAdmin.SENHA.getCampoAdmin()),
-                            FuncoesAdmin.descobrirFuncaoAdmin((String) adminMap.get(CamposAdmin.EMAIL.getCampoAdmin())),
+                            FuncoesAdmin.descobrirFuncaoAdmin((String) adminMap.get(CamposAdmin.FUNCAO.getCampoAdmin())),
                             (Boolean) adminMap.get(CamposAdmin.EM_ATIVIDADE.getCampoAdmin()));
         }catch (ClassCastException classCastException){
             return null;
