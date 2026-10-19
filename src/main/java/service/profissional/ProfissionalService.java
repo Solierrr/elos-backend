@@ -1,335 +1,533 @@
 package service.profissional;
 
+import static dao.AcoesInstrucao.AND;
+import static dao.AcoesInstrucao.IGUAL;
+import static dao.AcoesInstrucao.ILIKE;
+import static dao.AcoesInstrucao.INNER_JOIN;
+import static dao.AcoesInstrucao.VAZIO;
 import static exception.ErrosDadosProfissional.*;
 import static exception.ErrosGerais.*;
 import static exception.ErrosGeraisDados.*;
+import static service.JoinsPossiveis.EMPRESA_DEMANDANTE;
+import static service.ValidacoesComunsService.validarId;
 import static service.profissional.CamposProfissional.*;
+import static util.Anonimizador.anonimizarCnpjECpf;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import conexao.Conexao;
+import dao.AcoesInstrucao;
+import dao.ConstraintsBanco;
+import dao.CriarInstrucaoDinamica;
+import dao.UsuarioDAO;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import model.Admin;
+import model.FuncoesAdmin;
+import model.HistoricoAlteracoesAdmin;
 import model.Profissional;
 import model.TiposUsuario;
 import dao.ProfissionalDAO;
 import exception.ErrosGerais;
 import exception.GenericExceptionEnum;
+import model.Usuario;
+import service.JoinsPossiveis;
 import service.ValidacoesComunsService;
+import service.historicoAlteracoesAdmin.HistoricoAlteracoesAdminService;
+import service.usuario.CamposUsuario;
+import service.usuario.UsuarioParaUpdateDTO;
+import util.Anonimizador;
+import util.Criptografia;
+import util.PorMascara;
 
 public final class ProfissionalService {
 
-    //Constantes para evitar valores mágicos ou instancia desnecessária de objeto
-    private static final Pattern PATTERN_PROFISSAO = Pattern.compile("^[\\p{Script=Latin}0-9,.\\s\\-/]+$");
-    private static final int TAMANHO_MAXIMO_PROFISSAO = 100;
+  //Atributo usado para operações json no código
+  private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(
+      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-    private static final int TAMANHO_CPF = 11;
-    private static final Pattern PATTERN_CPF = Pattern.compile("^[0-9]{11}$");
+  //Constantes para evitar valores mágicos ou instancia desnecessária de objeto
+  private static final Pattern PATTERN_PROFISSAO = Pattern.compile(
+      "^[\\p{Script=Latin}0-9,.\\s\\-/]+$");
+  private static final int TAMANHO_MAXIMO_PROFISSAO = 100;
 
-    //Validações
+  private static final int TAMANHO_CPF = 11;
+  private static final Pattern PATTERN_CPF = Pattern.compile("^[0-9]{11}$");
 
-    //Validação do id usuario
-    private static GenericExceptionEnum validarTipoUsuario(String tipoUsuario){
-        TiposUsuario tiposUsuario = TiposUsuario.descobrirTipoUsuario(tipoUsuario);
-        if(tipoUsuario == null || tiposUsuario != TiposUsuario.PROFISSIONAL){
-            return TIPO_USUARIO_INCOMPATIVEL;
-        }
-        return VALIDACAO_OK;
+  //Validações
+
+  //Validação do id usuario
+  private static GenericExceptionEnum validarIdUsuario(String idUsuario) {
+    if (idUsuario == null) {
+      return VALIDACAO_OK;
+    }
+    if (ValidacoesComunsService.validarId(idUsuario) != VALIDACAO_OK) {
+      return ID_USUARIO_INVALIDO;
+    }
+    return VALIDACAO_OK;
+  }
+
+  //Validação do tipo usuario
+  private static GenericExceptionEnum validarTipoUsuario(String tipoUsuario) {
+    TiposUsuario tiposUsuario = TiposUsuario.descobrirTipoUsuario(tipoUsuario);
+    if (tipoUsuario == null || tiposUsuario != TiposUsuario.PROFISSIONAL) {
+      return TIPO_USUARIO_INCOMPATIVEL;
+    }
+    return VALIDACAO_OK;
+  }
+
+  //Validação do id fornecedor
+  private static GenericExceptionEnum validarIdFornecedor(String idFornecedor) {
+    if (idFornecedor == null) {
+      return VALIDACAO_OK;
+    }
+    if (ValidacoesComunsService.validarId(idFornecedor) != VALIDACAO_OK) {
+      return ID_FORNECEDOR_INVALIDO;
+    }
+    return VALIDACAO_OK;
+  }
+
+  //Validações da profissão
+  private static GenericExceptionEnum validarProfissao(String profissao) {
+    if (profissao == null || profissao.isBlank()) {
+      return PROFISSAO_VAZIA;
     }
 
-    //Validação do id fornecedor
-    private static GenericExceptionEnum validarIdFornecedor(String idFornecedor){
-        if(idFornecedor == null)
-            return VALIDACAO_OK;
-        if(ValidacoesComunsService.validarId(idFornecedor) != VALIDACAO_OK){
-            return ID_FORNECEDOR_INVALIDO;
-        }
-        return VALIDACAO_OK;
+    String profissaoTratada = profissao.strip();
+    if (profissaoTratada.length() > TAMANHO_MAXIMO_PROFISSAO) {
+      return PROFISSAO_TAMANHO_INVALIDO;
     }
 
-    //Validações da profissão
-    private static GenericExceptionEnum validarProfissao(String profissao){
-        if(profissao == null || profissao.isBlank()){
-            return PROFISSAO_VAZIA;
-        }
+    if (profissaoTratada.replace(profissaoTratada.charAt(0), ' ').isBlank()) {
+      return PROFISSAO_INVALIDA;
+    }
+    return validarFormatoProfissao(profissaoTratada);
+  }
 
-        String profissaoTratada = profissao.strip();
-        if(profissaoTratada.length() > TAMANHO_MAXIMO_PROFISSAO){
-            return PROFISSAO_TAMANHO_INVALIDO;
-        }
+  private static GenericExceptionEnum validarFormatoProfissao(String profissao) {
+    return PATTERN_PROFISSAO.matcher(profissao).matches() ? VALIDACAO_OK : PROFISSAO_INVALIDA;
+  }
 
-        if(profissaoTratada.replace(profissaoTratada.charAt(0), ' ').isBlank()){
-            return PROFISSAO_INVALIDA;
-        }
-        return validarFormatoProfissao(profissaoTratada);
+  //Validações do cpf
+  private static GenericExceptionEnum validarCpf(String cpf) {
+    if (cpf == null || cpf.isBlank()) {
+      return CPF_VAZIO;
     }
 
-    private static GenericExceptionEnum validarFormatoProfissao(String profissao){
-        return PATTERN_PROFISSAO.matcher(profissao).matches() ? VALIDACAO_OK : PROFISSAO_INVALIDA;
+    String cpfTratado = cpf.strip()
+        .replaceAll("\\.", "")
+        .replaceAll("-", "");
+
+    if (cpfTratado.length() != TAMANHO_CPF) {
+      return CPF_TAMANHO_INVALIDO;
     }
 
-    //Validações do cpf
-    private static GenericExceptionEnum validarCpf(String cpf, boolean insert){
-        if(cpf == null || cpf.isBlank()){
-            return CPF_VAZIO;
-        }
-
-        String cpfTratado = cpf.strip()
-                .replaceAll("\\.", "")
-                .replaceAll("-", "");
-
-        if(cpfTratado.length() != TAMANHO_CPF){
-            return CPF_TAMANHO_INVALIDO;
-        }
-
-
-        if(cpfTratado.replace(cpfTratado.charAt(0), ' ').isBlank()){
-            return CPF_INVALIDO;
-        }
-
-        GenericExceptionEnum validacaoFormatoCpf = validarFormatoCpf(cpfTratado);
-        if(validacaoFormatoCpf != VALIDACAO_OK){
-            return validacaoFormatoCpf;
-        }
-
-        GenericExceptionEnum validacaoCondicaoExistenciaCpf = validarCondicaoDeExistenciaCpf(cpfTratado);
-        if(validacaoCondicaoExistenciaCpf != VALIDACAO_OK){
-            return validacaoCondicaoExistenciaCpf;
-        }
-
-        return VALIDACAO_OK;
+    if (cpfTratado.replace(cpfTratado.charAt(0), ' ').isBlank()) {
+      return CPF_INVALIDO;
     }
 
-    private static GenericExceptionEnum validarFormatoCpf(String cpf){
-        return PATTERN_CPF.matcher(cpf).matches() ? VALIDACAO_OK : CPF_NAO_NUMERICO;
+    GenericExceptionEnum validacaoFormatoCpf = validarFormatoCpf(cpfTratado);
+    if (validacaoFormatoCpf != VALIDACAO_OK) {
+      return validacaoFormatoCpf;
     }
 
-    private static GenericExceptionEnum validarCondicaoDeExistenciaCpf(String cpf){
-
-        int soma = 0;
-        int peso = 10;
-        for (int i = 0; i < 9; i++) {
-            soma += (cpf.charAt(i) - '0') * peso--;
-        }
-        int resto = 11 - (soma % 11);
-        int digito1 = (resto == 10 || resto == 11) ? 0 : resto;
-
-        if (digito1 != (cpf.charAt(9) - '0')) {
-            return CPF_INVALIDO;
-        }
-
-        soma = 0;
-        peso = 11;
-        for (int i = 0; i < 10; i++) {
-            soma += (cpf.charAt(i) - '0') * peso--;
-        }
-        resto = 11 - (soma % 11);
-        int digito2 = (resto == 10 || resto == 11) ? 0 : resto;
-
-        return digito2 == (cpf.charAt(10) - '0') ? VALIDACAO_OK : CPF_INVALIDO;
+    GenericExceptionEnum validacaoCondicaoExistenciaCpf = validarCondicaoDeExistenciaCpf(
+        cpfTratado);
+    if (validacaoCondicaoExistenciaCpf != VALIDACAO_OK) {
+      return validacaoCondicaoExistenciaCpf;
     }
 
-    //Métodos relacionados ao delete
-    public static GenericExceptionEnum realizarDelete(String id){
-        if(ValidacoesComunsService.validarId(id) != VALIDACAO_OK) {
-            return ERRO_GENERICO;
-        }
+    return VALIDACAO_OK;
+  }
 
-        int qtdLinhasDeletadas = deletarProfissional(id);
-        if(qtdLinhasDeletadas > 0){
-            return SUCESSO;
-        }
-        return descobrirErroGeral(qtdLinhasDeletadas);
+  private static GenericExceptionEnum validarFormatoCpf(String cpf) {
+    return PATTERN_CPF.matcher(cpf).matches() ? VALIDACAO_OK : CPF_NAO_NUMERICO;
+  }
+
+  private static GenericExceptionEnum validarCondicaoDeExistenciaCpf(String cpf) {
+    int soma = 0;
+    int peso = 10;
+    for (int i = 0; i < 9; i++) {
+      soma += (cpf.charAt(i) - '0') * peso--;
+    }
+    int resto = 11 - (soma % 11);
+    int digito1 = (resto == 10 || resto == 11) ? 0 : resto;
+
+    if (digito1 != (cpf.charAt(9) - '0')) {
+      return CPF_INVALIDO;
     }
 
-    private static int deletarProfissional(String id){
-        ProfissionalDAO dao = new ProfissionalDAO();
-        return 3;//dao.delete(Long.parseLong(id.strip()));
+    soma = 0;
+    peso = 11;
+    for (int i = 0; i < 10; i++) {
+      soma += (cpf.charAt(i) - '0') * peso--;
+    }
+    resto = 11 - (soma % 11);
+    int digito2 = (resto == 10 || resto == 11) ? 0 : resto;
+
+    return digito2 == (cpf.charAt(10) - '0') ? VALIDACAO_OK : CPF_INVALIDO;
+  }
+
+  //Métodos relacionados ao delete
+  public GenericExceptionEnum realizarDelete(String id, Long idAdmin) {
+    if (validarId(id) != VALIDACAO_OK) {
+      return ERRO_GENERICO;
+    }
+    return deletarProfissional(id, idAdmin);
+  }
+
+  private GenericExceptionEnum deletarProfissional(String id, Long idAdmin) {
+    ProfissionalDAO dao = new ProfissionalDAO();
+
+    try (Connection connection = Conexao.getConnection()) {
+      connection.setAutoCommit(false);
+      try {
+        Long idConvertido = Long.parseLong(id.strip());
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaRead = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, idConvertido, Types.BIGINT);
+
+        List<Map<String, Object>> usuario = dao.readAll(criarInstrucaoDinamicaRead, connection);
+
+        if (usuario.isEmpty()) {
+          throw new IllegalArgumentException("ID não possui um correspondente no banco!");
+        }
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaDelete = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamicaDelete.setWhere("id", IGUAL, VAZIO, idConvertido, Types.BIGINT);
+
+        dao.delete(criarInstrucaoDinamicaDelete, connection);
+
+        HistoricoAlteracoesAdminService.salvarAcao(
+            new HistoricoAlteracoesAdmin(null, idAdmin, idConvertido, "PROFISSIONAL", "DELETE",
+                GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(), new JsonObject(), null),
+            connection);
+
+        connection.commit();
+        return SUCESSO;
+      } catch (SQLException | IllegalArgumentException exception) {
+        connection.rollback();
+
+        throw exception;
+      }
+
+    } catch (SQLException | IllegalArgumentException exception) {
+      return ERRO_GENERICO;
+    }
+  }
+
+  //Métodos relacionados ao select
+  public List<Map<String, Object>> realizarSelectIncial(Admin admin) {
+    CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
+    ProfissionalDAO dao = new ProfissionalDAO();
+
+    try (Connection connection = Conexao.getConnection()) {
+      List<Map<String, Object>> profissionais = dao.readAll(criarInstrucaoDinamica, connection);
+
+      Anonimizador anonimizador = new Anonimizador();
+      anonimizador.anonimizarDadosLidos(profissionais, admin);
+
+      return profissionais;
+    } catch (SQLException | ClassCastException exception) {
+      return new ArrayList<>();
+    }
+  }
+
+  public List<Map<String, Object>> realizarSelect(FiltrosProfissionalDTO filtrosProfissionalDTO,
+      List<GenericExceptionEnum> errosEncontrados, Admin admin) {
+    if (filtrosProfissionalDTO == null) {
+      return new ArrayList<>();
     }
 
-    //Métodos relacionados ao select
-    public static List<Profissional> realizarSelect(FiltroProfissionalDTO filtroProfissionalDTO, List<GenericExceptionEnum> errosEncontrados){
-        List<Profissional> usuarios;
+    errosEncontrados.addAll(validarProfissionalSelect(filtrosProfissionalDTO));
+    if (!errosEncontrados.isEmpty()) {
+      return new ArrayList<>();
+    }
+    return lerProfissional(filtrosProfissionalDTO, admin);
+  }
 
-        if(filtroProfissionalDTO == null){
-            return lerProfissional(null, true);
+  private List<Map<String, Object>> lerProfissional(FiltrosProfissionalDTO filtrosProfissionalDTO,
+      Admin admin) {
+    try (Connection connection = Conexao.getConnection()) {
+      CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
+      UsuarioDAO dao = new UsuarioDAO();
+
+      if (filtrosProfissionalDTO.idFiltro() != null) {
+        criarInstrucaoDinamica.setWhere(CamposProfissional.ID.getCampoProfissional(), IGUAL, VAZIO,
+            filtrosProfissionalDTO.formatarId(), CamposProfissional.ID.getDataType());
+        criarInstrucaoDinamica.setOrderBy(CamposProfissional.ID.getCampoProfissional(),
+            AcoesInstrucao.ORDEM_CRESCENTE);
+      }
+
+      if (filtrosProfissionalDTO.idUsuarioFiltro() != null) {
+        criarInstrucaoDinamica.setWhere(ID_USUARIO.getCampoProfissional(), IGUAL, AND,
+            filtrosProfissionalDTO.formatarIdUsuario(), ID_USUARIO.getDataType());
+      }
+
+      if (filtrosProfissionalDTO.profissaoFiltro() != null) {
+        criarInstrucaoDinamica.setWhere(PROFISSAO.getCampoProfissional(), ILIKE, AND,
+            filtrosProfissionalDTO.formatarProfissao(), PROFISSAO.getDataType());
+      }
+
+      if (filtrosProfissionalDTO.cpfFiltro() != null) {
+        criarInstrucaoDinamica.setWhere(CamposProfissional.CPF_HMAC.getCampoProfissional(), IGUAL,
+            AND,
+            filtrosProfissionalDTO.formatarCpf(), CamposProfissional.CPF_HMAC.getDataType());
+      }
+
+      if (filtrosProfissionalDTO.idFornecedorFiltro() != null) {
+        criarInstrucaoDinamica.setWhere(ID_FORNECEDOR.getCampoProfissional(), IGUAL, AND,
+            filtrosProfissionalDTO.idFornecedorFiltro(), ID_FORNECEDOR.getDataType());
+      }
+
+      JoinsPossiveis tabelaConectada = JoinsPossiveis.encontrarTabelaReferente(
+          filtrosProfissionalDTO.joinFiltro());
+      if (filtrosProfissionalDTO.joinFiltro() != null) {
+        String conector = JoinsPossiveis.joinValido("profissional",
+            filtrosProfissionalDTO.joinFiltro());
+
+        if (conector.contains("profissional")) {
+          criarInstrucaoDinamica.setJoin(INNER_JOIN, tabelaConectada.getNomeTabela(), "id",
+              conector);
+        } else {
+          criarInstrucaoDinamica.setJoin(INNER_JOIN, tabelaConectada.getNomeTabela(), conector,
+              "id");
         }
 
-//        errosEncontrados.addAll(validarProfissionalSelect(filtroProfissionalDTO));
-//        if (!errosEncontrados.isEmpty()){
-//            return lerProfissional(filtroProfissionalDTO,true);
-//        }
+      }
 
-        usuarios = lerProfissional(filtroProfissionalDTO,false);
-        if (usuarios.isEmpty()){
-            errosEncontrados.add(REGISTROS_NAO_ENCONTRADOS);
-        }
-        return usuarios;
+      List<Map<String, Object>> profissionais = dao.readAll(criarInstrucaoDinamica, connection);
+
+      Anonimizador anonimizador = new Anonimizador();
+      anonimizador.anonimizarDadosLidos(profissionais, admin);
+
+      for (Map<String, Object> dado : profissionais) {
+        dado.remove("tipo_usuario");
+      }
+
+      return profissionais;
+    } catch (SQLException | ClassCastException exception) {
+      return new ArrayList<>();
+    }
+  }
+
+  private List<GenericExceptionEnum> validarProfissionalSelect(
+      FiltrosProfissionalDTO filtrosProfissionalDTO) {
+    List<GenericExceptionEnum> erros = new ArrayList<>();
+
+    if (filtrosProfissionalDTO.idFiltro() != null) {
+      GenericExceptionEnum validacao = validarId(filtrosProfissionalDTO.idFiltro());
+      if (validacao != VALIDACAO_OK) {
+        erros.add(validacao);
+      }
     }
 
-    private static List<Profissional> lerProfissional(FiltroProfissionalDTO filtroProfissionalDTO, boolean erroEncontrado){
-        ProfissionalDAO dao = new ProfissionalDAO();
-        if (erroEncontrado){
-            //return dao.readAll();
-        }
-//
-//        CamposProfissional clausulaWhere = CamposProfissional.descobrirCampoProfissional(
-//            filtroProfissionalDTO.clausulaWhereNome().strip().toLowerCase());
-//
-//        if(!clausulaWhere.isAcessivel()){
-//            Profissional profissional= lerProfissionalUnicoRetorno(clausulaWhere, filtroProfissionalDTO.clausulaWhereValor());
-//
-//            List<Profissional> profissionais = new ArrayList<>();
-//
-//            if (profissional.getId() != (long)REGISTRO_NAO_ENCONTRADO.getCodigo()){
-//                profissionais.add(profissional);
-//            }
-//            return profissionais;
-//        }
-        return null;
+    if (filtrosProfissionalDTO.idUsuarioFiltro() != null) {
+      GenericExceptionEnum validacao = validarIdUsuario(filtrosProfissionalDTO.idUsuarioFiltro());
+      if (validacao != VALIDACAO_OK) {
+        erros.add(validacao);
+      }
     }
 
-
-
-//    private static List<GenericExceptionEnum> validarProfissionalSelect(
-//        FiltroProfissionalDTO filtroProfissionalDTO){
-//        List<GenericExceptionEnum> erros = new ArrayList<>();
-//
-//        CamposProfissional clausulaWhere = CamposProfissional.descobrirCampoProfissional(
-//            filtroProfissionalDTO.clausulaWhereNome());
-//        GenericExceptionEnum clausulaWhereNomeValidacao = ValidacoesComunsService.validarWhere(clausulaWhere);
-//        if (clausulaWhereNomeValidacao != VALIDACAO_OK){
-//            erros.add(clausulaWhereNomeValidacao);
-//            return erros;
-//        }
-//
-//        erros.addAll(validarClausulaWhereValor(filtroProfissionalDTO.clausulaWhereNome(), filtroProfissionalDTO.clausulaWhereValor()));
-//
-//        CamposProfissional orderBy = CamposProfissional.descobrirCampoProfissional(
-//            filtroProfissionalDTO.orderBy());
-//        GenericExceptionEnum orderByValidacao = ValidacoesComunsService.validarOrderBy(orderBy);
-//        if (orderByValidacao != VALIDACAO_OK){
-//            erros.add(orderByValidacao);
-//        }
-//
-//        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(
-//            filtroProfissionalDTO.sentidoOrderBy());
-//        if (ordenacaoValidacao != VALIDACAO_OK){
-//            erros.add(ordenacaoValidacao);
-//        }
-//        return erros;
-//    }
-
-    private static List<GenericExceptionEnum> validarClausulaWhereValor(String clausulaWhereNome, String clausulaWhereValor){
-        List<GenericExceptionEnum> errosNasClausulasWhere = new ArrayList<>();
-
-        GenericExceptionEnum clausulaWhereValorValidacao = null;
-
-        CamposProfissional clausulaWhere = CamposProfissional.descobrirCampoProfissional(clausulaWhereNome.strip().toLowerCase());
-        if (clausulaWhere == GENERICO){
-            return errosNasClausulasWhere;
-        }
-
-        if (clausulaWhere == ID || clausulaWhere == ID_USUARIO || clausulaWhere == ID_FORNECEDOR){
-            clausulaWhereValorValidacao = ValidacoesComunsService.validarId(clausulaWhereValor);
-        }
-
-        if (clausulaWhere == PROFISSAO){
-            clausulaWhereValorValidacao = validarProfissao(clausulaWhereValor);
-        }
-
-        if (clausulaWhere == CPF_AES){
-            clausulaWhereValorValidacao = validarCpf(clausulaWhereValor, false);
-        }
-
-        if (clausulaWhereValorValidacao == null){
-            clausulaWhereValorValidacao = WHERE_INVALIDO;
-        }
-
-        if (clausulaWhereValorValidacao != VALIDACAO_OK){
-            errosNasClausulasWhere.add(clausulaWhereValorValidacao);
-        }
-        return errosNasClausulasWhere;
+    if (filtrosProfissionalDTO.profissaoFiltro() != null) {
+      GenericExceptionEnum validacao = validarProfissao(filtrosProfissionalDTO.profissaoFiltro());
+      if (validacao != VALIDACAO_OK) {
+        erros.add(validacao);
+      }
     }
 
-    //Métodos relacionados ao update
-    public static List<GenericExceptionEnum> realizarUpdate(ProfissionalParaInsertDTO profissionalParaInsertDTO){
-        List<GenericExceptionEnum> erros = validarUpdate(profissionalParaInsertDTO);
-        if(!erros.isEmpty()){
-            return erros;
-        }
-
-        int qtdLinhasAlteradas = atualizarProfissional(profissionalParaInsertDTO);
-        if(qtdLinhasAlteradas < 1){
-            erros.add(ErrosGerais.descobrirErroGeral(qtdLinhasAlteradas));
-        }
-        return erros;
+    if (filtrosProfissionalDTO.cpfFiltro() != null) {
+      GenericExceptionEnum validacao = validarCpf(filtrosProfissionalDTO.cpfFiltro());
+      if (validacao != VALIDACAO_OK) {
+        erros.add(validacao);
+      }
     }
 
-    private static int atualizarProfissional(ProfissionalParaInsertDTO profissionalParaInsertDTO){
-        ProfissionalDAO dao = new ProfissionalDAO();
-        return 3;//dao.update(profissionalParaInsertDTO.construirProfissional());
+    if (filtrosProfissionalDTO.idFornecedorFiltro() != null) {
+      GenericExceptionEnum validacao = validarIdFornecedor(
+          filtrosProfissionalDTO.idFornecedorFiltro());
+      if (validacao != VALIDACAO_OK) {
+        erros.add(validacao);
+      }
     }
 
-    private static List<GenericExceptionEnum> validarUpdate(ProfissionalParaInsertDTO profissionalParaInsertDTO){
-        List<GenericExceptionEnum> erros = new ArrayList<>();
-
-        GenericExceptionEnum profissaoValidacao = validarProfissao(profissionalParaInsertDTO.profissao());
-        if(profissaoValidacao != VALIDACAO_OK){
-            erros.add(profissaoValidacao);
-        }
-
-        GenericExceptionEnum idFornecedorValidacao = validarIdFornecedor(profissionalParaInsertDTO.idFornecedor());
-        if (idFornecedorValidacao != VALIDACAO_OK){
-            erros.add(idFornecedorValidacao);
-        }
-        return erros;
+    if (filtrosProfissionalDTO.joinFiltro() != null) {
+      if (JoinsPossiveis.joinValido("profissional", filtrosProfissionalDTO.joinFiltro()) == null) {
+        erros.add(JOIN_INVALIDO);
+      }
     }
 
-    public static Profissional exibirProfissionalParaUpdate(String id){
-        if(ValidacoesComunsService.validarId(id) != VALIDACAO_OK){
-            return null;
-        }
+    return erros;
+  }
 
-        ProfissionalDAO dao = new ProfissionalDAO();
-        return null;//dao.readById(Long.parseLong(id));
+  //Métodos relacionados ao update
+  public List<GenericExceptionEnum> realizarUpdate(JsonObject jsonObject, Long idAdmin) {
+    List<GenericExceptionEnum> erros = validarUpdate(jsonObject);
+    if (!erros.isEmpty()) {
+      return erros;
     }
 
-    //Métodos relacionados ao insert
-    public static List<GenericExceptionEnum> realizarInsert(ProfissionalParaInsertDTO profissionalParaInsertDTO){
-        List<GenericExceptionEnum> mensagens = validarProfissionalInsert(profissionalParaInsertDTO);
-        if (mensagens.isEmpty()) {
-            int resultado = 3;//persistirProfissional(profissionalParaInsertDTO);
-            if (resultado < 1) {
-                mensagens.add(ErrosGerais.descobrirErroGeral(resultado));
-            }
+    GenericExceptionEnum resultado = atualizarProfissional(jsonObject, idAdmin);
+    if (resultado != SUCESSO) {
+      erros.add(resultado);
+    }
+    return erros;
+  }
+
+  private GenericExceptionEnum atualizarProfissional(JsonObject jsonObject, Long idAdmin) {
+    ProfissionalDAO dao = new ProfissionalDAO();
+
+    try (Connection connection = Conexao.getConnection()) {
+      connection.setAutoCommit(false);
+
+      try {
+        Profissional profissional = GSON.fromJson(jsonObject, ProfissionalParaUpdateDTO.class).construirProfissional();
+        Long id = profissional.getId();
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaRead = new CriarInstrucaoDinamica();
+        criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
+
+        List<Map<String, Object>> profissionalLido = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        if (profissionalLido.isEmpty()) {
+          throw new IllegalArgumentException("ID não possui um correspondente no banco!");
         }
-        return mensagens;
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamicaUpdate.setCampo(CamposProfissional.ID_FORNECEDOR.getCampoProfissional(),
+            profissional.getIdFornecedor(), Types.BIGINT);
+        criarInstrucaoDinamicaUpdate.setCampo(PROFISSAO.getCampoProfissional(),
+            profissional.getProfissao(), Types.VARCHAR);
+          criarInstrucaoDinamicaUpdate.setCampo(DOCUMENTO_CONTRATO.getCampoProfissional(),
+            profissional.getDocumentoContrato(), Types.VARCHAR);
+
+        criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
+
+        dao.update(criarInstrucaoDinamicaUpdate, connection);
+
+        jsonObject.entrySet().removeIf(
+            campo -> campo.getValue() != null && !campo.getValue().isJsonNull() && (
+                campo.getValue().isJsonPrimitive() && campo.getValue().getAsString().trim()
+                    .isEmpty()));
+
+        HistoricoAlteracoesAdminService.salvarAcao(
+            new HistoricoAlteracoesAdmin(null, idAdmin, id, "USUARIO", "UPDATE",
+                GSON.toJsonTree(profissionalLido.getFirst()).getAsJsonObject(), jsonObject, null),
+            connection);
+
+        connection.commit();
+        return SUCESSO;
+      } catch (SQLException | IllegalArgumentException exception) {
+        connection.rollback();
+        throw exception;
+      }
+    } catch (SQLException | IllegalArgumentException exception) {
+      if (exception instanceof SQLException) {
+        return ConstraintsBanco.foiCausadoPorQual((SQLException) exception);
+      }
+
+      return ERRO_GENERICO;
+    }
+  }
+
+  private List<GenericExceptionEnum> validarUpdate(JsonObject jsonObject) {
+    List<GenericExceptionEnum> erros = new ArrayList<>();
+
+    ProfissionalParaUpdateDTO profissionalParaUpdateDTO = GSON.fromJson(jsonObject,
+        ProfissionalParaUpdateDTO.class);
+
+    GenericExceptionEnum idFornecedorValidacao = validarIdFornecedor(profissionalParaUpdateDTO.idFornecedorUpdate());
+    if (idFornecedorValidacao != VALIDACAO_OK && (profissionalParaUpdateDTO.idFornecedorUpdate() != null
+        && !profissionalParaUpdateDTO.idFornecedorUpdate().isBlank())) {
+      erros.add(idFornecedorValidacao);
     }
 
-    public static List<GenericExceptionEnum> validarProfissionalInsert(ProfissionalParaInsertDTO profissionalParaInsertDTO){
-        List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
-
-        GenericExceptionEnum validacaoIdUsuario = validarTipoUsuario(profissionalParaInsertDTO.tipoUsuario());
-        if (validacaoIdUsuario != VALIDACAO_OK){
-            listaDeErros.add(validacaoIdUsuario);
-        }
-
-        GenericExceptionEnum validacaoProfissao = validarProfissao(profissionalParaInsertDTO.profissao());
-        if(validacaoProfissao != VALIDACAO_OK){
-            listaDeErros.add(validacaoProfissao);
-        }
-
-        GenericExceptionEnum validacaoCpf = validarCpf(profissionalParaInsertDTO.cpf(), true);
-        if(validacaoCpf != VALIDACAO_OK && validacaoCpf != ATRIBUTO_NULL){
-            listaDeErros.add(validacaoCpf);
-        }
-
-        GenericExceptionEnum validacaoIdFornecedor = validarIdFornecedor(profissionalParaInsertDTO.idFornecedor());
-        if (validacaoIdFornecedor != VALIDACAO_OK){
-            listaDeErros.add(validacaoIdFornecedor);
-        }
-        return listaDeErros;
+    GenericExceptionEnum profissaoValidacao = validarProfissao(profissionalParaUpdateDTO.profissaoUpdate());
+    if (profissaoValidacao != VALIDACAO_OK && (profissionalParaUpdateDTO.profissaoUpdate() != null
+        && !profissionalParaUpdateDTO.profissaoUpdate().isBlank())) {
+      erros.add(profissaoValidacao);
     }
+    return erros;
+  }
+
+  public List<Map<String, Object>> exibirProfissionalParaUpdate(String id, Admin admin) {
+    if (validarId(id) != VALIDACAO_OK) {
+      return new ArrayList<>();
+    }
+
+    CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
+    criarInstrucaoDinamica.setWhere(CamposUsuario.ID.getCampoUsuario(), IGUAL, VAZIO,
+        Long.parseLong(id), Types.BIGINT);
+    try (Connection connection = Conexao.getConnection()) {
+      ProfissionalDAO dao = new ProfissionalDAO();
+
+      List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);
+
+      if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
+        for (Map<String, Object> registro : resultados) {
+          registro.remove("documento_contrato");
+          registro.remove("tipo_usuario");
+          registro.put("cpf", PorMascara.porMascaraCpf(anonimizarCnpjECpf(
+                new Criptografia().descriptografarAes((byte[]) registro.get("cpf_hmac")),
+              false)));
+          registro.remove("cpf_aes");
+          registro.remove("cpf_hmac");
+        }
+      } else {
+        for (Map<String, Object> registro : resultados) {
+          registro.remove("tipo_usuario");
+          registro.put("cpf", PorMascara.porMascaraCpf(
+              new Criptografia().descriptografarAes((byte[]) registro.get("cpf_hmac"))  ));
+          registro.remove("cpf_aes");
+          registro.remove("cpf_hmac");
+        }
+      }
+
+      return resultados;
+    } catch (SQLException | IllegalArgumentException | ClassCastException exception) {
+      return new ArrayList<>();
+    }
+  }
+
+  //Métodos relacionados ao insert
+  public static List<GenericExceptionEnum> validarProfissionalInsert(
+      ProfissionalParaInsertDTO profissionalParaInsertDTO) {
+    List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
+
+    GenericExceptionEnum validacaoIdUsuario = validarTipoUsuario(
+        profissionalParaInsertDTO.tipoUsuario());
+    if (validacaoIdUsuario != VALIDACAO_OK) {
+      listaDeErros.add(validacaoIdUsuario);
+    }
+
+    GenericExceptionEnum validacaoProfissao = validarProfissao(
+        profissionalParaInsertDTO.profissao());
+    if (validacaoProfissao != VALIDACAO_OK) {
+      listaDeErros.add(validacaoProfissao);
+    }
+
+    GenericExceptionEnum validacaoCpf = validarCpf(profissionalParaInsertDTO.cpf());
+    if (validacaoCpf != VALIDACAO_OK && validacaoCpf != ATRIBUTO_NULL) {
+      listaDeErros.add(validacaoCpf);
+    }
+
+    GenericExceptionEnum validacaoIdFornecedor = validarIdFornecedor(
+        profissionalParaInsertDTO.idFornecedor());
+    if (validacaoIdFornecedor != VALIDACAO_OK) {
+      listaDeErros.add(validacaoIdFornecedor);
+    }
+    return listaDeErros;
+  }
 
 
 }

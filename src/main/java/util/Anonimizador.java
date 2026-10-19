@@ -32,7 +32,7 @@ public final class Anonimizador {
     return String.join(" ", partes);
   }
 
-  private static String anonimizarCnpjECpf(String dado, boolean isCpnj) {
+  public static String anonimizarCnpjECpf(String dado, boolean isCpnj) {
     char[] dadoEmChar = dado.toCharArray();
 
     int inicio = 3;
@@ -172,9 +172,8 @@ public final class Anonimizador {
           return;
         }
         try {
-          registro.put("cpf", PorMascara.porMascaraCpf(anonimizarCnpjECpf(
-              new Criptografia().descriptografarAes((byte[]) registro.get(this.getNomeCampo())),
-              false)));
+          registro.put("cpf", PorMascara.porMascaraCpf(
+              new Criptografia().descriptografarAes((byte[]) registro.get(this.getNomeCampo()))));
           registro.remove("cpf_aes");
           registro.remove("cpf_hmac");
         } catch (ClassCastException classCastException) {

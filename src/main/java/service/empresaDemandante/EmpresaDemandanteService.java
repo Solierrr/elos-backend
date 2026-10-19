@@ -173,10 +173,10 @@ public final class EmpresaDemandanteService {
             return lerEmpresasDemandantes(null, true);
         }
 
-        errosEncontrados.addAll(validarEmpresaDemandanteSelect(empresaDemandanteDadosDePesquisaDto));
-        if (!errosEncontrados.isEmpty()){
-            return lerEmpresasDemandantes(empresaDemandanteDadosDePesquisaDto,true);
-        }
+//        errosEncontrados.addAll(validarEmpresaDemandanteSelect(empresaDemandanteDadosDePesquisaDto));
+//        if (!errosEncontrados.isEmpty()){
+//            return lerEmpresasDemandantes(empresaDemandanteDadosDePesquisaDto,true);
+//        }
 
         EmpresasDemandantes = lerEmpresasDemandantes(empresaDemandanteDadosDePesquisaDto,false);
         if (EmpresasDemandantes.isEmpty()){
@@ -249,30 +249,30 @@ public final class EmpresaDemandanteService {
         return new ArrayList<>();
     }
 
-    private static List<GenericExceptionEnum> validarEmpresaDemandanteSelect(EmpresaDemandanteDadosDePesquisaDTO empresaDemandanteDadosDePesquisaDto){
-        List<GenericExceptionEnum> erros = new ArrayList<>();
-
-        CamposEmpresaDemandante clausulaWhere = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.clausulaWhereNome());
-        GenericExceptionEnum clausulaWhereNomeValidacao = ValidacoesComunsService.validarWhere(clausulaWhere);
-        if (clausulaWhereNomeValidacao != VALIDACAO_OK){
-            erros.add(clausulaWhereNomeValidacao);
-            return erros;
-        }
-
-        erros.addAll(validarClausulaWhereValor(empresaDemandanteDadosDePesquisaDto.clausulaWhereNome(), empresaDemandanteDadosDePesquisaDto.clausulaWhereValor()));
-
-        CamposEmpresaDemandante orderBy = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.orderBy());
-        GenericExceptionEnum orderByValidacao = ValidacoesComunsService.validarOrderBy(orderBy);
-        if (orderByValidacao != VALIDACAO_OK){
-            erros.add(orderByValidacao);
-        }
-
-        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(empresaDemandanteDadosDePesquisaDto.sentidoOrderBy());
-        if (ordenacaoValidacao != VALIDACAO_OK){
-            erros.add(ordenacaoValidacao);
-        }
-        return erros;
-    }
+//    private static List<GenericExceptionEnum> validarEmpresaDemandanteSelect(EmpresaDemandanteDadosDePesquisaDTO empresaDemandanteDadosDePesquisaDto){
+//        List<GenericExceptionEnum> erros = new ArrayList<>();
+//
+//        CamposEmpresaDemandante clausulaWhere = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.clausulaWhereNome());
+//        GenericExceptionEnum clausulaWhereNomeValidacao = ValidacoesComunsService.validarWhere(clausulaWhere);
+//        if (clausulaWhereNomeValidacao != VALIDACAO_OK){
+//            erros.add(clausulaWhereNomeValidacao);
+//            return erros;
+//        }
+//
+//        erros.addAll(validarClausulaWhereValor(empresaDemandanteDadosDePesquisaDto.clausulaWhereNome(), empresaDemandanteDadosDePesquisaDto.clausulaWhereValor()));
+//
+//        CamposEmpresaDemandante orderBy = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.orderBy());
+//        GenericExceptionEnum orderByValidacao = ValidacoesComunsService.validarOrderBy(orderBy);
+//        if (orderByValidacao != VALIDACAO_OK){
+//            erros.add(orderByValidacao);
+//        }
+//
+//        GenericExceptionEnum ordenacaoValidacao = ValidacoesComunsService.validarSentidoOrderBy(empresaDemandanteDadosDePesquisaDto.sentidoOrderBy());
+//        if (ordenacaoValidacao != VALIDACAO_OK){
+//            erros.add(ordenacaoValidacao);
+//        }
+//        return erros;
+//    }
 
     private static List<GenericExceptionEnum> validarClausulaWhereValor(String clausulaWhereNome, String clausulaWhereValor){
         List<GenericExceptionEnum> errosNasClausulasWhere = new ArrayList<>();

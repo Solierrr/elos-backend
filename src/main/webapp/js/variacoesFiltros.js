@@ -30,7 +30,7 @@ const gerarCampos = () => {
                 </div>`,
             "NOME": ` 
                 <div class="caixa-filtro label-e-input">
-                        <label for="nome-filtro">Nome</label>
+                    <label for="nome-filtro">Nome</label>
                     <div>
                         <input type="text" name="nome-filtro" id="nome-filtro" placeholder="ex: Roger" >
                         <button type="button" class="remover-filtro botoes-sair">
@@ -54,7 +54,6 @@ const gerarCampos = () => {
                         </button>
                     </div>
                     <span id="filtro-erro-tipo-usuario" class="span-erro"></span>
-
                 </div>`,
             "RAIO_PROCURA_KM": `
                 <div class="caixa-filtro label-e-input">
@@ -85,7 +84,78 @@ const gerarCampos = () => {
                         </button>
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
-
+                </div>`
+        },
+        "profissional": {
+            "ID" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "ID_USUARIO" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-usuario-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-usuario-filtro" id="id-usuario-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-usuario" class="span-erro"></span>
+                </div>`,
+            "PROFISSAO": ` 
+                <div class="caixa-filtro label-e-input">
+                    <label for="profissao-filtro">Nome</label>
+                    <div>
+                        <input type="text" name="profissao-filtro" id="profissao-filtro" placeholder="ex: Engenheiro Eletrico" >
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-profissao" class="span-erro"></span>
+                </div>`,
+            "CPF": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="cpf-filtro">E-mail</label>
+                    <div>
+                        <input type="text" name="cpf-filtro" id="cpf-filtro" placeholder="ex: 000.000.000-00">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-cpf-email" class="span-erro"></span>
+                </div>`,
+            "ID_FORNECEDOR" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-fornecedor-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-fornecedor-filtro" id="id-fornecedor-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-fornecedor" class="span-erro"></span>
+                </div>`,
+            "JOIN":`
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="USUARIO">Usuario</option>
+                            <option value="FORNECEDOR">Fornecedor</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
         }
     };

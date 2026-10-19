@@ -1,7 +1,5 @@
 package service.usuario;
 
-
-import model.TiposUsuario;
 import model.Usuario;
 import util.Criptografia;
 
@@ -14,9 +12,8 @@ public record UsuarioParaUpdateDTO(String idUpdate, String emailUpdate, String s
     String senhaTratada = senhaUpdate == null || senhaUpdate.isBlank() ? null : senhaUpdate.strip();
     String nomeTratado = nomeUpdate == null || nomeUpdate.isBlank() ? null : nomeUpdate.strip();
 
-
     Criptografia criptografia = new Criptografia();
-    return new Usuario(Long.parseLong(idUpdate.strip()), emailTratado, senhaUpdate== null ? null: criptografia.colocarHashNaSenha(senhaTratada), nomeTratado, null, raioProcuraKmTratado);
+    return new Usuario(Long.parseLong(idUpdate.strip()), emailTratado, senhaUpdate == null ? null: criptografia.colocarHashNaSenha(senhaTratada), nomeTratado, null, raioProcuraKmTratado);
   }
 
 }

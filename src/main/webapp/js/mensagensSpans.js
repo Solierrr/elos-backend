@@ -1,5 +1,5 @@
 const mensagens = {
-    "usuario": {
+  "usuario": {
     "erro-email": "E-mail inválido",
     "erro-senha": "A senha está fraca",
     "erro-nome": "Nome inválido",
@@ -12,10 +12,15 @@ const mensagens = {
     "erro-profissao": "Profissão inválida",
     "erro-cpf": "CPF inválido",
     "erro-id-fornecedor": "ID do fornecedor inválido"
-    },
+  }, "profissional": {
+    "erro-id-usuario": "ID do usuário inválido",
+    "erro-profissao": "Profissão inválida",
+    "erro-cpf": "CPF inválido",
+    "erro-id-fornecedor": "ID do fornecedor inválido"
+  }
 
 };
 
 export const mensagensSpans = (nomeTela) => {
-    return mensagens[nomeTela];
+  return mensagens[nomeTela];
 }

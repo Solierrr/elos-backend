@@ -63,6 +63,7 @@ corpoTabelaDelegado.addEventListener('click', event => {
   }
 });
 
+//Coleta dos dados do pop-up do update
 function preencherFormularioUpdate(id) {
 
   const url = `${formularioPegarDadosUpdate.action}?id=${encodeURIComponent(

@@ -71,7 +71,7 @@ public enum JoinsPossiveis {
         if(Arrays.asList(tabelaOrigemConvertida.getTabelasConectaveisViaPk()).contains(tabelaDestino.toLowerCase()))
             return tabelaOrigemConvertida.getNomePkComoFk();
 
-        if(Arrays.asList(tabelaDestinoConvertida.getTabelasConectaveisViaPk()).contains(tabelaDestino.toLowerCase()))
+        if(Arrays.asList(tabelaDestinoConvertida.getTabelasConectaveisViaPk()).contains(tabelaOrigem.toLowerCase()))
             return tabelaDestinoConvertida.getNomePkComoFk();
 
         return null;

@@ -1,4 +1,4 @@
-//Partes relacionadas ao botão da senha:
+//Partes relacionadas ao botão da senha
 const botaoSenha = document.getElementById('olho-senha');
 const inputSenha = document.getElementById('input-senha');
 

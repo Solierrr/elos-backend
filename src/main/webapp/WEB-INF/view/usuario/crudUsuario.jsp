@@ -16,7 +16,8 @@
 </head>
 <body>
 <input type="hidden" value="usuario" id="nome-do-arquivo">
-<span id="imagens-tabela" data-url-editar="${pageContext.request.contextPath}/assets/icone/crud/caneta_editar.svg"
+<span id="imagens-tabela"
+      data-url-editar="${pageContext.request.contextPath}/assets/icone/crud/caneta_editar.svg"
       data-url-apagar="${pageContext.request.contextPath}/assets/icone/crud/lixeira_apagar.svg"></span>
 
 <div class="conteiner">
@@ -44,17 +45,17 @@
                      alt="Ir para tela do CRUD do usuário"/>
                 <span id="span-usuario">Usuário</span>
             </a>
-            <a>
+            <a href="${pageContext.request.contextPath}/crudEmpresaDemandante">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/empresa_demandante.svg"
                      alt="Ir para tela do CRUD da empresa demandante"/>
                 <span id="span-empresa-demandante">Empresa Demandante</span>
             </a>
-            <a>
+            <a href="${pageContext.request.contextPath}/crudFornecedor">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/fornecedor.svg"
                      alt="Ir para tela do CRUD do fornecedor"/>
-                <span id="span-fornecedor" Fornecedor>Fornecedor</span>
+                <span id="span-fornecedor">Fornecedor</span>
             </a>
-            <a>
+            <a href="${pageContext.request.contextPath}/crudProfissional">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/profissional.svg"
                      alt="Ir para tela do CRUD do profissional"/>
                 <span id="span-profissional">Profissional</span>
@@ -63,12 +64,12 @@
 
         <div id="botoes-localizacao" class="caixa-sidebar">
             <span id="span-botoes-localizacao">Localização</span>
-            <a>
+            <a href="${pageContext.request.contextPath}/crudTelefone">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/telefone.svg"
                      alt="Ir para tela do CRUD do telefone"/>
                 <span id="span-telefone">Telefone</span>
             </a>
-            <a>
+            <a href="${pageContext.request.contextPath}/crudEndereco">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/endereco.svg"
                      alt="Ir para tela do CRUD do endereço"/>
                 <span id="span-endereco">Endereço</span>
@@ -77,23 +78,23 @@
 
         <div id="botoes-admin" class="caixa-sidebar">
             <span id="span-botoes-admin">Admin</span>
-            <a href="">
+            <a href="${pageContext.request.contextPath}/crudAdmin">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/admin.svg"
                      alt="Ir para tela do CRUD do admin">
                 <span id="span-admin">Admin</span>
             </a>
-            <a href="">
+            <a href="${pageContext.request.contextPath}/crudTelefoneAdmin">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/telefone.svg"
                      alt="Ir para tela do CRUD do telefone do admin">
                 <span id="span-telefone-admin">Telefone do admin</span>
             </a>
-            <a href="">
+            <a href="${pageContext.request.contextPath}/crudHistoricoAlteracoes">
                 <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_altecacoes.svg"
                      alt="Ir para tela do CRUD do histórico de alterações">
                 <span id="span-hitorico-alteracoes">Histórico de Alterações</span>
             </a>
-            <a href="">
-                <img src="${pageContext.request.contextPath}/assets/icone/crud/acesso admin.svg"
+            <a href="${pageContext.request.contextPath}/crudAcessoAdmin">
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/acesso_admin.svg"
                      alt="Ir para tela do CRUD do histórico de acessos dos admins">
                 <span id="span-acessos-admin">Acessos dos admins</span>
             </a>
@@ -163,7 +164,8 @@
                             <label for="senha-update">Senha</label>
                             <div class="senha-container">
                                 <input id="senha-update" type="password" name="senha-update"
-                                       placeholder="Deixe em branco caso não for alterar" autocomplete="new-password"
+                                       placeholder="Deixe em branco caso não for alterar"
+                                       autocomplete="new-password"
                                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                                 <img id="olho-senha-update"
                                      src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
@@ -187,8 +189,9 @@
                     <div>
                         <div class="label-e-input">
                             <label for="raio-procura-km-update">Raio de procura (KM)</label>
-                            <input type="text" placeholder="Deixe em branco caso não for alterar" name="raio-procura-km-update"
-                                   id="raio-procura-km-update"  pattern="[0-9.,]+">
+                            <input type="text" placeholder="Deixe em branco caso não for alterar"
+                                   name="raio-procura-km-update"
+                                   id="raio-procura-km-update" pattern="[0-9.,]+">
                         </div>
                         <span id="erro-raio-procura-km-update" class="span-erro"></span>
                     </div>
@@ -196,7 +199,8 @@
                     <div>
                         <div class="label-e-input">
                             <label for="tipo-usuario-update">Tipo do usuário</label>
-                            <div for="tipo-usuario-update" class="div-update" id="tipo-usuario-update"></div>
+                            <div for="tipo-usuario-update" class="div-update"
+                                 id="tipo-usuario-update"></div>
                         </div>
                         <span id="erro-tipo-usuario-update" class="span-erro"></span>
                     </div>
@@ -229,8 +233,9 @@
                         <div class="label-e-input">
                             <label for="senha">Senha</label>
                             <div class="senha-container">
-                                <input  id="senha" type="password" name="senha"
-                                       placeholder="Coloque a senha do usuário" autocomplete="new-password"
+                                <input id="senha" type="password" name="senha"
+                                       placeholder="Coloque a senha do usuário"
+                                       autocomplete="new-password"
                                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
                                 <img id="olho-senha"
                                      src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
@@ -248,7 +253,7 @@
                             <label for="nome">Nome</label>
                             <input type="text" name="nome" id="nome" required
                                    placeholder="ex: Roger dos santos"
-                                  >
+                            >
                         </div>
                         <span id="erro-nome" class="span-erro"></span>
                     </div>
@@ -319,10 +324,12 @@
 
 </div>
 
-<form action="${pageContext.request.contextPath}/crudUsuario-delete" method="POST" id="formulario-delete">
+<form action="${pageContext.request.contextPath}/crudUsuario-delete" method="POST"
+      id="formulario-delete">
 </form>
 
-<form action="${pageContext.request.contextPath}/crudUsuario-update" method="GET" id="formulario-update-dados">
+<form action="${pageContext.request.contextPath}/crudUsuario-update" method="GET"
+      id="formulario-update-dados">
 </form>
 
 <script type="module" src="${pageContext.request.contextPath}/js/crud.js" defer></script>
