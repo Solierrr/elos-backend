@@ -1,6 +1,5 @@
 package service.usuario;
 
-
 import static dao.AcoesInstrucao.AND;
 import static dao.AcoesInstrucao.IGUAL;
 import static dao.AcoesInstrucao.ILIKE;
@@ -314,8 +313,7 @@ public final class UsuarioService {
 
       if (filtrosUsuarioDTO.raioProcuraKmFiltro() != null) {
         criarInstrucaoDinamica.setWhere(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(),
-            AcoesInstrucao.MENOR_IGUAL, AND, filtrosUsuarioDTO.formatarRaioProcura(),
-                Types.DOUBLE);
+            AcoesInstrucao.MENOR_IGUAL, AND, filtrosUsuarioDTO.formatarRaioProcura(), Types.DOUBLE);
       }
 
       JoinsPossiveis tabelaConectada = JoinsPossiveis.encontrarTabelaReferente(
@@ -400,64 +398,64 @@ public final class UsuarioService {
     return erros;
   }
 
-    private GenericExceptionEnum atualizarUsuario(JsonObject jsonObject, Long idAdmin) {
-      UsuarioDAO dao = new UsuarioDAO();
+  private GenericExceptionEnum atualizarUsuario(JsonObject jsonObject, Long idAdmin) {
+    UsuarioDAO dao = new UsuarioDAO();
 
-      try (Connection connection = Conexao.getConnection()) {
-        connection.setAutoCommit(false);
+    try (Connection connection = Conexao.getConnection()) {
+      connection.setAutoCommit(false);
 
-        try {
+      try {
 
-          Usuario usuario = GSON.fromJson(jsonObject, UsuarioParaUpdateDTO.class).construirUsuario();
-          Long id = usuario.getId();
+        Usuario usuario = GSON.fromJson(jsonObject, UsuarioParaUpdateDTO.class).construirUsuario();
+        Long id = usuario.getId();
 
-          CriarInstrucaoDinamica criarInstrucaoDinamicaRead = new CriarInstrucaoDinamica();
-          criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
+        CriarInstrucaoDinamica criarInstrucaoDinamicaRead = new CriarInstrucaoDinamica();
+        criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
-          List<Map<String, Object>> usuarioLido = dao.readAll(criarInstrucaoDinamicaRead, connection);
-          if (usuarioLido.isEmpty()) {
-            throw new IllegalArgumentException("ID não possui um correspondente no banco!");
-          }
-
-          CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
-
-          criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.EMAIL.getCampoUsuario(),
-              usuario.getEmail(), Types.VARCHAR);
-          criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.SENHA.getCampoUsuario(),
-              usuario.getSenha(), Types.VARCHAR);
-          criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.NOME.getCampoUsuario(),
-              usuario.getNome(), Types.VARCHAR);
-          criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(),
-              usuario.getRaioProcuraKm(), Types.DOUBLE);
-
-          criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
-
-          dao.update(criarInstrucaoDinamicaUpdate, connection);
-
-          jsonObject.entrySet().removeIf(
-              campo -> campo.getValue() != null && !campo.getValue().isJsonNull() && (
-                  campo.getValue().isJsonPrimitive() && campo.getValue().getAsString().trim()
-                      .isEmpty()));
-
-          HistoricoAlteracoesAdminService.salvarAcao(
-              new HistoricoAlteracoesAdmin(null, idAdmin, id, "USUARIO", "UPDATE",
-                  GSON.toJsonTree(usuarioLido.getFirst()).getAsJsonObject(), jsonObject, null),
-              connection);
-
-          connection.commit();
-          return SUCESSO;
-        } catch (SQLException | IllegalArgumentException exception) {
-          connection.rollback();
-          throw exception;
+        List<Map<String, Object>> usuarioLido = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        if (usuarioLido.isEmpty()) {
+          throw new IllegalArgumentException("ID não possui um correspondente no banco!");
         }
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.EMAIL.getCampoUsuario(),
+            usuario.getEmail(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.SENHA.getCampoUsuario(),
+            usuario.getSenha(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.NOME.getCampoUsuario(),
+            usuario.getNome(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(),
+            usuario.getRaioProcuraKm(), Types.DOUBLE);
+
+        criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
+
+        dao.update(criarInstrucaoDinamicaUpdate, connection);
+
+        jsonObject.entrySet().removeIf(
+            campo -> campo.getValue() != null && !campo.getValue().isJsonNull() && (
+                campo.getValue().isJsonPrimitive() && campo.getValue().getAsString().trim()
+                    .isEmpty()));
+
+        HistoricoAlteracoesAdminService.salvarAcao(
+            new HistoricoAlteracoesAdmin(null, idAdmin, id, "USUARIO", "UPDATE",
+                GSON.toJsonTree(usuarioLido.getFirst()).getAsJsonObject(), jsonObject, null),
+            connection);
+
+        connection.commit();
+        return SUCESSO;
       } catch (SQLException | IllegalArgumentException exception) {
-        if (exception instanceof SQLException) {
-          return ConstraintsBanco.foiCausadoPorQual((SQLException) exception);
-        }
-
-        return ERRO_GENERICO;
+        connection.rollback();
+        throw exception;
       }
+    } catch (SQLException | IllegalArgumentException exception) {
+      if (exception instanceof SQLException) {
+        return ConstraintsBanco.foiCausadoPorQual((SQLException) exception);
+      }
+
+      return ERRO_GENERICO;
     }
+  }
 
   private List<GenericExceptionEnum> validarUpdate(JsonObject jsonObject) {
     List<GenericExceptionEnum> erros = new ArrayList<>();
