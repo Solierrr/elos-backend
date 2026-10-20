@@ -715,7 +715,7 @@ option {
   aspect-ratio: 1/1;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1120px) {
   #pop-up-filtro {
     width: 90% !important;
     height: max-content;

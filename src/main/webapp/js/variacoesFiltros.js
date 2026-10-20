@@ -100,7 +100,7 @@ const gerarCampos = () => {
                 </div>`,
             "ID_USUARIO" : `
                 <div class="caixa-filtro label-e-input">
-                    <label for="id-usuario-filtro">ID</label>
+                    <label for="id-usuario-filtro">ID do usuário</label>
                     <div>
                         <input type="text" name="id-usuario-filtro" id="id-usuario-filtro" placeholder="ex: 2">
                         <button type="button" class="remover-filtro botoes-sair">
@@ -111,7 +111,7 @@ const gerarCampos = () => {
                 </div>`,
             "PROFISSAO": ` 
                 <div class="caixa-filtro label-e-input">
-                    <label for="profissao-filtro">Nome</label>
+                    <label for="profissao-filtro">Profissão</label>
                     <div>
                         <input type="text" name="profissao-filtro" id="profissao-filtro" placeholder="ex: Engenheiro Eletrico" >
                         <button type="button" class="remover-filtro botoes-sair">
@@ -122,18 +122,18 @@ const gerarCampos = () => {
                 </div>`,
             "CPF": `
                 <div class="caixa-filtro label-e-input">
-                    <label for="cpf-filtro">E-mail</label>
+                    <label for="cpf-filtro">CPF</label>
                     <div>
                         <input type="text" name="cpf-filtro" id="cpf-filtro" placeholder="ex: 000.000.000-00">
                         <button type="button" class="remover-filtro botoes-sair">
                             <img src="${urlApagar}" class="icone-lixeira">
                         </button>
                     </div>
-                    <span id="filtro-cpf-email" class="span-erro"></span>
+                    <span id="filtro-erro-cpf" class="span-erro"></span>
                 </div>`,
             "ID_FORNECEDOR" : `
                 <div class="caixa-filtro label-e-input">
-                    <label for="id-fornecedor-filtro">ID</label>
+                    <label for="id-fornecedor-filtro">ID do fornecedor</label>
                     <div>
                         <input type="text" name="id-fornecedor-filtro" id="id-fornecedor-filtro" placeholder="ex: 2">
                         <button type="button" class="remover-filtro botoes-sair">
@@ -150,6 +150,86 @@ const gerarCampos = () => {
                             <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
                             <option value="USUARIO">Usuario</option>
                             <option value="FORNECEDOR">Fornecedor</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+                </div>`
+        }, "fornecedor":{
+            "ID" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "ID_USUARIO" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-usuario-filtro">ID do usuário</label>
+                    <div>
+                        <input type="text" name="id-usuario-filtro" id="id-usuario-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-usuario" class="span-erro"></span>
+                </div>`,
+            "TIPO_FORNECEDOR":`
+                <div class="caixa-filtro label-e-input">
+                    <label for="tipo-fornecedor-filtro">Tipo do fornecedor</label>
+                    <div>
+                        <select name="tipo-fornecedor-filtro" id="tipo-fornecedor-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="tipo-fornecedor-filtro-estado-vazio">Selecione o tipo do
+                                fornecedor:
+                            </option>
+                            <option value="FABRICANTE">Fabricante</option>
+                            <option value="DISTRIBUIDOR">Distribuidor</option>
+                            <option value="REVENDEDOR">Revendedor</option>
+                            <option value="INTEGRADOR">Integrador</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-tipo-fornecedor" class="span-erro"></span>
+                </div>`,
+            "CNPJ": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="cnpj-filtro">CNPJ</label>
+                    <div>
+                        <input type="text" name="cnpj-filtro" id="cnpj-filtro" placeholder="ex: VA.MME.YR0/0001-67">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-cnpj" class="span-erro"></span>
+                </div>`,
+            "RAZAO_SOCIAL": ` 
+                <div class="caixa-filtro label-e-input">
+                    <label for="razao_social-filtro">Razão social</label>
+                    <div>
+                        <input type="text" name="razao_social-filtro" id="razao_social-filtro" placeholder="ex: Solar company Ltda" >
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-razao_social" class="span-erro"></span>
+                </div>`,
+            "JOIN":`
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="USUARIO">Usuário</option>
+                            <option value="PROFISSIONAL">Profissional</option>
                         </select>
                         <button type="button" class="remover-filtro botoes-sair">
                             <img src="${urlApagar}" class="icone-lixeira">

@@ -8,12 +8,15 @@ import java.util.Map;
 
 public interface GenericDAO<T> {
 
-    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
+  public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
+      throws SQLException;
 
-    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
+  public List<Map<String, Object>> readAll(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
 
-    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
+  public GenericExceptionEnum update(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
 
-    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
-
+  public GenericExceptionEnum delete(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
 }

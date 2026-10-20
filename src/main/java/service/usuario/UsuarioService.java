@@ -256,7 +256,7 @@ public final class UsuarioService {
   }
 
   //Métodos relacionados ao select
-  public List<Map<String, Object>> realizarSelectIncial(Admin admin) {
+  public List<Map<String, Object>> realizarSelectInicial(Admin admin) {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     UsuarioDAO dao = new UsuarioDAO();
 
@@ -292,30 +292,30 @@ public final class UsuarioService {
 
       if (filtrosUsuarioDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(CamposUsuario.ID.getCampoUsuario(), IGUAL, VAZIO,
-            filtrosUsuarioDTO.formatarId(), CamposUsuario.ID.getDataType());
+            filtrosUsuarioDTO.formatarId(), Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(CamposUsuario.ID.getCampoUsuario(),
             AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosUsuarioDTO.emailFiltro() != null) {
         criarInstrucaoDinamica.setWhere(CamposUsuario.EMAIL.getCampoUsuario(), ILIKE, AND,
-            filtrosUsuarioDTO.formatarEmail(), CamposUsuario.EMAIL.getDataType());
+            filtrosUsuarioDTO.formatarEmail(), Types.VARCHAR);
       }
 
       if (filtrosUsuarioDTO.nomeFiltro() != null) {
         criarInstrucaoDinamica.setWhere(CamposUsuario.NOME.getCampoUsuario(), ILIKE, AND,
-            filtrosUsuarioDTO.formatarNome(), CamposUsuario.NOME.getDataType());
+            filtrosUsuarioDTO.formatarNome(), Types.VARCHAR);
       }
 
       if (filtrosUsuarioDTO.tipoUsuarioFiltro() != null) {
         criarInstrucaoDinamica.setWhere(CamposUsuario.TIPO_USUARIO.getCampoUsuario(), IGUAL, AND,
-            filtrosUsuarioDTO.formatarTipoUsuario(), CamposUsuario.TIPO_USUARIO.getDataType());
+            filtrosUsuarioDTO.formatarTipoUsuario(), Types.VARCHAR);
       }
 
       if (filtrosUsuarioDTO.raioProcuraKmFiltro() != null) {
         criarInstrucaoDinamica.setWhere(CamposUsuario.RAIO_PROCURA_KM.getCampoUsuario(),
             AcoesInstrucao.MENOR_IGUAL, AND, filtrosUsuarioDTO.formatarRaioProcura(),
-            CamposUsuario.RAIO_PROCURA_KM.getDataType());
+                Types.DOUBLE);
       }
 
       JoinsPossiveis tabelaConectada = JoinsPossiveis.encontrarTabelaReferente(

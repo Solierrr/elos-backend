@@ -12,85 +12,97 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class UsuarioDAO implements GenericDAO {
 
-    private static String TABELA = "usuario";
+  private static String TABELA = "usuario";
 
-    @Override
-    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws IllegalArgumentException{
-        throw new IllegalArgumentException("Existe parametros faltando!");
+  @Override
+  public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
+      throws IllegalArgumentException {
+    throw new IllegalArgumentException("Existe parametros faltando!");
+  }
+
+  public Long insert(
+      CriarInstrucaoDinamica criarInstrucaoDinamicaUsuario,
+      CriarInstrucaoDinamica criarInstrucaoDinamicaFilho,
+      String tabelaFilho,
+      Connection connection)
+      throws SQLException {
+
+    PreparedStatement preparedStatementUsuario =
+        connection.prepareStatement(
+            criarInstrucaoDinamicaUsuario.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS);
+    criarInstrucaoDinamicaUsuario.aplicarValoresDoPreparedStatement(preparedStatementUsuario);
+    preparedStatementUsuario.executeUpdate();
+
+    ResultSet resultSet = preparedStatementUsuario.getGeneratedKeys();
+    resultSet.next();
+    Long idCriado = resultSet.getLong(1);
+
+    criarInstrucaoDinamicaFilho.setCampo("id_usuario", idCriado, Types.BIGINT);
+
+    PreparedStatement preparedStatementFilho =
+        connection.prepareStatement(criarInstrucaoDinamicaFilho.construirInsert(tabelaFilho));
+    criarInstrucaoDinamicaFilho.aplicarValoresDoPreparedStatement(preparedStatementFilho);
+
+    if (preparedStatementFilho.executeUpdate() < 1) {
+      return null;
     }
+    return idCriado;
+  }
 
-    public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamicaUsuario,
-                                       CriarInstrucaoDinamica criarInstrucaoDinamicaFilho,
-                                       String tabelaFilho, Connection connection) throws SQLException{
+  @Override
+  public List<Map<String, Object>> readAll(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    List<Map<String, Object>> dados = new ArrayList<>();
 
-        PreparedStatement preparedStatementUsuario = connection.prepareStatement(criarInstrucaoDinamicaUsuario.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS
-        );
-        criarInstrucaoDinamicaUsuario.aplicarValoresDoPreparedStatement(preparedStatementUsuario);
-        preparedStatementUsuario.executeUpdate();
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        ResultSet resultSet = preparedStatementUsuario.getGeneratedKeys();
-        resultSet.next();
-        Long idCriado = resultSet.getLong(1);
+    ResultSet resultSet = preparedStatement.executeQuery();
+    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+    while (resultSet.next()) {
+      Map<String, Object> valoresRegistroAtual = new LinkedHashMap<>();
 
-        criarInstrucaoDinamicaFilho.setCampo("id_usuario", idCriado, Types.BIGINT);
+      for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+        String nomeColuna = resultSetMetaData.getColumnName(i);
 
-        PreparedStatement preparedStatementFilho = connection.prepareStatement(
-                criarInstrucaoDinamicaFilho.construirInsert(tabelaFilho));
-        criarInstrucaoDinamicaFilho.aplicarValoresDoPreparedStatement(preparedStatementFilho);
+        if (nomeColuna.equalsIgnoreCase("id")
+            && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+          valoresRegistroAtual.put(
+              "id_" + resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+        else valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+      }
 
-        if (preparedStatementFilho.executeUpdate() < 1) {
-            return null;
-        }
-        return idCriado;
+      dados.add(valoresRegistroAtual);
     }
+    return dados;
+  }
 
-    @Override
-    public List<Map<String, Object>> readAll(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        List<Map<String, Object>> dados = new ArrayList<>();
+  @Override
+  public GenericExceptionEnum update(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
-        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-        while (resultSet.next()) {
-            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 
-            for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
-                String nomeColuna = resultSetMetaData.getColumnName(i);
+  @Override
+  public GenericExceptionEnum delete(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
-                if(nomeColuna.equalsIgnoreCase("id") && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
-                    valoresRegistroAtual.put("id_"+resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
-                else
-                    valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
-            }
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            dados.add(valoresRegistroAtual);
-        }
-        return dados;
-    }
-
-    @Override
-    public GenericExceptionEnum update(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)  throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
-
-        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
-
-        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
-    }
-
-    @Override
-    public GenericExceptionEnum delete(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
-
-        criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
-
-        return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
-    }
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 }

@@ -31,13 +31,13 @@ public final class InsertUsuarioServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         response.sendRedirect(request.getContextPath()+"/crudUsuario");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+            throws IOException{
 
         HttpSession session = request.getSession(true);
         Admin admin = (Admin) session.getAttribute("adm");

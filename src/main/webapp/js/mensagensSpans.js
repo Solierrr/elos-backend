@@ -17,6 +17,10 @@ const mensagens = {
     "erro-profissao": "Profissão inválida",
     "erro-cpf": "CPF inválido",
     "erro-id-fornecedor": "ID do fornecedor inválido"
+  }, "fornecedor": {
+    "erro-cnpj": "CNPJ inválido",
+    "erro-razao-social": "Razão social inválida",
+    "erro-tipo-fornecedor": "Selecione um tipo do fornecedor"
   }
 
 };

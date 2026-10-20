@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.Admin;
-import model.Usuario;
 import service.usuario.FiltrosUsuarioDTO;
 import service.usuario.UsuarioService;
 
@@ -53,7 +52,7 @@ public final class ReadUsuarioServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         HttpSession session = request.getSession(true);
         Admin admin = (Admin) session.getAttribute("adm");
@@ -67,7 +66,7 @@ public final class ReadUsuarioServlet extends HttpServlet {
 
         Map<String, Object> json = new HashMap<>();
         if (jsonObject.isEmpty()) {
-            json.put("valores", usuarioService.realizarSelectIncial(admin));
+            json.put("valores", usuarioService.realizarSelectInicial(admin));
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

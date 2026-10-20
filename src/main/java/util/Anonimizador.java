@@ -196,6 +196,9 @@ public final class Anonimizador {
       public void anonimizar(Map<String, Object> registro, Admin admin) {
         if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
           registro.remove(this.getNomeCampo());
+        }else{
+          if(registro.get(this.getNomeCampo()) == null)
+            registro.replace(this.getNomeCampo(), "Autônomo");
         }
       }
     }, CNPJ("cnpj") {

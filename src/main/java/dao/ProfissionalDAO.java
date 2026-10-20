@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import model.Profissional;
@@ -45,7 +46,7 @@ public final class ProfissionalDAO implements GenericDAO<Profissional> {
         ResultSet resultSet = preparedStatement.executeQuery();
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         while (resultSet.next()) {
-            Map<String, Object> valoresRegistroAtual = new HashMap<>();
+            Map<String, Object> valoresRegistroAtual = new LinkedHashMap<>();
 
             for(int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
                 String nomeColuna = resultSetMetaData.getColumnName(i);

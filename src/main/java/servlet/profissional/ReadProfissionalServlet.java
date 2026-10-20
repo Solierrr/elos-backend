@@ -52,7 +52,7 @@ public final class ReadProfissionalServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
 
     HttpSession session = request.getSession(true);
     Admin admin = (Admin) session.getAttribute("adm");
@@ -66,7 +66,7 @@ public final class ReadProfissionalServlet extends HttpServlet {
 
     Map<String, Object> json = new HashMap<>();
     if (jsonObject.isEmpty()) {
-      json.put("valores", profissionalService.realizarSelectIncial(admin));
+      json.put("valores", profissionalService.realizarSelectInicial(admin));
 
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

@@ -136,7 +136,7 @@
 
         <dialog class="pop-up" id="pop-up-update">
             <form id="formulario-update" method="POST"
-                  action="${pageContext.request.contextPath}/crudUsuario-update">
+                  action="${pageContext.request.contextPath}/crudProfissional-update">
                 <div id="conteiner-superior-update">
                     <button type="submit" name="enviar-update" id="enviar-update"
                             class="botoes-pop-up-laranjas">Atualizar profissional
@@ -155,12 +155,13 @@
                                    placeholder="Deixe em branco caso não for alterar">
                             <span id="erro-profissao-update" class="span-erro"></span>
                         </div>
-                        <div>
-                            <div class="label-e-input">
-                                <label for="id-fornecedor-update">ID do fornecedor</label>
-                                <input id="id-fornecedor-update" type="text"
-                                       name="id-fornecedor-update"
-                                       placeholder="Deixe em branco caso não for alterar">
+                    </div>
+                    <div>
+                        <div class="label-e-input">
+                            <label for="id-fornecedor-update">ID do fornecedor</label>
+                            <input id="id-fornecedor-update" type="text"
+                                   name="id-fornecedor-update"
+                                   placeholder="Deixe em branco caso não for alterar">
                             </div>
                         </div>
                         <span id="erro-id-fornecedor-update" class="span-erro"></span>
