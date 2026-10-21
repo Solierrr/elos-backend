@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exception.GenericExceptionEnum;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +15,7 @@ import model.Admin;
 import service.profissional.ProfissionalService;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import service.usuario.UsuarioService;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
 import static exception.ErrosGerais.SUCESSO;
 
 @WebServlet("/crudProfissional-delete")

@@ -16,11 +16,11 @@ public record EnderecoParaUpdate(
     public Endereco construirEndereco() {
         EstadosBrasileiros estadosBrasileiros = EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(estadoUpdate);
 
-        String cidadeTratada = cidadeUpdate.strip();
-        String bairroTratado = bairroUpdate.strip();
-        String cepTratado = cepUpdate.strip().replace("-", "");
-        String logradouroTratado = logradouroUpdate.strip();
-        String numeroTratado = numeroUpdate.strip();
+        String cidadeTratada = cidadeUpdate == null || cidadeUpdate.isBlank() ? null : cidadeUpdate.strip();
+        String bairroTratado = bairroUpdate == null || bairroUpdate.isBlank() ? null : bairroUpdate.strip();
+        String cepTratado = cepUpdate == null || cepUpdate.isBlank() ? null : cepUpdate.strip().replace("-", "");
+        String logradouroTratado = logradouroUpdate == null || logradouroUpdate.isBlank() ? null : logradouroUpdate.strip();
+        String numeroTratado = numeroUpdate == null || numeroUpdate.isBlank() ? null : numeroUpdate.strip();
         String complementoTratado =
                 complementoUpdate == null || complementoUpdate.isBlank() ? null : complementoUpdate.strip();
 

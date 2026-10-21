@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CRUD Usuário</title>
+    <title>Elos CRUD</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/variables.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/style.css"/>
@@ -148,7 +148,7 @@
                   action="${pageContext.request.contextPath}/crudFornecedor-update">
                 <div id="conteiner-superior-update">
                     <button type="submit" name="enviar-update" id="enviar-update"
-                            class="botoes-pop-up-laranjas">Atualizar profissional
+                            class="botoes-pop-up-laranjas">Atualizar fornecedor
                     </button>
                     <button id="update-sair" type="button" class="botoes-sair"><img
                             src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"

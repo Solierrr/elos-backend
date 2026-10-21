@@ -60,7 +60,7 @@ public final class UsuarioService {
   private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(
       FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  //Constantes para evitar valores mágicos ou instancia desnecessária de objetos
+  //Constantes para evitar instancia desnecessária de objetos
   private static final double TAMANHO_MAXIMO_RAIO_PROCURA_KM = 999.99;
 
   private static final int TAMANHO_MAXIMO_NOME = 150;

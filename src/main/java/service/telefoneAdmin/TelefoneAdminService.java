@@ -2,9 +2,7 @@ package service.telefoneAdmin;
 
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
 
-import exception.ErrosDadosTelefone;
 import exception.ErrosDadosTelefoneAdmin;
-import exception.ErrosGeraisDados;
 import exception.GenericExceptionEnum;
 import java.util.regex.Pattern;
 import model.TiposTelefone;

@@ -331,8 +331,8 @@ public final class ProfissionalService {
       if (filtrosProfissionalDTO.filtroRapido() != null && !filtrosProfissionalDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosProfissionalDTO.filtroRapido();
 
-        profissionais.removeIf(usuario ->
-                usuario.values().stream()
+        profissionais.removeIf(profissional ->
+                profissional.values().stream()
                         .filter(Objects::nonNull)
                         .map(String::valueOf)
                         .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))

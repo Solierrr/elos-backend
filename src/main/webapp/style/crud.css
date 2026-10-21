@@ -442,7 +442,7 @@ td:has(.editar, .excluir) {
 .botoes-pop-up-laranjas {
   box-sizing: border-box;
 
-  width: 30%;
+  width: max-content;
   max-width: 12.5rem;
   min-width: 10rem;
 

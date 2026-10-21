@@ -2,6 +2,7 @@ package service.fornecedor;
 
 import static dao.AcoesInstrucao.AND;
 import static dao.AcoesInstrucao.IGUAL;
+import static dao.AcoesInstrucao.ILIKE;
 import static dao.AcoesInstrucao.INNER_JOIN;
 import static dao.AcoesInstrucao.VAZIO;
 import static exception.ErrosDadosFornecedor.TIPO_FORNECEDOR_INVALIDO;
@@ -322,7 +323,7 @@ public final class FornecedorService {
       if (filtrosFornecedorDTO.razaoSocialFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
             CamposFornecedor.RAZAO_SOCIAL.getCampoFornecedor(),
-            IGUAL,
+            ILIKE,
             AND,
             filtrosFornecedorDTO.formatarRazaoSocial(),
             Types.VARCHAR);
@@ -348,8 +349,8 @@ public final class FornecedorService {
       if (filtrosFornecedorDTO.filtroRapido() != null && !filtrosFornecedorDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosFornecedorDTO.filtroRapido();
 
-        fornecedores.removeIf(usuario ->
-                usuario.values().stream()
+        fornecedores.removeIf(fornecedor ->
+                fornecedor.values().stream()
                         .filter(Objects::nonNull)
                         .map(String::valueOf)
                         .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))
@@ -561,6 +562,7 @@ public final class FornecedorService {
     }
   }
 
+  // Método relacionado ao insert
   public static List<GenericExceptionEnum> validarFornecedorInsert(
       FornecedorParaInsertDTO fornecedorParaInsertDTO) {
     List<GenericExceptionEnum> listaDeErros = new ArrayList<>();

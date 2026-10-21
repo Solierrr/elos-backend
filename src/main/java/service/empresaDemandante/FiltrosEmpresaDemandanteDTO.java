@@ -17,7 +17,7 @@ public record FiltrosEmpresaDemandanteDTO(
     return Long.parseLong(idUsuarioFiltro.strip());
   }
 
-  public String formatarCpf() {
+  public String formatarCnpj() {
     return cnpjFiltro
         .strip()
         .toUpperCase()

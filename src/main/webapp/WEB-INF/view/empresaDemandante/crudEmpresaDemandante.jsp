@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CRUD Usuário</title>
+    <title>Elos CRUD</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/variables.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/style.css"/>
@@ -148,7 +148,7 @@
                   action="${pageContext.request.contextPath}/crudEmpresaDemandante-update">
                 <div id="conteiner-superior-update">
                     <button type="submit" name="enviar-update" id="enviar-update"
-                            class="botoes-pop-up-laranjas">Atualizar profissional
+                            class="botoes-pop-up-laranjas">Atualizar empresa demandante
                     </button>
                     <button id="update-sair" type="button" class="botoes-sair"><img
                             src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
@@ -207,7 +207,7 @@
                         <option value="ID_USUARIO">ID do usuário</option>
                         <option value="CNPJ">CNPJ</option>
                         <option value="RAZAO_SOCIAL">Razão social</option>
-                        <option value="EH_MANDANTE">É uma filial</option>
+                        <option value="EH_MANDANTE">É uma filial?</option>
                         <option value="JOIN">Conectar com registro interligado</option>
                     </select>
                     <button id="adicionar-filtro" class="botoes-pop-up-laranjas">Adicionar filtro

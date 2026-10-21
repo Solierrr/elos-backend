@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CRUD Usuário</title>
+    <title>Elos CRUD</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/variables.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/style.css"/>

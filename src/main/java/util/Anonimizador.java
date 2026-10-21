@@ -240,10 +240,10 @@ public final class Anonimizador {
           registro.replace(this.getNomeCampo(), "Não");
         }
       }
-    }, PRINCIPAL("principalFiltro") {
+    }, PRINCIPAL("principal") {
       @Override
       public void anonimizar(Map<String, Object> registro, Admin admin) {
-        if (registro.get(this.getNomeCampo()).equals(true)) {
+        if (String.valueOf(registro.get(this.getNomeCampo())).equalsIgnoreCase("true")) {
           registro.replace(this.getNomeCampo(), "Sim");
         } else {
           registro.replace(this.getNomeCampo(), "Não");

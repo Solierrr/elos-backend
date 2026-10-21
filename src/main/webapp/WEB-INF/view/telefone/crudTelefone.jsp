@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CRUD Usuário</title>
+    <title>Elos CRUD</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/variables.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/style/style.css"/>
@@ -153,7 +153,7 @@
                   action="${pageContext.request.contextPath}/crudTelefone-update">
                 <div id="conteiner-superior-update">
                     <button type="submit" name="enviar-update" id="enviar-update"
-                            class="botoes-pop-up-laranjas">Atualizar usuário
+                            class="botoes-pop-up-laranjas">Atualizar telefone
                     </button>
                     <button id="update-sair" type="button" class="botoes-sair"><img
                             src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
@@ -164,56 +164,35 @@
                 <div id="conteudo-update">
                     <div>
                         <div class="label-e-input">
-                            <label for="email-update">E-mail</label>
-                            <input type="email" name="email-update" id="email-update"
+                            <label for="telefone-update">Número do telefone</label>
+                            <input type="text" name="telefone-update" id="telefone-update" required
                                    placeholder="Deixe em branco caso não for alterar">
                         </div>
-                        <span id="erro-email-update" class="span-erro"></span>
+                        <span id="erro-telefone-update" class="span-erro"></span>
                     </div>
                     <div>
                         <div class="label-e-input">
-                            <label for="senha-update">Senha</label>
-                            <div class="senha-container">
-                                <input id="senha-update" type="password" name="senha-update"
-                                       placeholder="Deixe em branco caso não for alterar"
-                                       autocomplete="new-password"
-                                       pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).{8,}">
-                                <img id="olho-senha-update"
-                                     src="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
-                                     data-url-olho="${pageContext.request.contextPath}/assets/icone/olho.svg"
-                                     data-url-oculto="${pageContext.request.contextPath}/assets/icone/olho-oculto.svg"
-                                     alt="Mostrar senha">
-                            </div>
+                            <label for="tipo-update">Tipo do telefone</label>
+                            <select name="tipo-update" id="tipo-update" required>
+                                <option value="" disabled selected hidden>Selecione o tipo do telefone
+                                </option>
+                                <option value="EMPRESARIAL">Empresarial</option>
+                                <option value="PESSOAL">Pessoal</option>
+                            </select>
                         </div>
-                        <span id="erro-senha-update" class="span-erro"></span>
+                        <span id="erro-tipo-update" class="span-erro"></span>
                     </div>
-
                     <div>
                         <div class="label-e-input">
-                            <label for="nome-update">Nome</label>
-                            <input type="text" name="nome-update" id="nome-update"
-                                   placeholder="Deixe em branco caso não for alterar">
+                            <label for="principal-update">É o telefone principal do usuário?</label>
+                            <select name="principal-update" id="principal-update" required>
+                                <option value="" disabled selected hidden>Selecione uma opção
+                                </option>
+                                <option value="true">Sim</option>
+                                <option value="false">Não</option>
+                            </select>
                         </div>
-                        <span id="erro-nome-update" class="span-erro"></span>
-                    </div>
-
-                    <div>
-                        <div class="label-e-input">
-                            <label for="raio-procura-km-update">Raio de procura (KM)</label>
-                            <input type="text" placeholder="Deixe em branco caso não for alterar"
-                                   name="raio-procura-km-update"
-                                   id="raio-procura-km-update" pattern="[0-9.,]+">
-                        </div>
-                        <span id="erro-raio-procura-km-update" class="span-erro"></span>
-                    </div>
-
-                    <div>
-                        <div class="label-e-input">
-                            <label for="tipo-usuario-update">Tipo do usuário</label>
-                            <div for="tipo-usuario-update" class="div-update"
-                                 id="tipo-usuario-update"></div>
-                        </div>
-                        <span id="erro-tipo-usuario-update" class="span-erro"></span>
+                        <span id="erro-principal-update" class="span-erro"></span>
                     </div>
                 </div>
             </form>
@@ -224,7 +203,7 @@
                   action="${pageContext.request.contextPath}/crudTelefone-insert">
                 <div id="conteiner-superior-insert">
                     <button type="submit" name="enviar-insert" id="enviar-insert"
-                            class="botoes-pop-up-laranjas">Adicionar usuário
+                            class="botoes-pop-up-laranjas">Adicionar telefone
                     </button>
                     <button id="insert-sair" type="button" class="botoes-sair"><img
                             src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
