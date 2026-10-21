@@ -4,7 +4,8 @@ import util.Criptografia;
 
 public record FiltrosFornecedorDTO(String idFiltro, String idUsuarioFiltro, String tipoFornecedorFiltro,
                                    String cnpjFiltro, String razaoSocialFiltro,
-                                   String joinFiltro) {
+                                   String joinFiltro,
+                                   String filtroRapido) {
 
     public Long formatarId() {
         return Long.parseLong(idFiltro.strip());
@@ -19,11 +20,7 @@ public record FiltrosFornecedorDTO(String idFiltro, String idUsuarioFiltro, Stri
     }
 
     public String formatarCnpj() {
-        Criptografia criptografia = new Criptografia();
-
-        return criptografia.criptografarHmac(cnpjFiltro.strip()
-                .replaceAll("\\.", "")
-                .replaceAll("-", ""));
+        return cnpjFiltro.strip().toUpperCase().replaceAll("\\.", "").replaceAll("-", "").replaceAll("/", "");
     }
 
     public Long formatarRazaoSocial() {

@@ -55,7 +55,7 @@ public final class EnderecoService {
       return ErrosDadosEndereco.CEP_VAZIO;
     }
 
-    String cepTratada = cep.strip();
+    String cepTratada = cep.strip().replace("-", "");
     return validarFormatoCep(cepTratada);
   }
 

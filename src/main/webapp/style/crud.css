@@ -188,7 +188,7 @@ a {
 
 .caixa-sidebar > span {
   display: inline-block;
-  width: 0px;
+  width: 0;
   overflow: hidden;
 
   font-size: 1rem;
@@ -217,12 +217,26 @@ a > span {
 /*Botões acima da tabela*/
 #conteiner-botoes {
   width: 90%;
-  height: 6%;
-  min-height: 1.5rem;
-  max-height: 3rem;
+  height: max-content;
+  min-height: max(6%, 1.5rem);
 
   margin-bottom: 1%;
   margin-top: 1%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+
+  gap: 2.5%;
+}
+
+#conteiner-botoes > :is(div:has(button)){
+  width: 60%;
+  height: 95%;
+  min-height: 1.5rem;
+  max-height: 3rem;
 
   display: flex;
   flex-direction: row;
@@ -231,11 +245,41 @@ a > span {
   gap: 2.5%;
 }
 
-#conteiner-botoes > button {
+#formulario-filtro-rapido{
+  width: 30%;
+  min-width: max-content;
+  height: 95%;
+  min-height: 1.5rem;
+  max-height: 3rem;
+}
+
+#caixa-busca-rapida>img{
+  height: 30%;
+  aspect-ratio: 1/1;
+  background: none;
+}
+
+#caixa-busca-rapida{
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 2.5%;
+
+  height: 100%;
+  width: 100%;
+
+  border-radius: 0.5rem;
+
+  padding: 0 4%;
+}
+
+#conteiner-botoes >div> button {
   box-sizing: border-box;
 
   width: 25%;
-  max-width: 12.5rem;
+  height: 100%;
+  max-width: 15rem;
 
   border-style: none;
   border-radius: 0.5rem;
@@ -249,6 +293,14 @@ a > span {
 
   transition: transform 0.5s ease;
   will-change: transform;
+}
+
+#input-busca-rapida{
+  background: none;
+}
+
+#input-busca-rapida:focus{
+  outline: none;
 }
 
 .botoes-laranjas {
@@ -300,8 +352,6 @@ table {
   border-style: none;
 
   overflow: hidden;
-  overflow-x: hidden;
-
   width: 100%;
 }
 
@@ -379,10 +429,12 @@ td:has(.editar, .excluir) {
 
   margin: auto;
 
-  border-radius: 15px;
-  border-width: 2px;
-  border-color: rgb(from var(--black) r g b / 0.6);
+
   overflow: hidden;
+
+  border: 1px solid #E6E0D8;
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
 
   touch-action: none
 }
@@ -411,12 +463,10 @@ td:has(.editar, .excluir) {
   font-size: 1rem;
   font-weight: 380;
 
-  transition: transform 0.5s ease;
-
   background-color: rgb(from var(--orange) r g b / 0.8);
   color: var(--white);
 
-  transition: background-color 0.25s ease
+  transition: background-color 0.25s ease,  transform 0.5s ease;
 }
 
 .botoes-pop-up-laranjas:hover {
@@ -737,13 +787,10 @@ option {
 
 }
 
-
 @media (max-width: 767px) {
 
-
   #conteiner-botoes {
-    height: 6%;
-
+    height: 7rem;
     padding-bottom: 0.5%;
     padding-left: 10%;
   }

@@ -112,8 +112,17 @@
 
     <div id="conteiner-do-conteudo">
         <div id="conteiner-botoes">
-            <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
-            </button>
+            <div>
+                <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
+                </button>
+            </div>
+
+            <form id="formulario-filtro-rapido">
+                <div class="botoes-brancos botoes-pop-up-superiores" id="caixa-busca-rapida">
+                    <img src="${pageContext.request.contextPath}/assets/icone/crud/lupa_busca_rapida.svg">
+                    <input placeholder="Busca rápida" id="input-busca-rapida">
+                </div>
+            </form>
         </div>
 
         <div id="caixa-tabela">
@@ -162,11 +171,9 @@
                             <input id="id-fornecedor-update" type="text"
                                    name="id-fornecedor-update"
                                    placeholder="Deixe em branco caso não for alterar">
-                            </div>
                         </div>
                         <span id="erro-id-fornecedor-update" class="span-erro"></span>
                     </div>
-
                     <div>
                         <div class="label-e-input">
                             <label for="documento-contrato-update">Documento do contrato</label>
@@ -176,7 +183,6 @@
                         </div>
                         <span id="erro-documento-contrato-update" class="span-erro"></span>
                     </div>
-
                     <div>
                         <div class="label-e-input">
                             <label for="cpf-update">CPF</label>
@@ -186,6 +192,8 @@
                         <span id="erro-cpf-update" class="span-erro"></span>
                     </div>
                 </div>
+
+
             </form>
         </dialog>
 

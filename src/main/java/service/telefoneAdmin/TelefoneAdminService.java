@@ -51,7 +51,7 @@ public final class TelefoneAdminService {
         : VALIDACAO_OK;
   }
 
-  //Validação do principal
+  //Validação do principalFiltro
   private static GenericExceptionEnum validarPrincipal(String ehMandante) {
     if (ehMandante == null || ehMandante.isBlank()) {
       return ErrosDadosTelefoneAdmin.PRINCIPAL_INVALIDO;

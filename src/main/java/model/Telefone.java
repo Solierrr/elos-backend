@@ -7,10 +7,10 @@ public class Telefone {
     private final Long idUsuario;
     private String telefone;
     private TiposTelefone tipo;
-    private boolean principal;
+    private Boolean principal;
 
     //Construtor
-    public Telefone(Long id,  Long idUsuario, String telefone, TiposTelefone tipo,boolean principal) {
+    public Telefone(Long id,  Long idUsuario, String telefone, TiposTelefone tipo,Boolean principal) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.telefone = telefone;
@@ -43,11 +43,11 @@ public class Telefone {
         this.tipo = tipo;
     }
 
-    public boolean isPrincipal() {
+    public Boolean isPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(boolean principal) {
+    public void setPrincipal(Boolean principal) {
         this.principal = principal;
     }
 

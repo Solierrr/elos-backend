@@ -18,9 +18,20 @@ const mensagens = {
     "erro-cpf": "CPF inválido",
     "erro-id-fornecedor": "ID do fornecedor inválido"
   }, "fornecedor": {
+    "erro-id-usuario": "ID do usuário inválido",
     "erro-cnpj": "CNPJ inválido",
     "erro-razao-social": "Razão social inválida",
     "erro-tipo-fornecedor": "Selecione um tipo do fornecedor"
+  }, "empresa-demandante":{
+    "erro-cnpj": "CNPJ inválido",
+    "erro-razao-social": "Razão social inválida",
+    "erro-eh-mandante": "Opção inválida",
+    "erro-id-usuario": "ID do usuário inválido"
+  }, "telefone":{
+    "erro-id-usuario": "ID do usuário inválido",
+    "erro-telefone": "O número inserido está inválido",
+    "erro-tipo": "O tipo do telefone escolhido está inválido",
+    "erro-principal": "Erro o valor dde principal está inválido"
   }
 
 };

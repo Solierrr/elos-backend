@@ -112,11 +112,22 @@
 
     <div id="conteiner-do-conteudo">
         <div id="conteiner-botoes">
-            <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
-            </button>
-            <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">Adicionar
-                registro
-            </button>
+            <div>
+                <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
+                </button>
+                <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">
+                    Adicionar
+                    registro
+                </button>
+            </div>
+
+            <form id="formulario-filtro-rapido" method="POST"
+                  action="${pageContext.request.contextPath}/crudUsuario">
+                <div class="botoes-brancos botoes-pop-up-superiores" id="caixa-busca-rapida">
+                    <img src="${pageContext.request.contextPath}/assets/icone/crud/lupa_busca_rapida.svg">
+                    <input placeholder="Busca rápida" id="input-busca-rapida">
+                </div>
+            </form>
         </div>
 
         <div id="caixa-tabela">

@@ -10,41 +10,23 @@ import service.GenericEnumCampos;
 
 public enum CamposEmpresaDemandante implements GenericEnumCampos {
 
-    ID("id", true, IGUAL, Types.BIGINT),
-    ID_USUARIO("id_usuario", true, IGUAL, Types.BIGINT),
-    TIPO_USUARIO("tipo_usuario", true, IGUAL, Types.VARCHAR),
-    CNPJ("cnpj", true,  IGUAL, Types.VARCHAR),
-    RAZAO_SOCIAL("razao_social", true, ILIKE, Types.VARCHAR),
-    EH_MANDANTE("eh_mandante", true, IGUAL, Types.BOOLEAN),
-    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao", true, VAZIO, null),
-    INVALIDO("campo_do_fornecedor_invalido", true, VAZIO, null);
+    ID("id"),
+    ID_USUARIO("id_usuario"),
+    TIPO_USUARIO("tipo_usuario"),
+    CNPJ("cnpj"),
+    RAZAO_SOCIAL("razao_social"),
+    EH_MANDANTE("eh_mandante"),
+    INVALIDO("campo_do_fornecedor_invalido");
 
     private final String camposEmpresaDemandante;
-    private final boolean acessivel;
-    private final AcoesInstrucao acao;
-    private final Integer dataType;
 
-    CamposEmpresaDemandante(String camposEmpresaDemandante, boolean acessivel, AcoesInstrucao acao, Integer dataType) {
+    CamposEmpresaDemandante(String camposEmpresaDemandante) {
         this.camposEmpresaDemandante = camposEmpresaDemandante;
-        this.acessivel = acessivel;
-        this.acao = acao;
-        this.dataType = dataType;
+
     }
 
     public String getCamposEmpresaDemandante() {
         return camposEmpresaDemandante;
-    }
-
-    public boolean isAcessivel() {
-        return acessivel;
-    }
-
-    public AcoesInstrucao getAcao() {
-        return acao;
-    }
-
-    public Integer getDataType() {
-        return dataType;
     }
 
     public static CamposEmpresaDemandante descobrirCampoEmpresaDemandante(String campsEmpresaDemandanteEntrada){

@@ -6,7 +6,7 @@ public enum ErrosDadosTelefoneAdmin implements GenericExceptionEnum {
   TELEFONE_INVALIDO(502, "O telefone inserido é inválido", "telefone"),
   TIPO_VAZIO(503, "O tipo do telefone não foi inserido", "tipo"),
   TIPO_INVALIDO(504, "O tipo do telefone inserido é inválido", "tipo"),
-  PRINCIPAL_INVALIDO(505, "Não foi informado se o telefone é ou não o seu principal", "principal"),
+  PRINCIPAL_INVALIDO(505, "Não foi informado se o telefone é ou não o seu principalFiltro", "principalFiltro"),
   ID_ADMIN_INVALIDO(506, "O id do admin inserido é inválido", "id-admin")
   ;
 

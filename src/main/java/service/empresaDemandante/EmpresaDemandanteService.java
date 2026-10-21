@@ -166,10 +166,10 @@ public final class EmpresaDemandanteService {
     }
 
     //Métodos relacionados ao select
-    public static List<EmpresaDemandante> realizarSelect(EmpresaDemandanteDadosDePesquisaDTO empresaDemandanteDadosDePesquisaDto, List<GenericExceptionEnum> errosEncontrados){
+    public static List<EmpresaDemandante> realizarSelect(FiltrosEmpresaDemandanteDTO filtrosEmpresaDemandanteDto, List<GenericExceptionEnum> errosEncontrados){
         List<EmpresaDemandante> EmpresasDemandantes;
 
-        if(empresaDemandanteDadosDePesquisaDto == null){
+        if(filtrosEmpresaDemandanteDto == null){
             return lerEmpresasDemandantes(null, true);
         }
 
@@ -178,23 +178,23 @@ public final class EmpresaDemandanteService {
 //            return lerEmpresasDemandantes(empresaDemandanteDadosDePesquisaDto,true);
 //        }
 
-        EmpresasDemandantes = lerEmpresasDemandantes(empresaDemandanteDadosDePesquisaDto,false);
+        EmpresasDemandantes = lerEmpresasDemandantes(filtrosEmpresaDemandanteDto,false);
         if (EmpresasDemandantes.isEmpty()){
             errosEncontrados.add(REGISTROS_NAO_ENCONTRADOS);
         }
         return EmpresasDemandantes;
     }
 
-    private static List<EmpresaDemandante> lerEmpresasDemandantes(EmpresaDemandanteDadosDePesquisaDTO empresaDemandanteDadosDePesquisaDto, boolean erroEncontrado){
+    private static List<EmpresaDemandante> lerEmpresasDemandantes(FiltrosEmpresaDemandanteDTO filtrosEmpresaDemandanteDto, boolean erroEncontrado){
 //        if (erroEncontrado){
 //            EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 //            return dao.readAll();
 //        }
 
-        CamposEmpresaDemandante clausulaWhere = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.clausulaWhereNome().strip().toLowerCase());
+        CamposEmpresaDemandante clausulaWhere = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(filtrosEmpresaDemandanteDto.clausulaWhereNome().strip().toLowerCase());
 
         if(!clausulaWhere.isAcessivel()){
-            EmpresaDemandante fornecedor = lerEmpresaDemandanteUnicoRetorno(clausulaWhere, empresaDemandanteDadosDePesquisaDto.clausulaWhereValor());
+            EmpresaDemandante fornecedor = lerEmpresaDemandanteUnicoRetorno(clausulaWhere, filtrosEmpresaDemandanteDto.clausulaWhereValor());
 
             List<EmpresaDemandante> fornecedores = new ArrayList<>();
 
@@ -203,7 +203,7 @@ public final class EmpresaDemandanteService {
             }
             return fornecedores;
         }
-        return lerEmpresaDemandanteMultiplosRetornos(clausulaWhere, empresaDemandanteDadosDePesquisaDto);
+        return lerEmpresaDemandanteMultiplosRetornos(clausulaWhere, filtrosEmpresaDemandanteDto);
     }
 
     private static EmpresaDemandante lerEmpresaDemandanteUnicoRetorno(CamposEmpresaDemandante clausulaWhere, String clausulaWhereValor){
@@ -226,8 +226,8 @@ public final class EmpresaDemandanteService {
         return new EmpresaDemandante(null, null, null, null, null, null);
     }
 
-    private static List<EmpresaDemandante> lerEmpresaDemandanteMultiplosRetornos(CamposEmpresaDemandante clausulaWhere, EmpresaDemandanteDadosDePesquisaDTO empresaDemandanteDadosDePesquisaDto){
-        CamposEmpresaDemandante orderBy = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(empresaDemandanteDadosDePesquisaDto.orderBy().strip().toLowerCase());
+    private static List<EmpresaDemandante> lerEmpresaDemandanteMultiplosRetornos(CamposEmpresaDemandante clausulaWhere, FiltrosEmpresaDemandanteDTO filtrosEmpresaDemandanteDto){
+        CamposEmpresaDemandante orderBy = CamposEmpresaDemandante.descobrirCampoEmpresaDemandante(filtrosEmpresaDemandanteDto.orderBy().strip().toLowerCase());
 
 //        EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 //        if (clausulaWhere == GENERICO){

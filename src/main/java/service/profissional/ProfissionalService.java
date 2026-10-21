@@ -28,6 +28,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import model.Admin;
 import model.FuncoesAdmin;
@@ -326,6 +327,17 @@ public final class ProfissionalService {
       }
 
       List<Map<String, Object>> profissionais = dao.readAll(criarInstrucaoDinamica, connection);
+
+      if (filtrosProfissionalDTO.filtroRapido() != null && !filtrosProfissionalDTO.filtroRapido().isBlank()) {
+        String termoFiltro = filtrosProfissionalDTO.filtroRapido();
+
+        profissionais.removeIf(usuario ->
+                usuario.values().stream()
+                        .filter(Objects::nonNull)
+                        .map(String::valueOf)
+                        .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))
+        );
+      }
 
       Anonimizador anonimizador = new Anonimizador();
       anonimizador.anonimizarDadosLidos(profissionais, admin);

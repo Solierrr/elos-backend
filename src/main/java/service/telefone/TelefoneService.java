@@ -21,7 +21,7 @@ public final class TelefoneService {
       return ErrosDadosTelefone.TELEFONE_VAZIO;
     }
 
-    String telefoneTratado = telefone.strip().replace("(", "").replace(")", "");
+    String telefoneTratado = telefone.strip().replace("(", "").replace(")", "").replaceAll("\\s", "");
     return validarFormatoTelefone(telefoneTratado);
   }
 
@@ -50,7 +50,7 @@ public final class TelefoneService {
         : VALIDACAO_OK;
   }
 
-  //Validação do principal
+  //Validação do principalFiltro
   private static GenericExceptionEnum validarPrincipal(String ehMandante) {
     if (ehMandante == null || ehMandante.isBlank()) {
       return ErrosDadosTelefone.PRINCIPAL_INVALIDO;

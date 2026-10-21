@@ -1,6 +1,6 @@
 package service.usuario;
 
-public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nomeFiltro, String tipoUsuarioFiltro, String raioProcuraKmFiltro, String joinFiltro){
+public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nomeFiltro, String tipoUsuarioFiltro, String raioProcuraKmFiltro, String joinFiltro, String filtroRapido){
 
   public Long formatarId(){
     return Long.parseLong(idFiltro.strip());

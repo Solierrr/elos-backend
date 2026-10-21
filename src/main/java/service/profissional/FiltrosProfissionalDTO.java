@@ -4,7 +4,8 @@ import util.Criptografia;
 
 public record FiltrosProfissionalDTO(String idFiltro, String idUsuarioFiltro, String profissaoFiltro,
                                      String cpfFiltro, String idFornecedorFiltro,
-                                     String joinFiltro) {
+                                     String joinFiltro,
+                                     String filtroRapido) {
 
   public Long formatarId() {
     return Long.parseLong(idFiltro.strip());

@@ -28,7 +28,7 @@ tipoUsuario.addEventListener('change', event => {
         
         <div>
             <div class="label-e-input">
-                <label for="eh-mandante">É a mandante?</label>
+                <label for="eh-mandante">É uma filial?</label>
                 <select name="eh-mandante" id="eh-mandanter" required>
                     <option value="" disabled selected hidden>Selecione uma opção</option>
                     <option value="true">Sim</option>

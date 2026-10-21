@@ -240,7 +240,7 @@ public final class Anonimizador {
           registro.replace(this.getNomeCampo(), "Não");
         }
       }
-    }, PRINCIPAL("principal") {
+    }, PRINCIPAL("principalFiltro") {
       @Override
       public void anonimizar(Map<String, Object> registro, Admin admin) {
         if (registro.get(this.getNomeCampo()).equals(true)) {

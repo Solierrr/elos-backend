@@ -207,6 +207,7 @@ const recriarOptionNoSelect = (chave) => {
 };
 
 const popUpFiltro = document.getElementById("pop-up-filtro");
+const inputFiltroRapido = document.getElementById("input-busca-rapida");
 
 //Função para enviar o filtro
 const enviarFiltro = () => {
@@ -223,6 +224,8 @@ const enviarFiltro = () => {
   });
 
   const dadosFormulario = new FormData(formularioFiltro);
+  dadosFormulario.append("filtro-rapido", inputFiltroRapido.value);
+
   const objetoJs = Object.fromEntries(dadosFormulario);
   const dadosJSON = JSON.stringify(objetoJs);
 
@@ -271,12 +274,20 @@ formularioFiltro.addEventListener("submit", event => {
 
 //Garantia de envio do formulario filtro usando o proprio botão
 const botaoEnviarFiltro = document.getElementById("enviar-filtro");
-botaoEnviarFiltro.addEventListener("click", event => {
+botaoEnviarFiltro.addEventListener("click", () => {
   enviarFiltro()
 })
 
 // Dispara o envio automaticamente ao carregar a página,
 enviarFiltro();
+
+const formularioFiltroBuscaRapida = document.getElementById("formulario-filtro-rapido")
+
+formularioFiltroBuscaRapida.addEventListener("submit", event =>{
+  event.preventDefault();
+
+  enviarFiltro();
+})
 
 // Preenche os spans de erro de cada campo do formulário
 const preencherErros = (errosNoServlet) => {
@@ -496,3 +507,4 @@ formularioUpdate.addEventListener('invalid', event => {
   input.classList.add("caixa-erro");
 
 }, true);
+

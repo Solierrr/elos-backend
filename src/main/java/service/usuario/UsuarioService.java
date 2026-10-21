@@ -31,6 +31,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import model.Admin;
 import model.EmpresaDemandante;
@@ -332,6 +333,17 @@ public final class UsuarioService {
       }
 
       List<Map<String, Object>> usuarios = dao.readAll(criarInstrucaoDinamica, connection);
+
+      if (filtrosUsuarioDTO.filtroRapido() != null && !filtrosUsuarioDTO.filtroRapido().isBlank()) {
+        String termoFiltro = filtrosUsuarioDTO.filtroRapido();
+
+        usuarios.removeIf(usuario ->
+                usuario.values().stream()
+                        .filter(Objects::nonNull)
+                        .map(String::valueOf)
+                        .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))
+        );
+      }
 
       Anonimizador anonimizador = new Anonimizador();
       anonimizador.anonimizarDadosLidos(usuarios, admin);
