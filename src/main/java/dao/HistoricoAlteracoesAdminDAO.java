@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import model.HistoricoAlteracoesAdmin;
 
-public final class HistoricoAlteracoesAdminDAO implements GenericDAO<HistoricoAlteracoesAdmin> {
+public final class HistoricoAlteracoesAdminDAO implements GenericDAO {
 
   private static final String TABELA = "historico_alteracoes";
 

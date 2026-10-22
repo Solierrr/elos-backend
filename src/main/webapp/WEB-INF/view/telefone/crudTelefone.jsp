@@ -89,7 +89,7 @@
                 <span id="span-telefone-admin">Telefone do admin</span>
             </a>
             <a href="${pageContext.request.contextPath}/crudHistoricoAlteracoes">
-                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_altecacoes.svg"
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_alteracoes.svg"
                      alt="Ir para tela do CRUD do histórico de alterações">
                 <span id="span-hitorico-alteracoes">Histórico de Alterações</span>
             </a>
@@ -121,8 +121,7 @@
                 </button>
             </div>
 
-            <form id="formulario-filtro-rapido" method="POST"
-                  action="${pageContext.request.contextPath}/crudUsuario">
+            <form id="formulario-filtro-rapido">
                 <div class="botoes-brancos botoes-pop-up-superiores" id="caixa-busca-rapida">
                     <img src="${pageContext.request.contextPath}/assets/icone/crud/lupa_busca_rapida.svg">
                     <input placeholder="Busca rápida" id="input-busca-rapida">
@@ -299,7 +298,12 @@
       id="formulario-update-dados">
 </form>
 
-<script type="module" src="${pageContext.request.contextPath}/js/crud.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudRead.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudUpdate.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudDelete.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudInsert.js" defer></script>
+
+
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
 

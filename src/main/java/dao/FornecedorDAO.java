@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import model.Fornecedor;
 
-public final class FornecedorDAO implements GenericDAO<Fornecedor> {
+public final class FornecedorDAO implements GenericDAO {
 
   private static final String TABELA = "fornecedor";
 

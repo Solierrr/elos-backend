@@ -7,7 +7,7 @@ public enum CamposTelefone implements GenericEnumCampos {
   ID_USUARIO("id_usuario"),
   TELEFONE("telefone"),
   TIPO("tipo"),
-  PRINCIPAL("principalFiltro"),
+  PRINCIPAL("principal"),
   INVALIDO("campo_invalido");
 
   private final String campoTelefone;

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import model.LogAcessosAdmin;
 
-public final class LogAcessosAdminDAO implements GenericDAO<LogAcessosAdmin> {
+public final class LogAcessosAdminDAO implements GenericDAO {
 
   private static final String TABELA = "log_acessos_admin";
 

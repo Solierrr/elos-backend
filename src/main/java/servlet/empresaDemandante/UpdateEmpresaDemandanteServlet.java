@@ -38,9 +38,9 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet {
 
     String id = request.getParameter("id");
 
-    List<Map<String, Object>> profissional =
+    List<Map<String, Object>> empresaDemandante =
         empresaDemandanteService.exibirEmpresaDemandanteParaUpdate(id, admin);
-    if (profissional.isEmpty()) {
+    if (empresaDemandante.isEmpty()) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
 
@@ -51,7 +51,7 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
 
-    response.getWriter().write(gson.toJson(profissional));
+    response.getWriter().write(gson.toJson(empresaDemandante));
   }
 
   @Override

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.Admin;
+import service.telefone.TelefoneService;
 import service.usuario.UsuarioService;
 
 @WebServlet("/crudTelefone-insert")
@@ -24,7 +25,7 @@ public class InsertTelefoneServlet extends HttpServlet {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
       .create();
 
-  private final UsuarioService telefoneService = new UsuarioService();
+  private final TelefoneService telefoneService = new TelefoneService();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -1,0 +1,42 @@
+const formularioDelete = document.getElementById("formulario-delete");
+const corpoTabelaGlobal = document.querySelector('#caixa-tabela table tbody');
+
+corpoTabelaGlobal.addEventListener("click", event => {
+  const botao = event.target.closest('.excluir');
+  if (!botao) {
+    return;
+  }
+
+  const id = botao.dataset.id;
+
+  const dadoFormulario = new FormData();
+  dadoFormulario.append('id', id);
+
+  const objetoJs = Object.fromEntries(dadoFormulario);
+  const dadosJSON = JSON.stringify(objetoJs);
+
+  fetch(formularioDelete.action, {
+    method: 'POST', headers: {
+      'Content-Type': 'application/json'
+    }, body: dadosJSON
+  })
+    .then(respostaServlet => {
+      return respostaServlet.text().then(texto => {
+        return {
+          ok: respostaServlet.ok, texto: texto
+        };
+      });
+    })
+    .then(resultado => {
+      if (resultado.texto.length === 2) {
+        alert("Exclusão feita com sucesso!");
+        enviarFiltro();
+      } else {
+        alert("Erro na exclusão, tente novamente!");
+      }
+    })
+    .catch(erro => {
+      console.error('Erro ao excluir:', erro);
+      alert("Erro na exclusão, tente novamente!");
+    });
+});

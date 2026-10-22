@@ -395,6 +395,177 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
+        }, "telefone-admin": {
+            "ID": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "ID_ADMIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-admin-filtro">ID do admin</label>
+                    <div>
+                        <input type="text" name="id-admin-filtro" id="id-admin-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-admin" class="span-erro"></span>
+                </div>`,
+            "TELEFONE": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="telefone-filtro">Número do telefone</label>
+                    <div>
+                        <input type="text" name="telefone-filtro" id="telefone-filtro" placeholder="ex: (11) 99332-7908">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-telefone" class="span-erro"></span>
+                </div>`,
+            "TIPO": ` 
+                <div class="caixa-filtro label-e-input">
+                    <label for="tipo-filtro">Tipo do telefone</label>
+                    <div>
+                        <select name="tipo-filtro" id="tipo-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="tipo-filtro-estado-vazio">Selecione o tipo do telefone
+                            </option>
+                            <option value="EMPRESARIAL">Empresarial</option>
+                            <option value="PESSOAL">Pessoal</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-tipo" class="span-erro"></span>
+                </div>`,
+            "PRINCIPAL": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="principal-filtro">É o telefone principal?</label>
+                    <div>
+                        <select name="principal-filtro" id="principal-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="principal-filtro-estado-vazio">Selecione uma opção
+                            </option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-principal" class="span-erro"></span>
+                </div>`,
+            "JOIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+                </div>`
+        }, "acesso-admin": {
+            "ID": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "ID_ADMIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-admin-filtro">ID do admin</label>
+                    <div>
+                        <input type="text" name="id-admin-filtro" id="id-admin-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-admin" class="span-erro"></span>
+                </div>`,
+            "DATA_ACESSO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="data-acesso-filtro">Data de acesso</label>
+                    <div>
+                        <input type="text" name="data-acesso-filtro" id="data-acesso-filtro" placeholder="ex: 14/07/2026">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-data-acesso" class="span-erro"></span>
+                </div>`,
+            "NAVEGADOR": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="navegador-filtro">É o telefone navegador?</label>
+                    <div>
+                        <select name="navegador-filtro" id="navegador-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="navegador-filtro-estado-vazio">Selecione o navegador
+                            </option>
+                            <option value="CHROME">Chrome</option>
+                            <option value="FIREFOX">Firefox</option>
+                            <option value="EDGE">Edge</option>
+                            <option value="EXPLORER">Explorer</option>
+                            <option value="OPERA">Opera</option>
+                            <option value="SAFARI">Safari</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-navegador" class="span-erro"></span>
+                </div>`,
+            "SISTEMA_OPERACIONAL": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="sistema-operacional-filtro">É o telefone sistema-operacional?</label>
+                    <div>
+                        <select name="sistema-operacional-filtro" id="sistema-operacional-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="sistema-operacional-filtro-estado-vazio">Selecione o sistema-operacional
+                            </option>
+                            <option value="WINDOWS">Windows</option>
+                            <option value="MAC">Mac</option>
+                            <option value="LINUX">Linux</option>
+                            <option value="ANDROID">Android</option>
+                            <option value="IOS">IOS</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-sistema-operacional" class="span-erro"></span>
+                </div>`,
+            "JOIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+                </div>`
         }
     };
 };

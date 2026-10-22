@@ -89,7 +89,7 @@
                 <span id="span-telefone-admin">Telefone do admin</span>
             </a>
             <a href="${pageContext.request.contextPath}/crudHistoricoAlteracoes">
-                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_altecacoes.svg"
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_alteracoes.svg"
                      alt="Ir para tela do CRUD do histórico de alterações">
                 <span id="span-hitorico-alteracoes">Histórico de Alterações</span>
             </a>
@@ -343,7 +343,12 @@
       id="formulario-update-dados">
 </form>
 
-<script type="module" src="${pageContext.request.contextPath}/js/crud.js" defer></script>
+
+<script type="module" src="${pageContext.request.contextPath}/js/crudRead.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudUpdate.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudDelete.js" defer></script>
+<script type="module" src="${pageContext.request.contextPath}/js/crudInsert.js" defer></script>
+
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/formularioInsertUsuario.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>

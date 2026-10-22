@@ -32,6 +32,18 @@ const mensagens = {
     "erro-telefone": "O número inserido está inválido",
     "erro-tipo": "O tipo do telefone escolhido está inválido",
     "erro-principal": "Erro o valor dde principal está inválido"
+  }, "telefone-admin": {
+    "erro-id-admin": "ID do admin inválido",
+    "erro-telefone": "O número inserido está inválido",
+    "erro-tipo": "O tipo do telefone escolhido está inválido",
+    "erro-principal": "Erro o valor dde principal está inválido"
+  }, "acesso-admin":{
+    "erro-id-admin": "ID do admin inválido",
+    "erro-data-acesso":  "Data de acesso inválida",
+    "erro-sucesso":  "Sucesso inválido",
+    "erro-motivo-falha": "Motivo da falha inválido",
+    "erro-navegador": "Navegador inválido",
+    "erro-sistema-operacional":  "Sistema operacional inválido"
   }
 
 };

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import model.Profissional;
 
-public final class ProfissionalDAO implements GenericDAO<Profissional> {
+public final class ProfissionalDAO implements GenericDAO {
 
     private static final String TABELA = "profissional";
 

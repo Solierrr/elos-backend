@@ -40,9 +40,9 @@ public final class UpdateFornecedorServlet extends HttpServlet {
 
     String id = request.getParameter("id");
 
-    List<Map<String, Object>> profissional =
+    List<Map<String, Object>> fornecedor =
         fornecedorService.exibirFornecedorParaUpdate(id, admin);
-    if (profissional.isEmpty()) {
+    if (fornecedor.isEmpty()) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
 
@@ -53,7 +53,7 @@ public final class UpdateFornecedorServlet extends HttpServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
 
-    response.getWriter().write(gson.toJson(profissional));
+    response.getWriter().write(gson.toJson(fornecedor));
   }
 
   @Override

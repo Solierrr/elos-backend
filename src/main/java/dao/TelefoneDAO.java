@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import model.Telefone;
 
-public final class TelefoneDAO implements GenericDAO<Telefone> {
+public final class TelefoneDAO implements GenericDAO {
 
   private static final String TABELA = "telefone";
 

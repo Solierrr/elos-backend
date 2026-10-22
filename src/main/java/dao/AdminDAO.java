@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import model.Admin;
 
-public final class AdminDAO implements GenericDAO<Admin> {
+public final class AdminDAO implements GenericDAO {
 
   private static String TABELA = "admin";
 

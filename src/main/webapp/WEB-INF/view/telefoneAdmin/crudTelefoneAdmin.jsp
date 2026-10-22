@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!doctype html>
 <html lang="pt-br">
 <head>
@@ -89,7 +92,7 @@
                 <span id="span-telefone-admin">Telefone do admin</span>
             </a>
             <a href="${pageContext.request.contextPath}/crudHistoricoAlteracoes">
-                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_altecacoes.svg"
+                <img src="${pageContext.request.contextPath}/assets/icone/crud/historico_alteracoes.svg"
                      alt="Ir para tela do CRUD do histórico de alterações">
                 <span id="span-hitorico-alteracoes">Histórico de Alterações</span>
             </a>
@@ -115,14 +118,17 @@
             <div>
                 <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
                 </button>
-                <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">
-                    Adicionar
-                    registro
-                </button>
+
+                <c:if test="${not empty acessoTotal}">
+                    <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">
+                        Adicionar
+                        registro
+                    </button>
+                </c:if>
+
             </div>
 
-            <form id="formulario-filtro-rapido" method="POST"
-                  action="${pageContext.request.contextPath}/crudUsuario">
+            <form id="formulario-filtro-rapido">
                 <div class="botoes-brancos botoes-pop-up-superiores" id="caixa-busca-rapida">
                     <img src="${pageContext.request.contextPath}/assets/icone/crud/lupa_busca_rapida.svg">
                     <input placeholder="Busca rápida" id="input-busca-rapida">
@@ -136,10 +142,13 @@
                 <tr>
                     <th class="littleText">ID</th>
                     <th class="littleText">Telefone</th>
-                    <th class="littleText">ID do usuário</th>
+                    <th class="littleText">ID do admin</th>
                     <th class="littleText">Tipo do telefone</th>
                     <th class="littleText">É o principal?</th>
-                    <th class="littleText">Ações</th>
+
+                    <c:if test="${not empty acessoTotal}">
+                        <th class="littleText">Ações</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -148,113 +157,120 @@
             </table>
         </div>
 
-        <dialog class="pop-up" id="pop-up-update">
-            <form id="formulario-update" method="POST"
-                  action="${pageContext.request.contextPath}/crudTelefone-update">
-                <div id="conteiner-superior-update">
-                    <button type="submit" name="enviar-update" id="enviar-update"
-                            class="botoes-pop-up-laranjas">Atualizar telefone
-                    </button>
-                    <button id="update-sair" type="button" class="botoes-sair"><img
-                            src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
-                            alt="" class="icone-sair"></button>
-                </div>
+        <c:if test="${not empty acessoTotal}">
+            <dialog class="pop-up" id="pop-up-update">
+                <form id="formulario-update" method="POST"
+                      action="${pageContext.request.contextPath}/crudTelefoneAdmin-update">
+                    <div id="conteiner-superior-update">
+                        <button type="submit" name="enviar-update" id="enviar-update"
+                                class="botoes-pop-up-laranjas">Atualizar telefone
+                        </button>
+                        <button id="update-sair" type="button" class="botoes-sair"><img
+                                src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
+                                alt="" class="icone-sair"></button>
+                    </div>
 
-                <input id="id-update" name="id-update" type="hidden" value="">
-                <div id="conteudo-update">
-                    <div>
-                        <div class="label-e-input">
-                            <label for="telefone-update">Número do telefone</label>
-                            <input type="text" name="telefone-update" id="telefone-update" required
-                                   placeholder="Deixe em branco caso não for alterar">
+                    <input id="id-update" name="id-update" type="hidden" value="">
+                    <div id="conteudo-update">
+                        <div>
+                            <div class="label-e-input">
+                                <label for="telefone-update">Número do telefone</label>
+                                <input type="text" name="telefone-update" id="telefone-update"
+                                       required
+                                       placeholder="Deixe em branco caso não for alterar">
+                            </div>
+                            <span id="erro-telefone-update" class="span-erro"></span>
                         </div>
-                        <span id="erro-telefone-update" class="span-erro"></span>
-                    </div>
-                    <div>
-                        <div class="label-e-input">
-                            <label for="tipo-update">Tipo do telefone</label>
-                            <select name="tipo-update" id="tipo-update" required>
-                                <option value="" disabled selected hidden>Selecione o tipo do telefone
-                                </option>
-                                <option value="EMPRESARIAL">Empresarial</option>
-                                <option value="PESSOAL">Pessoal</option>
-                            </select>
+                        <div>
+                            <div class="label-e-input">
+                                <label for="tipo-update">Tipo do telefone</label>
+                                <select name="tipo-update" id="tipo-update" required>
+                                    <option value="" disabled selected hidden>Selecione o tipo do
+                                        telefone
+                                    </option>
+                                    <option value="EMPRESARIAL">Empresarial</option>
+                                    <option value="PESSOAL">Pessoal</option>
+                                </select>
+                            </div>
+                            <span id="erro-tipo-update" class="span-erro"></span>
                         </div>
-                        <span id="erro-tipo-update" class="span-erro"></span>
-                    </div>
-                    <div>
-                        <div class="label-e-input">
-                            <label for="principal-update">É o telefone principal do usuário?</label>
-                            <select name="principal-update" id="principal-update" required>
-                                <option value="" disabled selected hidden>Selecione uma opção
-                                </option>
-                                <option value="true">Sim</option>
-                                <option value="false">Não</option>
-                            </select>
+                        <div>
+                            <div class="label-e-input">
+                                <label for="principal-update">É o telefone principal do
+                                    admin?</label>
+                                <select name="principal-update" id="principal-update" required>
+                                    <option value="" disabled selected hidden>Selecione uma opção
+                                    </option>
+                                    <option value="true">Sim</option>
+                                    <option value="false">Não</option>
+                                </select>
+                            </div>
+                            <span id="erro-principal-update" class="span-erro"></span>
                         </div>
-                        <span id="erro-principal-update" class="span-erro"></span>
                     </div>
-                </div>
-            </form>
-        </dialog>
+                </form>
+            </dialog>
 
-        <dialog class="pop-up" id="pop-up-insert">
-            <form id="formulario-insert" method="POST"
-                  action="${pageContext.request.contextPath}/crudTelefone-insert">
-                <div id="conteiner-superior-insert">
-                    <button type="submit" name="enviar-insert" id="enviar-insert"
-                            class="botoes-pop-up-laranjas">Adicionar usuário
-                    </button>
-                    <button id="insert-sair" type="button" class="botoes-sair"><img
-                            src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
-                            alt="" class="icone-sair"></button>
-                </div>
+            <dialog class="pop-up" id="pop-up-insert">
+                <form id="formulario-insert" method="POST"
+                      action="${pageContext.request.contextPath}/crudTelefoneAdmin-insert">
+                    <div id="conteiner-superior-insert">
+                        <button type="submit" name="enviar-insert" id="enviar-insert"
+                                class="botoes-pop-up-laranjas">Adicionar telefone
+                        </button>
+                        <button id="insert-sair" type="button" class="botoes-sair"><img
+                                src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
+                                alt="" class="icone-sair"></button>
+                    </div>
 
-                <div id="conteudo-insert">
-                    <div>
-                        <div class="label-e-input">
-                            <label for="id-usuario">ID do usuário dono do telefone</label>
-                            <input id="id-usuario" type="text" name="id-usuario"
-                                   placeholder="ex: 95"
-                            >
+                    <div id="conteudo-insert">
+                        <div>
+                            <div class="label-e-input">
+                                <label for="id-admin">ID do admin dono do telefone</label>
+                                <input id="id-admin" type="text" name="id-admin"
+                                       placeholder="ex: 95"
+                                >
+                            </div>
+                            <span id="erro-id-admin" class="span-erro"></span>
                         </div>
-                        <span id="erro-id-usuario" class="span-erro"></span>
-                    </div>
-                    <div>
-                        <div class="label-e-input">
-                            <label for="telefone">Número do telefone</label>
-                            <input type="text" name="telefone" id="telefone" required
-                                   placeholder="ex: (11) 99332-7908">
+                        <div>
+                            <div class="label-e-input">
+                                <label for="telefone">Número do telefone</label>
+                                <input type="text" name="telefone" id="telefone" required
+                                       placeholder="ex: (11) 99332-7908">
+                            </div>
+                            <span id="erro-telefone" class="span-erro"></span>
                         </div>
-                        <span id="erro-telefone" class="span-erro"></span>
-                    </div>
-                    <div>
-                        <div class="label-e-input">
-                            <label for="tipo">Tipo do telefone</label>
-                            <select name="tipo" id="tipo" required>
-                                <option value="" disabled selected hidden>Selecione o tipo do telefone
-                                </option>
-                                <option value="EMPRESARIAL">Empresarial</option>
-                                <option value="PESSOAL">Pessoal</option>
-                            </select>
+                        <div>
+                            <div class="label-e-input">
+                                <label for="tipo">Tipo do telefone</label>
+                                <select name="tipo" id="tipo" required>
+                                    <option value="" disabled selected hidden>Selecione o tipo do
+                                        telefone
+                                    </option>
+                                    <option value="EMPRESARIAL">Empresarial</option>
+                                    <option value="PESSOAL">Pessoal</option>
+                                </select>
+                            </div>
+                            <span id="erro-tipo" class="span-erro"></span>
                         </div>
-                        <span id="erro-tipo" class="span-erro"></span>
-                    </div>
-                    <div>
-                        <div class="label-e-input">
-                            <label for="principal">É o telefone principal do usuário?</label>
-                            <select name="principal" id="principal" required>
-                                <option value="" disabled selected hidden>Selecione uma opção
-                                </option>
-                                <option value="true">Sim</option>
-                                <option value="false">Não</option>
-                            </select>
+                        <div>
+                            <div class="label-e-input">
+                                <label for="principal">É o telefone principal do admin?</label>
+                                <select name="principal" id="principal" required>
+                                    <option value="" disabled selected hidden>Selecione uma opção
+                                    </option>
+                                    <option value="true">Sim</option>
+                                    <option value="false">Não</option>
+                                </select>
+                            </div>
+                            <span id="erro-principal" class="span-erro"></span>
                         </div>
-                        <span id="erro-principal" class="span-erro"></span>
                     </div>
-                </div>
-            </form>
-        </dialog>
+                </form>
+            </dialog>
+        </c:if>
+
 
         <dialog class="pop-up" id="pop-up-filtro"
                 data-url-apagar="${pageContext.request.contextPath}/assets/icone/crud/lixeira_apagar.svg">
@@ -265,10 +281,10 @@
                                 id="campo-filtro-estado-vazio">Campo:
                         </option>
                         <option value="ID">ID</option>
-                        <option value="ID_USUARIO">ID do usuário</option>
+                        <option value="ID_ADMIN">ID do admin</option>
                         <option value="TELEFONE">Número do telefone</option>
                         <option value="TIPO">Tipo do telefone</option>
-                        <option value="PRINCIPAL">É o telefone principal do usuário?</option>
+                        <option value="PRINCIPAL">É o telefone principal do admin?</option>
                         <option value="JOIN">Conectar com registro interligado</option>
                     </select>
                     <button id="adicionar-filtro" class="botoes-pop-up-laranjas">Adicionar filtro
@@ -282,7 +298,7 @@
 
             <div id="conteudo-filtro">
                 <form method="POST" id="formulario-filtro"
-                      action="${pageContext.request.contextPath}/crudTelefone">
+                      action="${pageContext.request.contextPath}/crudTelefoneAdmin">
 
                 </form>
             </div>
@@ -291,15 +307,23 @@
 
 </div>
 
-<form action="${pageContext.request.contextPath}/crudTelefone-delete" method="POST"
-      id="formulario-delete">
-</form>
+<c:if test="${not empty acessoTotal}">
+    <form action="${pageContext.request.contextPath}/crudTelefoneAdmin-delete" method="POST"
+          id="formulario-delete">
+    </form>
 
-<form action="${pageContext.request.contextPath}/crudTelefone-update" method="GET"
-      id="formulario-update-dados">
-</form>
+    <form action="${pageContext.request.contextPath}/crudTelefoneAdmin-update" method="GET"
+          id="formulario-update-dados">
+    </form>
 
-<script type="module" src="${pageContext.request.contextPath}/js/crud.js" defer></script>
+    <script type="module" src="${pageContext.request.contextPath}/js/crudUpdate.js" defer></script>
+    <script type="module" src="${pageContext.request.contextPath}/js/crudDelete.js" defer></script>
+    <script type="module" src="${pageContext.request.contextPath}/js/crudInsert.js" defer></script>
+</c:if>
+
+
+<script type="module" src="${pageContext.request.contextPath}/js/crudRead.js" defer></script>
+
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
 

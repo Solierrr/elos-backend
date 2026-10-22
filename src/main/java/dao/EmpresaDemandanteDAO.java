@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import model.EmpresaDemandante;
 
-public final class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
+public final class EmpresaDemandanteDAO implements GenericDAO {
 
   private static final String TABELA = "empresa_demandante";
 

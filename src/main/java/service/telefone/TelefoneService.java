@@ -10,7 +10,6 @@ import static exception.ErrosGerais.SUCESSO;
 import static exception.ErrosGeraisDados.ATRIBUTO_NULL;
 import static exception.ErrosGeraisDados.JOIN_INVALIDO;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
-import static service.JoinsPossiveis.EMPRESA_DEMANDANTE;
 import static service.ValidacoesComunsService.validarId;
 
 import com.google.gson.FieldNamingPolicy;
@@ -34,55 +33,44 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import model.Admin;
-import model.EmpresaDemandante;
-import model.Fornecedor;
 import model.FuncoesAdmin;
 import model.HistoricoAlteracoesAdmin;
-import model.Profissional;
 import model.Telefone;
 import model.TiposTelefone;
 import service.JoinsPossiveis;
 import service.ValidacoesComunsService;
-import service.empresaDemandante.CamposEmpresaDemandante;
-import service.empresaDemandante.EmpresaDemandanteParaInsertDTO;
-import service.empresaDemandante.EmpresaDemandanteService;
-import service.fornecedor.CamposFornecedor;
-import service.fornecedor.FornecedorParaInsertDTO;
-import service.fornecedor.FornecedorService;
 import service.historicoAlteracoesAdmin.HistoricoAlteracoesAdminService;
-import service.profissional.CamposProfissional;
-import service.profissional.ProfissionalParaInsertDTO;
-import service.profissional.ProfissionalService;
 import util.Anonimizador;
 
 public final class TelefoneService {
 
-  //Atributo usado para operações json no código
-  private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Atributo usado para operações json no código
+  private static final Gson GSON =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
 
   private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}(9)?[0-9]{8}$");
 
-  //Validações
+  // Validações
 
-  //Validação do telefone
+  // Validação do telefone
   private static GenericExceptionEnum validarTelefone(String telefone) {
     if (telefone == null || telefone.isBlank()) {
       return ErrosDadosTelefone.TELEFONE_VAZIO;
     }
 
-    String telefoneTratado = telefone.strip().replace("(", "").replace(")", "")
-        .replaceAll("\\s", "");
+    String telefoneTratado =
+        telefone.strip().replace("(", "").replace(")", "").replaceAll("\\s", "").replace("-", "");
     return validarFormatoTelefone(telefoneTratado);
   }
 
   private static GenericExceptionEnum validarFormatoTelefone(String telefone) {
-    return PATTERN_TELEFONE.matcher(telefone).matches() ? VALIDACAO_OK
+    return PATTERN_TELEFONE.matcher(telefone).matches()
+        ? VALIDACAO_OK
         : ErrosDadosTelefone.TELEFONE_INVALIDO;
   }
 
-  //Validação do id do usuário
+  // Validação do id do usuário
   private static GenericExceptionEnum validarIdUsuario(String idUsuario) {
     if (idUsuario == null) {
       return VALIDACAO_OK;
@@ -93,29 +81,30 @@ public final class TelefoneService {
     return VALIDACAO_OK;
   }
 
-  //Validação do tipo
+  // Validação do tipo
   private static GenericExceptionEnum validarTipo(String tipo) {
     if (tipo == null || tipo.isBlank()) {
       return ErrosDadosTelefone.TIPO_VAZIO;
     }
-    return TiposTelefone.descobrirTipoTelefone(tipo) == null ? ErrosDadosTelefone.TELEFONE_INVALIDO
+    return TiposTelefone.descobrirTipoTelefone(tipo) == null
+        ? ErrosDadosTelefone.TELEFONE_INVALIDO
         : VALIDACAO_OK;
   }
 
-  //Validação do principalFiltro
+  // Validação do principalFiltro
   private static GenericExceptionEnum validarPrincipal(String ehMandante) {
     if (ehMandante == null || ehMandante.isBlank()) {
       return ErrosDadosTelefone.PRINCIPAL_INVALIDO;
     }
 
-    if ("true".equalsIgnoreCase(ehMandante.toLowerCase().trim()) || "false".equalsIgnoreCase(
-        ehMandante.toLowerCase().trim())) {
+    if ("true".equalsIgnoreCase(ehMandante.toLowerCase().trim())
+        || "false".equalsIgnoreCase(ehMandante.toLowerCase().trim())) {
       return VALIDACAO_OK;
     }
     return ErrosDadosTelefone.PRINCIPAL_INVALIDO;
   }
 
-  //Métodos relacionados ao delete
+  // Métodos relacionados ao delete
   public GenericExceptionEnum realizarDelete(String id, Long idAdmin) {
     if (validarId(id) != VALIDACAO_OK) {
       return ERRO_GENERICO;
@@ -148,8 +137,15 @@ public final class TelefoneService {
         dao.delete(criarInstrucaoDinamicaDelete, connection);
 
         HistoricoAlteracoesAdminService.salvarAcao(
-            new HistoricoAlteracoesAdmin(null, idAdmin, idConvertido, "TELEFONE", "DELETE",
-                GSON.toJsonTree(telefone.getFirst()).getAsJsonObject(), new JsonObject(), null),
+            new HistoricoAlteracoesAdmin(
+                null,
+                idAdmin,
+                idConvertido,
+                "TELEFONE",
+                "DELETE",
+                GSON.toJsonTree(telefone.getFirst()).getAsJsonObject(),
+                new JsonObject(),
+                null),
             connection);
 
         connection.commit();
@@ -165,7 +161,7 @@ public final class TelefoneService {
     }
   }
 
-  //Métodos relacionados ao select
+  // Métodos relacionados ao select
   public List<Map<String, Object>> realizarSelectInicial(Admin admin) {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     TelefoneDAO dao = new TelefoneDAO();
@@ -182,8 +178,10 @@ public final class TelefoneService {
     }
   }
 
-  public List<Map<String, Object>> realizarSelect(FiltrosTelefoneDTO filtrosTelefoneDTO,
-      List<GenericExceptionEnum> errosEncontrados, Admin admin) {
+  public List<Map<String, Object>> realizarSelect(
+      FiltrosTelefoneDTO filtrosTelefoneDTO,
+      List<GenericExceptionEnum> errosEncontrados,
+      Admin admin) {
     if (filtrosTelefoneDTO == null) {
       return new ArrayList<>();
     }
@@ -195,67 +193,85 @@ public final class TelefoneService {
     return lerTelefones(filtrosTelefoneDTO, admin);
   }
 
-  private List<Map<String, Object>> lerTelefones(FiltrosTelefoneDTO filtrosTelefoneDTO,
-      Admin admin) {
+  private List<Map<String, Object>> lerTelefones(
+      FiltrosTelefoneDTO filtrosTelefoneDTO, Admin admin) {
     try (Connection connection = Conexao.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       TelefoneDAO dao = new TelefoneDAO();
 
       if (filtrosTelefoneDTO.idFiltro() != null) {
-        criarInstrucaoDinamica.setWhere(CamposTelefone.ID.getCampoTelefone(), IGUAL, VAZIO,
-            filtrosTelefoneDTO.formatarId(), Types.BIGINT);
-        criarInstrucaoDinamica.setOrderBy(CamposTelefone.ID.getCampoTelefone(),
-            AcoesInstrucao.ORDEM_CRESCENTE);
+        criarInstrucaoDinamica.setWhere(
+            CamposTelefone.ID.getCampoTelefone(),
+            IGUAL,
+            VAZIO,
+            filtrosTelefoneDTO.formatarId(),
+            Types.BIGINT);
+        criarInstrucaoDinamica.setOrderBy(
+            CamposTelefone.ID.getCampoTelefone(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosTelefoneDTO.idUsuarioFiltro() != null) {
-        criarInstrucaoDinamica.setWhere(CamposTelefone.ID.getCampoTelefone(), IGUAL, AND,
-            filtrosTelefoneDTO.formatarIdUsuario(), Types.BIGINT);
+        criarInstrucaoDinamica.setWhere(
+            CamposTelefone.ID_USUARIO.getCampoTelefone(),
+            IGUAL,
+            AND,
+            filtrosTelefoneDTO.formatarIdUsuario(),
+            Types.BIGINT);
       }
 
       if (filtrosTelefoneDTO.telefoneFiltro() != null) {
-        criarInstrucaoDinamica.setWhere(CamposTelefone.TELEFONE.getCampoTelefone(), ILIKE, AND,
-            filtrosTelefoneDTO.formatarTelefone(), Types.VARCHAR);
+        criarInstrucaoDinamica.setWhere(
+            CamposTelefone.TELEFONE.getCampoTelefone(),
+            ILIKE,
+            AND,
+            filtrosTelefoneDTO.formatarTelefone(),
+            Types.VARCHAR);
       }
 
       if (filtrosTelefoneDTO.tipoFiltro() != null) {
-        criarInstrucaoDinamica.setWhere(CamposTelefone.TIPO.getCampoTelefone(), IGUAL, AND,
-            filtrosTelefoneDTO.formatarTipo(), Types.VARCHAR);
+        criarInstrucaoDinamica.setWhere(
+            CamposTelefone.TIPO.getCampoTelefone(),
+            IGUAL,
+            AND,
+            filtrosTelefoneDTO.formatarTipo(),
+            Types.VARCHAR);
       }
 
       if (filtrosTelefoneDTO.principalFiltro() != null) {
-        criarInstrucaoDinamica.setWhere(CamposTelefone.PRINCIPAL.getCampoTelefone(),
-            IGUAL, AND, filtrosTelefoneDTO.formatarPrincipal(),
+        criarInstrucaoDinamica.setWhere(
+            CamposTelefone.PRINCIPAL.getCampoTelefone(),
+            IGUAL,
+            AND,
+            filtrosTelefoneDTO.formatarPrincipal(),
             Types.BOOLEAN);
       }
 
-      JoinsPossiveis tabelaConectada = JoinsPossiveis.encontrarTabelaReferente(
-          filtrosTelefoneDTO.joinFiltro());
+      JoinsPossiveis tabelaConectada =
+          JoinsPossiveis.encontrarTabelaReferente(filtrosTelefoneDTO.joinFiltro());
       if (filtrosTelefoneDTO.joinFiltro() != null) {
         String conector = JoinsPossiveis.joinValido("telefone", filtrosTelefoneDTO.joinFiltro());
 
         if (conector.contains("telefone")) {
-          criarInstrucaoDinamica.setJoin(INNER_JOIN, tabelaConectada.getNomeTabela(), "id",
-              conector);
+          criarInstrucaoDinamica.setJoin(
+              INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);
         } else {
-          criarInstrucaoDinamica.setJoin(INNER_JOIN, tabelaConectada.getNomeTabela(), conector,
-              "id");
+          criarInstrucaoDinamica.setJoin(
+              INNER_JOIN, tabelaConectada.getNomeTabela(), conector, "id");
         }
-
       }
 
       List<Map<String, Object>> telefones = dao.readAll(criarInstrucaoDinamica, connection);
 
-      if (filtrosTelefoneDTO.filtroRapido() != null && !filtrosTelefoneDTO.filtroRapido()
-          .isBlank()) {
+      if (filtrosTelefoneDTO.filtroRapido() != null
+          && !filtrosTelefoneDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosTelefoneDTO.filtroRapido();
 
-        telefones.removeIf(telefone ->
-            telefone.values().stream()
-                .filter(Objects::nonNull)
-                .map(String::valueOf)
-                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))
-        );
+        telefones.removeIf(
+            telefone ->
+                telefone.values().stream()
+                    .filter(Objects::nonNull)
+                    .map(String::valueOf)
+                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -292,16 +308,14 @@ public final class TelefoneService {
     }
 
     if (filtrosTelefoneDTO.tipoFiltro() != null) {
-      GenericExceptionEnum validacao = validarTipo(
-          filtrosTelefoneDTO.tipoFiltro());
+      GenericExceptionEnum validacao = validarTipo(filtrosTelefoneDTO.tipoFiltro());
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
     }
 
     if (filtrosTelefoneDTO.principalFiltro() != null) {
-      GenericExceptionEnum validacao = validarPrincipal(
-          filtrosTelefoneDTO.principalFiltro());
+      GenericExceptionEnum validacao = validarPrincipal(filtrosTelefoneDTO.principalFiltro());
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
@@ -315,7 +329,7 @@ public final class TelefoneService {
     return erros;
   }
 
-  //Métodos relacionados ao update
+  // Métodos relacionados ao update
   public List<GenericExceptionEnum> realizarUpdate(JsonObject jsonObject, Long idAdmin) {
     List<GenericExceptionEnum> erros = validarUpdate(jsonObject);
     if (!erros.isEmpty()) {
@@ -337,39 +351,53 @@ public final class TelefoneService {
 
       try {
 
-        Telefone telefone = GSON.fromJson(jsonObject, TelefoneParaUpdateDTO.class)
-            .construirTelefone();
+        Telefone telefone =
+            GSON.fromJson(jsonObject, TelefoneParaUpdateDTO.class).construirTelefone();
         Long id = telefone.getId();
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaRead = new CriarInstrucaoDinamica();
         criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
-        List<Map<String, Object>> telefoneLido = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        List<Map<String, Object>> telefoneLido =
+            dao.readAll(criarInstrucaoDinamicaRead, connection);
         if (telefoneLido.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
         }
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
-        criarInstrucaoDinamicaUpdate.setCampo(CamposTelefone.TELEFONE.getCampoTelefone(),
-            telefone.getTelefone(), Types.VARCHAR);
-        criarInstrucaoDinamicaUpdate.setCampo(CamposTelefone.TIPO.getCampoTelefone(),
-            telefone.getTipo(), Types.VARCHAR);
-        criarInstrucaoDinamicaUpdate.setCampo(CamposTelefone.PRINCIPAL.getCampoTelefone(),
-            telefone.isPrincipal(), Types.BOOLEAN);
+        criarInstrucaoDinamicaUpdate.setCampo(
+            CamposTelefone.TELEFONE.getCampoTelefone(), telefone.getTelefone(), Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(
+            CamposTelefone.TIPO.getCampoTelefone(),
+            telefone.getTipo().getTipoTelefone(),
+            Types.VARCHAR);
+        criarInstrucaoDinamicaUpdate.setCampo(
+            CamposTelefone.PRINCIPAL.getCampoTelefone(), telefone.isPrincipal(), Types.BOOLEAN);
 
         criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
         dao.update(criarInstrucaoDinamicaUpdate, connection);
 
-        jsonObject.entrySet().removeIf(
-            campo -> campo.getValue() != null && !campo.getValue().isJsonNull() && (
-                campo.getValue().isJsonPrimitive() && campo.getValue().getAsString().trim()
-                    .isEmpty()));
+        jsonObject
+            .entrySet()
+            .removeIf(
+                campo ->
+                    campo.getValue() != null
+                        && !campo.getValue().isJsonNull()
+                        && (campo.getValue().isJsonPrimitive()
+                            && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
-            new HistoricoAlteracoesAdmin(null, idAdmin, id, "TELEFONE", "UPDATE",
-                GSON.toJsonTree(telefoneLido.getFirst()).getAsJsonObject(), jsonObject, null),
+            new HistoricoAlteracoesAdmin(
+                null,
+                idAdmin,
+                id,
+                "TELEFONE",
+                "UPDATE",
+                GSON.toJsonTree(telefoneLido.getFirst()).getAsJsonObject(),
+                jsonObject,
+                null),
             connection);
 
         connection.commit();
@@ -390,24 +418,29 @@ public final class TelefoneService {
   private List<GenericExceptionEnum> validarUpdate(JsonObject jsonObject) {
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    TelefoneParaUpdateDTO telefoneParaUpdateDTO = GSON.fromJson(jsonObject,
-        TelefoneParaUpdateDTO.class);
+    TelefoneParaUpdateDTO telefoneParaUpdateDTO =
+        GSON.fromJson(jsonObject, TelefoneParaUpdateDTO.class);
 
-    GenericExceptionEnum telefoneValidacao = validarTelefone(telefoneParaUpdateDTO.telefoneUpdate());
-    if (telefoneValidacao != VALIDACAO_OK && (telefoneParaUpdateDTO.telefoneUpdate() != null
-        && !telefoneParaUpdateDTO.telefoneUpdate().isBlank())) {
+    GenericExceptionEnum telefoneValidacao =
+        validarTelefone(telefoneParaUpdateDTO.telefoneUpdate());
+    if (telefoneValidacao != VALIDACAO_OK
+        && (telefoneParaUpdateDTO.telefoneUpdate() != null
+            && !telefoneParaUpdateDTO.telefoneUpdate().isBlank())) {
       erros.add(telefoneValidacao);
     }
 
     GenericExceptionEnum tipoValidacao = validarTipo(telefoneParaUpdateDTO.tipoUpdate());
-    if (tipoValidacao != VALIDACAO_OK && (telefoneParaUpdateDTO.tipoUpdate() != null
-        && !telefoneParaUpdateDTO.tipoUpdate().isBlank())) {
+    if (tipoValidacao != VALIDACAO_OK
+        && (telefoneParaUpdateDTO.tipoUpdate() != null
+            && !telefoneParaUpdateDTO.tipoUpdate().isBlank())) {
       erros.add(tipoValidacao);
     }
 
-    GenericExceptionEnum principalValidacao = validarPrincipal(telefoneParaUpdateDTO.principalUpdate());
-    if (principalValidacao != VALIDACAO_OK && (telefoneParaUpdateDTO.principalUpdate() != null
-        && !telefoneParaUpdateDTO.principalUpdate().isBlank())) {
+    GenericExceptionEnum principalValidacao =
+        validarPrincipal(telefoneParaUpdateDTO.principalUpdate());
+    if (principalValidacao != VALIDACAO_OK
+        && (telefoneParaUpdateDTO.principalUpdate() != null
+            && !telefoneParaUpdateDTO.principalUpdate().isBlank())) {
       erros.add(principalValidacao);
     }
     return erros;
@@ -419,8 +452,8 @@ public final class TelefoneService {
     }
 
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
-    criarInstrucaoDinamica.setWhere(CamposTelefone.ID.getCampoTelefone(), IGUAL, VAZIO,
-        Long.parseLong(id), Types.BIGINT);
+    criarInstrucaoDinamica.setWhere(
+        CamposTelefone.ID.getCampoTelefone(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
     try (Connection connection = Conexao.getConnection()) {
       TelefoneDAO dao = new TelefoneDAO();
 
@@ -438,8 +471,8 @@ public final class TelefoneService {
     }
   }
 
-  //Métodos relacionados ao insert
-  public List<GenericExceptionEnum> realizarInsert(JsonObject jsonObject, Long idAdmin)  {
+  // Métodos relacionados ao insert
+  public List<GenericExceptionEnum> realizarInsert(JsonObject jsonObject, Long idAdmin) {
     List<GenericExceptionEnum> mensagens = validarTelefoneInsert(jsonObject);
     if (mensagens.isEmpty()) {
       GenericExceptionEnum resultado = persistirTelefone(jsonObject, idAdmin);
@@ -453,8 +486,8 @@ public final class TelefoneService {
   private List<GenericExceptionEnum> validarTelefoneInsert(JsonObject jsonObject) {
     List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
 
-    TelefoneParaInsertDTO telefoneParaInsertDTO = GSON.fromJson(jsonObject,
-        TelefoneParaInsertDTO.class);
+    TelefoneParaInsertDTO telefoneParaInsertDTO =
+        GSON.fromJson(jsonObject, TelefoneParaInsertDTO.class);
 
     GenericExceptionEnum validacaoTelefone = validarTelefone(telefoneParaInsertDTO.telefone());
     if (validacaoTelefone != VALIDACAO_OK) {
@@ -466,14 +499,12 @@ public final class TelefoneService {
       listaDeErros.add(validacaoIdUsuario);
     }
 
-    GenericExceptionEnum validacaoTipo = validarTipo(
-        telefoneParaInsertDTO.tipo());
+    GenericExceptionEnum validacaoTipo = validarTipo(telefoneParaInsertDTO.tipo());
     if (validacaoTipo != VALIDACAO_OK) {
       listaDeErros.add(validacaoTipo);
     }
 
-    GenericExceptionEnum validacaoPrincipal = validarPrincipal(
-        telefoneParaInsertDTO.principal());
+    GenericExceptionEnum validacaoPrincipal = validarPrincipal(telefoneParaInsertDTO.principal());
     if (validacaoPrincipal != VALIDACAO_OK && validacaoPrincipal != ATRIBUTO_NULL) {
       listaDeErros.add(validacaoPrincipal);
     }
@@ -491,24 +522,34 @@ public final class TelefoneService {
 
       try {
 
-        criarInstrucaoDinamica.setCampo(CamposTelefone.TELEFONE.getCampoTelefone(), telefone.getTelefone(),
+        criarInstrucaoDinamica.setCampo(
+            CamposTelefone.TELEFONE.getCampoTelefone(), telefone.getTelefone(), Types.VARCHAR);
+        criarInstrucaoDinamica.setCampo(
+            CamposTelefone.ID_USUARIO.getCampoTelefone(), telefone.getIdUsuario(), Types.BIGINT);
+        criarInstrucaoDinamica.setCampo(
+            CamposTelefone.TIPO.getCampoTelefone(),
+            telefone.getTipo().getTipoTelefone(),
             Types.VARCHAR);
-        criarInstrucaoDinamica.setCampo(CamposTelefone.ID_USUARIO.getCampoTelefone(), telefone.getIdUsuario(),
-            Types.BIGINT);
-        criarInstrucaoDinamica.setCampo(CamposTelefone.TIPO.getCampoTelefone(),
-            telefone.getTipo().getTipoTelefone(), Types.VARCHAR);
-        criarInstrucaoDinamica.setCampo(CamposTelefone.PRINCIPAL.getCampoTelefone(), telefone.isPrincipal(),
-            Types.BOOLEAN);
+        criarInstrucaoDinamica.setCampo(
+            CamposTelefone.PRINCIPAL.getCampoTelefone(), telefone.isPrincipal(), Types.BOOLEAN);
 
         Long idRegistro = dao.insert(criarInstrucaoDinamica, connection);
 
         if (idRegistro == null) {
-          throw new IllegalArgumentException("Ocorreu algum erro e o usuário não foi registrado!");
+          throw new IllegalArgumentException("Ocorreu algum erro e o telefone não foi registrado!");
         }
 
         HistoricoAlteracoesAdminService.salvarAcao(
-            new HistoricoAlteracoesAdmin(null, idAdmin, idRegistro, "TELEFONE", "INSERT",
-                new JsonObject(), jsonObject, null), connection);
+            new HistoricoAlteracoesAdmin(
+                null,
+                idAdmin,
+                idRegistro,
+                "TELEFONE",
+                "INSERT",
+                new JsonObject(),
+                jsonObject,
+                null),
+            connection);
 
         connection.commit();
         return SUCESSO;
@@ -525,6 +566,4 @@ public final class TelefoneService {
       return ERRO_GENERICO;
     }
   }
-
-
 }

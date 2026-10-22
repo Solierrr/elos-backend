@@ -39,8 +39,8 @@ public class UpdateTelefoneServlet extends HttpServlet {
 
     String id = request.getParameter("id");
 
-    List<Map<String, Object>> usuario = telefoneService.exibirTelefoneParaUpdate(id, admin);
-    if (usuario.isEmpty()) {
+    List<Map<String, Object>> telefone = telefoneService.exibirTelefoneParaUpdate(id, admin);
+    if (telefone.isEmpty()) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
 
@@ -51,7 +51,7 @@ public class UpdateTelefoneServlet extends HttpServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
 
-    response.getWriter().write(gson.toJson(usuario));
+    response.getWriter().write(gson.toJson(telefone));
   }
 
   @Override

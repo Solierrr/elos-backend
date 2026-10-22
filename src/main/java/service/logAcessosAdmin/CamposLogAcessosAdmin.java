@@ -12,8 +12,7 @@ public enum CamposLogAcessosAdmin  implements GenericEnumCampos {
     MOTIVO_FALHA("motivo_falha"),
     NAVEGADOR("navegador"),
     SISTEMA_OPERACIONAL("sistema_operacional"),
-    GENERICO("campo_usado_quando_nao_ocorre_filtragem_ou_ordenacao"),
-    INVALIDO("campo_do_fornecedor_invalido");
+    INVALIDO("campo_do_acesso_invalido");
 
     private final String campoLogAcessosAdmin;
 

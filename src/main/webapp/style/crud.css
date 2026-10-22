@@ -446,7 +446,7 @@ td:has(.editar, .excluir) {
   max-width: 12.5rem;
   min-width: 10rem;
 
-  white-space: nowrap;
+  white-space: normal;
 
 
   height: 100%;

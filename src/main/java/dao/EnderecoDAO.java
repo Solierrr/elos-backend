@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import model.Endereco;
 
-public final class EnderecoDAO implements GenericDAO<Endereco> {
+public final class EnderecoDAO implements GenericDAO {
 
   private static final String TABELA = "endereco";
 

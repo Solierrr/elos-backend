@@ -6,7 +6,7 @@ import model.TiposTelefone;
 public record TelefoneParaInsertDTO(String telefone, String idUsuario, String tipo, String principal) {
 
     public Telefone construirTelefone(){
-        String telefoneTratado = telefone.strip().replace("(", "").replace(")", "").replaceAll("\\s", "");
+        String telefoneTratado = telefone.strip().replace("(", "").replace(")", "").replaceAll("\\s", "").replace("-", "");
 
         Long idUsuarioTratado = Long.parseLong(idUsuario);
 
