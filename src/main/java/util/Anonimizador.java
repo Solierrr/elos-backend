@@ -86,6 +86,9 @@ public final class Anonimizador {
   }
 
   private static String anonimizarIp(String dado) {
+    if(dado.strip().equalsIgnoreCase("::1")){
+      return dado.strip();
+    }
 
     String[] dadosParte = dado.split("\\.");
 
@@ -343,7 +346,7 @@ public final class Anonimizador {
         if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
           try {
             registro.replace(this.getNomeCampo(),
-                anonimizarIp((String) registro.get(this.getNomeCampo())));
+                anonimizarIp(((org.postgresql.util.PGobject) registro.get(this.getNomeCampo())).getValue()));
           } catch (ClassCastException classCastException) {
             registro.replace(this.getNomeCampo(), "Erro ao ler o endereço de ip");
           }
@@ -357,6 +360,23 @@ public final class Anonimizador {
         } else {
           registro.replace(this.getNomeCampo(), "Não");
         }
+      }
+    }, SUCESSO("sucesso") {
+      @Override
+      public void anonimizar(Map<String, Object> registro, Admin admin) {
+        if (registro.get(this.getNomeCampo()).equals(true)) {
+          registro.replace(this.getNomeCampo(), "Sim");
+        } else {
+          registro.replace(this.getNomeCampo(), "Não");
+        }
+      }
+    }, MOTIVTO_FALHA("motivo_falha"){
+      @Override
+      public void anonimizar(Map<String, Object> registro, Admin admin) {
+        if(registro.get(this.getNomeCampo()) == null){
+          registro.replace(this.getNomeCampo(), "Login efetuado");
+        }
+
       }
     };
 

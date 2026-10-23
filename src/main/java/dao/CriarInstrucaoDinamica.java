@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -135,8 +136,9 @@ public final class CriarInstrucaoDinamica {
       Object valorWhere,
       int dataType) {
     Object valorTratado = tratarValorWhere(operacaoWhere, valorWhere);
+    String campoWhereTratado = tratarCampoWhere(campoWhere, valorWhere);
     condicoesWhere.add(
-        new CondicaoWhere(campoWhere, operacaoWhere, operadorLogico, valorTratado, dataType));
+        new CondicaoWhere(campoWhereTratado, operacaoWhere, operadorLogico, valorTratado, dataType));
   }
 
   public void setOrderBy(String campo, AcoesInstrucao sentido) {
@@ -249,6 +251,10 @@ public final class CriarInstrucaoDinamica {
       return "%" + valorString + "%";
     }
     return valorWhere;
+  }
+
+  private String tratarCampoWhere(String campoWhere, Object valorWhere){
+    return valorWhere instanceof LocalDate ? ("date("+campoWhere+")") : campoWhere;
   }
 
   // Utilitários para caso de erro

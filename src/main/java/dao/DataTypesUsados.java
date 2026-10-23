@@ -3,6 +3,7 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 
 public enum DataTypesUsados {
   INTEGER(Types.INTEGER) {
@@ -109,6 +110,18 @@ public enum DataTypesUsados {
             index, ((java.net.InetAddress) object).getHostAddress(), Types.OTHER);
       } else if (object instanceof String) {
         preparedStatement.setObject(index, (String) object, Types.OTHER);
+      } else {
+        throw new IllegalArgumentException("DataType fornecido incompatível com o valor inserido");
+      }
+    }
+  },
+  DATE(Types.DATE){
+    public void realizarSet(PreparedStatement preparedStatement, int index, Object object)
+        throws SQLException {
+      if (object == null) {
+        preparedStatement.setNull(index, Types.DATE);
+      } else if (object instanceof LocalDate) {
+        preparedStatement.setDate(index, java.sql.Date.valueOf((LocalDate) object));
       } else {
         throw new IllegalArgumentException("DataType fornecido incompatível com o valor inserido");
       }

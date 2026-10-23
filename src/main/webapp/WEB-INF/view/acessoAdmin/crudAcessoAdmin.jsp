@@ -24,7 +24,7 @@
     <nav class="side-bar" id="side-bar-id">
         <div class="conteiner-logo" id="caixa-logo">
             <a id="link-da-logo">
-                <img src="${pageContext.request.contextPath}/assets/icone/LOGO.svg" id="logo"
+                 <img src="${pageContext.request.contextPath}/assets/icone/LOGO.svg" id="logo"
                      alt="botão para a tela inicial"/>
                 <span id="span-logo">Elos</span>
             </a>

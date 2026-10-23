@@ -111,24 +111,26 @@
     </nav>
 
     <div id="conteiner-do-conteudo">
-        <div id="conteiner-botoes">
-            <div>
-                <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
-                </button>
-                <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">
-                    Adicionar
-                    registro
-                </button>
-            </div>
-
-            <form id="formulario-filtro-rapido" method="POST"
-                  action="${pageContext.request.contextPath}/crudUsuario">
-                <div class="botoes-brancos botoes-pop-up-superiores" id="caixa-busca-rapida">
-                    <img src="${pageContext.request.contextPath}/assets/icone/crud/lupa_busca_rapida.svg">
-                    <input placeholder="Busca rápida" id="input-busca-rapida">
-                </div>
-            </form>
+    <div id="conteiner-botoes">
+      <p id="titulo-tabela" class="text">Usuário</p>
+      <div id="traco-filtros"></div>
+      <form id="formulario-filtro-rapido" method="POST"
+            action="crudUsuario">
+        <div id="caixa-busca-rapida">
+          <button type="submit">
+            <img src="assets/icone/crud/lupa_busca_rapida.svg">
+          </button>
+          <input placeholder="Busca rápida" id="input-busca-rapida">
         </div>
+      </form>
+
+      <button class="botoes-brancos botoes-pop-up-superiores" id="filtro-entrar">Filtrar
+      </button>
+      <button id="insert-entrar" class="botoes-laranjas botoes-pop-up-superiores ">
+        Adicionar
+        registro
+      </button>
+    </div>
 
         <div id="caixa-tabela">
             <table>

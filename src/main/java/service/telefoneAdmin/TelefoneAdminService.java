@@ -69,7 +69,7 @@ public final class TelefoneAdminService {
         : ErrosDadosTelefoneAdmin.TELEFONE_INVALIDO;
   }
 
-  // Validação do id do usuário
+  // Validação do id do admin
   private static GenericExceptionEnum validarIdAdmin(String idAdmin) {
     if (idAdmin == null) {
       return VALIDACAO_OK;

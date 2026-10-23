@@ -217,7 +217,7 @@ a > span {
 /*Botões acima da tabela*/
 #conteiner-botoes {
   width: 90%;
-  height: max-content;
+  height: auto;
   min-height: max(6%, 1.5rem);
 
   margin-bottom: 1%;
@@ -225,38 +225,44 @@ a > span {
 
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
+  align-items: center;
   flex-wrap: wrap;
   flex-shrink: 0;
 
+  background-color: var(--white);
+  border-style: none;
+  border-radius: 15px;
+
   gap: 2.5%;
+  padding: 0 1%;
 }
 
-#conteiner-botoes > :is(div:has(button)){
-  width: 60%;
-  height: 95%;
-  min-height: 1.5rem;
-  max-height: 3rem;
+#titulo-tabela {
+  color: rgb(from var(--black) r g b / 0.8);
+  font-weight: 400;
+}
 
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-
-  gap: 2.5%;
+#traco-filtros{
+  height: 1.5rem;
+  width: 2px;
+  background-color: rgb(from var(--black) r g b / 0.4);
 }
 
 #formulario-filtro-rapido{
   width: 30%;
   min-width: max-content;
-  height: 95%;
+  height: 2.5rem;
   min-height: 1.5rem;
   max-height: 3rem;
 }
 
 #caixa-busca-rapida>img{
-  height: 30%;
+  height: 40%;
   aspect-ratio: 1/1;
   background: none;
+
+  cursor: pointer;
 }
 
 #caixa-busca-rapida{
@@ -272,19 +278,30 @@ a > span {
   border-radius: 0.5rem;
 
   padding: 0 4%;
+
+  background-color: inherit;
+  border-color: rgb(from var(--black) r g b / 0.4);
+  border-style: solid;
+  border-width: 2px;
 }
 
-#conteiner-botoes >div> button {
+#caixa-busca-rapida> button{
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+#conteiner-botoes > button {
   box-sizing: border-box;
 
-  width: 25%;
-  height: 100%;
+  width: auto;
+  height: 2.5rem;
   max-width: 15rem;
 
   border-style: none;
   border-radius: 0.5rem;
 
-  padding: 0 1%;
+  padding: 0 0.4rem;
 
   cursor: pointer;
 
@@ -295,12 +312,17 @@ a > span {
   will-change: transform;
 }
 
-#input-busca-rapida{
+#input-busca-rapida {
   background: none;
+  width: 70%;
 }
 
 #input-busca-rapida:focus{
   outline: none;
+}
+
+#input-busca-rapida::placeholder{
+  font-size: 1rem;
 }
 
 .botoes-laranjas {
@@ -315,6 +337,7 @@ a > span {
 .botoes-brancos {
   background-color: var(--white);
   color: var(--black);
+
 
 }
 
@@ -384,7 +407,7 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr:nth-child(odd) {
-  background-color: rgb(from var(--black) r g b / 0.1);
+  background-color: var(--grey);
 }
 
 td:has(.editar, .excluir) {
@@ -765,6 +788,13 @@ option {
   aspect-ratio: 1/1;
 }
 
+#filtro-entrar button .botoes-brancos .botoes-pop-up-superiores {
+  border-color: rgb(from var(--black) r g b / 0.4);
+  border-width: 2px;
+  border-style: solid;
+  color: rgb(from var(--black) r g b / 0.8);
+}
+
 @media (max-width: 1120px) {
   #pop-up-filtro {
     width: 90% !important;
@@ -787,12 +817,11 @@ option {
 
 }
 
-@media (max-width: 767px) {
+@media (max-width: 770px) {
 
   #conteiner-botoes {
-    height: 7rem;
-    padding-bottom: 0.5%;
-    padding-left: 10%;
+    height: max-content;
+    padding: 2% 0;
   }
 
   .botoes-brancos, .botoes-laranjas {
