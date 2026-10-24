@@ -54,7 +54,7 @@ public final class CriarInstrucaoDinamica {
     }
 
     if (!orderBys.isEmpty()) {
-      sb.append(" ").append(construirOrderBy());
+      sb.append(" ").append(construirOrderBy(tabela));
     }
 
     return sb.toString().strip();
@@ -205,7 +205,7 @@ public final class CriarInstrucaoDinamica {
     return sb.toString().strip();
   }
 
-  private String construirOrderBy() {
+  private String construirOrderBy(String tabelaOrigem) {
     StringBuilder sb = new StringBuilder("order by ");
 
     for (int i = 0; i < orderBys.size(); i++) {
@@ -215,7 +215,7 @@ public final class CriarInstrucaoDinamica {
         sb.append(", ");
       }
 
-      sb.append(orderBy.campo()).append(" ").append(orderBy.sentido().getAcao());
+      sb.append(tabelaOrigem).append(".").append(orderBy.campo()).append(" ").append(orderBy.sentido().getAcao());
     }
     return sb.toString();
   }
