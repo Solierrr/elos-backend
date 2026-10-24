@@ -11,9 +11,9 @@ public enum CamposUsuario implements GenericEnumCampos {
 
     ID("id"),
     TIPO_USUARIO("tipo_usuario"),
-    SENHA("senha"),
-    EMAIL("email"),
-    NOME("nome"),
+    SENHA("senhaUpdate"),
+    EMAIL("emailUpdate"),
+    NOME("nomeUpdate"),
     RAIO_PROCURA_KM("raio_procura_km"),
     INVALIDO("campo_do_usuario_invalido");
 

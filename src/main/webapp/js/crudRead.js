@@ -221,7 +221,7 @@ const variacoesCabecalho = {
   "cnpj": "CNPJ",
   "razao_social": "Razão social",
   "id_empresa_demandante": "ID da empresa demandante",
-  "eh_mandante":  "É uma filial?",
+  "eh_mandante": "É uma filial?",
   "telefone": "Número do telefone",
   "tipo": "Tipo do telefone",
   "principal": "É o telefone principal?",
@@ -235,14 +235,14 @@ const variacoesCabecalho = {
   "numero": "Número",
   "complemento": "Complemento",
   "id_admin": "ID do admin",
-  "funcao":  "Função do admin",
+  "funcao": "Função do admin",
   "em_atividade": "O admin está ativo?",
   "id_historico_alteracoes": "ID do histórico de alteração",
   "id_registro": "ID do registro",
-  "tabela_modificada": "Dado modificada",
-  "acao": "Ação",
+  "tabela_modificada": "Tipo do dado modificado",
+  "acao": "Ação realizada",
   "dados_antigos": "Dados antigos",
-  "dados_novos": "Dados novos",
+  "dados_atualizados": "Dados atualizados",
   "data_alteracao": "Data de alteração",
   "id_log_acessos_admin": "ID do acesso do admin",
   "data_acesso": "Data do acesso",
@@ -293,21 +293,38 @@ const preencherTabela = (valores) => {
   valores.forEach(item => {
     const linha = document.createElement('tr');
 
+    let naoAtivo;
+
     chaves.forEach(chave => {
       const td = document.createElement('td');
       td.className = 'littleText';
       td.textContent = item[chave] ?? '';
       linha.appendChild(td);
+
+      if (chave === 'em_atividade' && (item[chave].toUpperCase() === 'NÃO' || item[chave].toUpperCase() === 'NAO')) {
+        naoAtivo = true;
+      } else {
+        naoAtivo = false
+      }
     });
 
     if (formularioDelete) {
       const tdAcoes = document.createElement('td');
       tdAcoes.className = 'littleText';
+
+      const botaoExcluir = naoAtivo ? `<button class="excluir botao-ligar-verde" data-id="${item.id
+        ?? ''}"><img src="${imagensTabela.dataset.urlApagar}" alt="apagar"></button>` :
+        `<button class="excluir" data-id="${item.id
+        ?? ''}"><img src="${imagensTabela.dataset.urlApagar}" alt="apagar"></button>`;
+
+
       tdAcoes.innerHTML = `
-            <button class="editar" data-id="${item.id
-      ?? ''}"><img src="${imagensTabela.dataset.urlEditar}" alt="editar"></button>
-            <button class="excluir" data-id="${item.id
-      ?? ''}"><img src="${imagensTabela.dataset.urlApagar}" alt="apagar"></button>
+            <div class="acoes-div">
+            
+            <button class="editar" data-id="${item.id ?? ''}"><img src="${imagensTabela.dataset.urlEditar}" alt="editar"></button>
+            ${botaoExcluir}
+            
+            </div>
         `;
       linha.appendChild(tdAcoes);
     }
@@ -315,3 +332,5 @@ const preencherTabela = (valores) => {
     corpoTabela.appendChild(linha);
   });
 };
+
+export {enviarFiltro};

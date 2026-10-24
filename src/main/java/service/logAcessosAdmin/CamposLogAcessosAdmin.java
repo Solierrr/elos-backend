@@ -24,7 +24,7 @@ public enum CamposLogAcessosAdmin  implements GenericEnumCampos {
         return campoLogAcessosAdmin;
     }
 
-    public static CamposLogAcessosAdmin descobrirCampoFornecedor(String campoLogAcessosAdminEntrada){
+    public static CamposLogAcessosAdmin descobrirCampoLogAcessosAdmin(String campoLogAcessosAdminEntrada){
         if(campoLogAcessosAdminEntrada == null || campoLogAcessosAdminEntrada.isBlank()){
             return INVALIDO;
         }

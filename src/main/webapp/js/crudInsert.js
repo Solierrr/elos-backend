@@ -1,4 +1,6 @@
 import {mensagensSpans} from './mensagensSpans.js';
+import {enviarFiltro} from "./crudRead.js";
+
 
 const formularioInsert = document.getElementById('formulario-insert');
 
@@ -76,7 +78,10 @@ formularioInsert.addEventListener('submit', (event) => {
       if (resultado.ok && !temErros) {
         alert('Cadastro realizado com sucesso!');
         formularioInsert.reset();
-        document.getElementById("dados-mutaveis").innerHTML = "";
+        if(document.getElementById("dados-mutaveis")) {
+          document.getElementById("dados-mutaveis").innerHTML = "";
+        }
+        enviarFiltro();
       } else {
         Object.entries(errosNoServlet).forEach(([nomeDoCampo, mensagemDeErro]) => {
 

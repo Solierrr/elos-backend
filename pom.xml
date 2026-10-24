@@ -71,7 +71,7 @@
           <version>3.0.1</version>
       </dependency>
 
-      <!-- Hash para senha -->
+      <!-- Hash para senhaUpdate -->
       <dependency>
           <groupId>org.mindrot</groupId>
           <artifactId>jbcrypt</artifactId>

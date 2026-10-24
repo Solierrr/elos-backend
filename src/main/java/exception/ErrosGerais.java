@@ -9,7 +9,7 @@ public enum ErrosGerais implements GenericExceptionEnum {
     REGISTRO_NAO_ENCONTRADO(-4, "O registro buscado não foi encontrado, verifique se os dados inseridos estão corretos", null),
     REGISTROS_NAO_ENCONTRADOS(-5, "Os registros buscados não foram encontrados, verifique se os dados inseridos estão corretos", null),
     ADMIN_NAO_REGISTRADO(-6, "Tentativa de login em um adm inexistente ", null),
-    SENHA_INVALIDA(-7, "A senha inserida pelo usuário não corresponde com a registrada no banco", null),
+    SENHA_INVALIDA(-7, "A senhaUpdate inserida pelo usuário não corresponde com a registrada no banco", null),
     ADMIN_INATIVO(-8, "O administrador está inativo", null);
 
     private final int codigo;

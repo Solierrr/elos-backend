@@ -235,7 +235,7 @@ a > span {
   border-radius: 15px;
 
   gap: 2.5%;
-  padding: 0 1%;
+  padding:  1% 2%;
 }
 
 #titulo-tabela {
@@ -255,6 +255,7 @@ a > span {
   height: 2.5rem;
   min-height: 1.5rem;
   max-height: 3rem;
+
 }
 
 #caixa-busca-rapida>img{
@@ -263,6 +264,10 @@ a > span {
   background: none;
 
   cursor: pointer;
+}
+
+.botao-ligar-verde{
+  filter: invert(33%) sepia(96%) saturate(1229%) hue-rotate(114deg) brightness(89%) contrast(95%)
 }
 
 #caixa-busca-rapida{
@@ -277,7 +282,7 @@ a > span {
 
   border-radius: 0.5rem;
 
-  padding: 0 4%;
+  padding: 0 2%;
 
   background-color: inherit;
   border-color: rgb(from var(--black) r g b / 0.4);
@@ -294,10 +299,11 @@ a > span {
 #conteiner-botoes > button {
   box-sizing: border-box;
 
+  flex: 1;
   width: auto;
-  height: 2.5rem;
   max-width: 15rem;
 
+  height: 2.5rem;
   border-style: none;
   border-radius: 0.5rem;
 
@@ -314,7 +320,8 @@ a > span {
 
 #input-busca-rapida {
   background: none;
-  width: 70%;
+  /*width: 70%;*/
+  flex: 1;
 }
 
 #input-busca-rapida:focus{
@@ -394,6 +401,7 @@ th {
 
 td {
   height: 2.5rem;
+  max-width: 7rem;
   white-space: normal;
   overflow-wrap: break-word;
   text-align: center;
@@ -401,6 +409,7 @@ td {
 
   padding: 10px;
 }
+
 
 tbody tr:nth-child(even) {
   background-color: var(--white);
@@ -410,14 +419,13 @@ tbody tr:nth-child(odd) {
   background-color: var(--grey);
 }
 
-td:has(.editar, .excluir) {
+.acoes-div {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 
   gap: 0.2rem;
-
 }
 
 .editar, .excluir {
@@ -788,7 +796,7 @@ option {
   aspect-ratio: 1/1;
 }
 
-#filtro-entrar button .botoes-brancos .botoes-pop-up-superiores {
+#conteiner-botoes>#filtro-entrar {
   border-color: rgb(from var(--black) r g b / 0.4);
   border-width: 2px;
   border-style: solid;
@@ -821,12 +829,11 @@ option {
 
   #conteiner-botoes {
     height: max-content;
-    padding: 2% 0;
   }
 
   .botoes-brancos, .botoes-laranjas {
-    width: max-content !important;
-    padding: 0 0.5rem !important;
+    width: max-content;
+    padding: 0 0.5rem ;
   }
 
   .botoes-pop-up {
@@ -853,10 +860,10 @@ option {
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
 
   #botoes-filtro {
-    flex: 1 0 calc(50% - 10px) !important;
+    flex: 1 0 calc(50% - 10px);
     flex-wrap: wrap;
 
     height: max-content;

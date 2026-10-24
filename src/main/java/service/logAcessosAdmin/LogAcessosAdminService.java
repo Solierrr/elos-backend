@@ -305,7 +305,6 @@ public final class LogAcessosAdminService {
 
       return acessosAdmin;
     } catch (SQLException | ClassCastException exception) {
-
       return new ArrayList<>();
     }
   }

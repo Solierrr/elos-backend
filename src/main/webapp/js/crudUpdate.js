@@ -1,3 +1,5 @@
+import {enviarFiltro} from "./crudRead.js";
+
 const formularioUpdate = document.getElementById("formulario-update");
 const popUpUpdate = document.getElementById('pop-up-update');
 
@@ -36,8 +38,6 @@ formularioUpdate.addEventListener('submit', (event) => {
     .then(resultado => {
       const errosNoServlet = JSON.parse(resultado.texto || '{}');
       const temErros = Object.keys(errosNoServlet).length > 0;
-
-      console.log(errosNoServlet);
 
       if (resultado.ok && !temErros) {
         alert(`Registro atualizado com sucesso!`);

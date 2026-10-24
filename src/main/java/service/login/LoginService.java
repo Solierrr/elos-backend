@@ -54,7 +54,7 @@ public final class LoginService {
 
                 connection.commit();
                 return erros.isEmpty() ? admin : null;
-                //Essa escolha foi feita para que o usuário só saiba que não deu certo, garantindo que ele não saiba se foi o email ou senha
+                //Essa escolha foi feita para que o usuário só saiba que não deu certo, garantindo que ele não saiba se foi o emailUpdate ou senhaUpdate
             } catch (SQLException | IllegalArgumentException exception) {
                 connection.rollback();
                 throw exception;

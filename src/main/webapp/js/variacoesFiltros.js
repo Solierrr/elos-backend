@@ -538,7 +538,7 @@ const gerarCampos = () => {
                     <div>
                         <select name="sistema-operacional-filtro" id="sistema-operacional-filtro">
                             <option value="CAMPO_VAZIO" disabled selected hidden
-                                    id="sistema-operacional-filtro-estado-vazio">Selecione o sistema-operacional
+                                    id="sistema-operacional-filtro-estado-vazio">Selecione o sistema operacional
                             </option>
                             <option value="WINDOWS">Windows</option>
                             <option value="MAC">Mac</option>
@@ -559,6 +559,154 @@ const gerarCampos = () => {
                         <select name="join-filtro" id=join-filtro" required>
                             <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
                             <option value="ADMIN">Admin</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+                </div>`
+        }, "historico-alteracoes":{
+            "ID": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "ID_ADMIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-admin-filtro">ID do admin</label>
+                    <div>
+                        <input type="text" name="id-admin-filtro" id="id-admin-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-admin" class="span-erro"></span>
+                </div>`,
+            "ID_REGISTRO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-registro-filtro">ID do registro</label>
+                    <div>
+                        <input type="text" name="id-registro-filtro" id="id-registro-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-registro" class="span-erro"></span>
+                </div>`,
+            "DATA_ALTERACAOO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="data-alteracao-filtro">Data de alteração</label>
+                    <div>
+                        <input type="text" name="data-alteracao-filtro" id="data-alteracao-filtro" placeholder="ex: 14/07/2026">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-data-alteracao" class="span-erro"></span>
+                </div>`,
+            "ACAO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="acao-filtro">Ação realizada</label>
+                    <div>
+                        <select name="acao-filtro" id="acao-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="acao-filtro-estado-vazio">Selecione o acao
+                            </option>
+                            <option value="UPDATE">Atualização de um registro</option>
+                            <option value="INSERT">Cadastro de um registro</option>
+                            <option value="DELETE">Apagamento de um registro</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-acao" class="span-erro"></span>
+                </div>`,
+            "JOIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+                </div>`
+        }, "admin":{
+            "ID" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "EMAIL": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="email-filtro">E-mail</label>
+                    <div>
+                        <input type="text" name="email-filtro" id="email-filtro" placeholder="ex: meu.email@gmail.com">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-email" class="span-erro"></span>
+
+                </div>`,
+            "NOME": ` 
+                <div class="caixa-filtro label-e-input">
+                    <label for="nome-filtro">Nome</label>
+                    <div>
+                        <input type="text" name="nome-filtro" id="nome-filtro" placeholder="ex: Roger" >
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-nome" class="span-erro"></span>
+                </div>`,
+            "FUNCAO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="funcao-filtro">Função do admin</label>
+                    <div>
+                        <select name="funcao-filtro" id="funcao-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="funcao-filtro-estado-vazio">Selecione o função
+                            </option>
+                            <option value="SUPERADMIN">Super admin</option>
+                            <option value="REVISOR">Revisor</option>
+                            <option value="GERENTE">Gerente</option>
+                            <option value="ANALISTA">Analista</option>
+                            <option value="MODELADOR">Modelador</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-funcao" class="span-erro"></span>
+                </div>`,
+            "JOIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="HISTORICO_ALTERACOES">Histórico de alterações</option>
+                            <option value="LOG_ACESSOS_ADMIN">Histórico de acessos</option>
+                            <option value="TELEFONE_ADMIN">Telefone do admin</option>
                         </select>
                         <button type="button" class="remover-filtro botoes-sair">
                             <img src="${urlApagar}" class="icone-lixeira">

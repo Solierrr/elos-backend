@@ -326,18 +326,30 @@ public final class Anonimizador {
           }
         }
       }
-    }, DADOS_ANTIGOS("dado_antigo") {
+    }, DADOS_ANTIGOS("dados_antigos") {
       @Override
       public void anonimizar(Map<String, Object> registro, Admin admin) {
         if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
           registro.remove(this.getNomeCampo());
+          return;
+        }
+        try {
+          registro.replace(this.getNomeCampo(),((org.postgresql.util.PGobject) registro.get(this.getNomeCampo())).getValue());
+        } catch (ClassCastException classCastException) {
+          registro.replace(this.getNomeCampo(), "Erro ao ler os dados antigos");
         }
       }
-    }, DADOS_ATUALIZADOS("dado_atualizado") {
+    }, DADOS_ATUALIZADOS("dados_atualizados") {
       @Override
       public void anonimizar(Map<String, Object> registro, Admin admin) {
         if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
           registro.remove(this.getNomeCampo());
+          return;
+        }
+        try {
+          registro.replace(this.getNomeCampo(),((org.postgresql.util.PGobject) registro.get(this.getNomeCampo())).getValue());
+        } catch (ClassCastException classCastException) {
+          registro.replace(this.getNomeCampo(), "Erro ao ler os dados atualizados");
         }
       }
     }, ENDERECO_IP("endereco_ip") {
@@ -350,6 +362,12 @@ public final class Anonimizador {
           } catch (ClassCastException classCastException) {
             registro.replace(this.getNomeCampo(), "Erro ao ler o endereço de ip");
           }
+          return;
+        }
+        try {
+          registro.replace(this.getNomeCampo(),((org.postgresql.util.PGobject) registro.get(this.getNomeCampo())).getValue());
+        } catch (ClassCastException classCastException) {
+          registro.replace(this.getNomeCampo(), "Erro ao ler o endereço de ip");
         }
       }
     }, EM_ATIVIDADE("em_atividade") {

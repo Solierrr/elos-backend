@@ -1,3 +1,5 @@
+import {enviarFiltro} from "./crudRead.js";
+
 const formularioDelete = document.getElementById("formulario-delete");
 const corpoTabelaGlobal = document.querySelector('#caixa-tabela table tbody');
 
@@ -29,10 +31,18 @@ corpoTabelaGlobal.addEventListener("click", event => {
     })
     .then(resultado => {
       if (resultado.texto.length === 2) {
-        alert("Exclusão feita com sucesso!");
+        if(document.getElementById("nome-do-arquivo").value === "admin"){
+          alert("Status do admin atualizado com sucesso!");
+        }else{
+          alert("Exclusão feita com sucesso!");
+        }
         enviarFiltro();
       } else {
-        alert("Erro na exclusão, tente novamente!");
+        if(document.getElementById("nome-do-arquivo").value === "admin") {
+          alert("Erro ao atualizar o status do admin, tente novamente!");
+        }else{
+          alert("Erro na exclusão, tente novamente!");
+        }
       }
     })
     .catch(erro => {

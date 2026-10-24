@@ -83,7 +83,7 @@ public final class UsuarioService {
 
   //Validações
 
-  //Validações do email
+  //Validações do emailUpdate
   private static GenericExceptionEnum validarEmail(String email) {
     if (email == null || email.isBlank()) {
       return ErrosGeraisDados.EMAIL_VAZIO;
@@ -101,7 +101,7 @@ public final class UsuarioService {
     return PATTERN_EMAIL.matcher(email).matches() ? VALIDACAO_OK : ErrosGeraisDados.EMAIL_INVALIDO;
   }
 
-  //Validações da senha
+  //Validações da senhaUpdate
   private static GenericExceptionEnum validarSenhaUpdate(String senha) {
     if (senha == null || senha.isBlank()) {
       return VALIDACAO_OK;
@@ -132,7 +132,7 @@ public final class UsuarioService {
     return PATTERN_SENHA.matcher(senha).matches() ? VALIDACAO_OK : ErrosGeraisDados.SENHA_FRACA;
   }
 
-  //Validações do nome
+  //Validações do nomeUpdate
   private static GenericExceptionEnum validarNome(String nome, String tipoUsuario) {
     if (nome == null || nome.isBlank()) {
       return ErrosDadosUsuario.NOME_VAZIO;
@@ -177,7 +177,7 @@ public final class UsuarioService {
   //Validações do raio de procura em km
   private static GenericExceptionEnum validarRaioProcuraKm(String raioProcuraKm) {
     if (raioProcuraKm == null || raioProcuraKm.isBlank()) {
-      return ATRIBUTO_NULL;
+      return VALIDACAO_OK;
     }
 
     Double raioProcuraKmConvertido = validarRaioProcuraKmConversivel(raioProcuraKm);
@@ -566,7 +566,7 @@ public final class UsuarioService {
 
     GenericExceptionEnum validacaoRaioProcuraKm = validarRaioProcuraKm(
         usuarioParaInsertDTO.raioProcuraKm());
-    if (validacaoRaioProcuraKm != VALIDACAO_OK && validacaoRaioProcuraKm != ATRIBUTO_NULL) {
+    if (validacaoRaioProcuraKm != VALIDACAO_OK) {
       listaDeErros.add(validacaoRaioProcuraKm);
     }
 
