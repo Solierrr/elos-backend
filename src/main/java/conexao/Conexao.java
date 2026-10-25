@@ -25,6 +25,7 @@ public class Conexao extends Env {
     config.setMaximumPoolSize(4);
     config.setPoolName("elos-pool");
 
+    // Aumenta a velocidade do pool
     config.addDataSourceProperty("cachePrepStmts", "true");
     config.addDataSourceProperty("prepStmtCacheSize", "250");
     config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

@@ -21,8 +21,9 @@ import service.admin.AdminService;
 @WebServlet("/crudAdmin-update")
 public final class UpdateAdminServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final AdminService adminService = new AdminService();
 
@@ -62,13 +63,14 @@ public final class UpdateAdminServlet extends HttpServlet {
     Admin admin = (Admin) session.getAttribute("adm");
     if (admin == null) {
       response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-    List<GenericExceptionEnum> mensagensInsert = adminService.realizarUpdate(jsonObject,
-        admin.getId());
+    List<GenericExceptionEnum> mensagensInsert =
+        adminService.realizarUpdate(jsonObject, admin.getId());
     if (!mensagensInsert.isEmpty()) {
       Map<String, String> mapaJson = new HashMap<>();
       for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {

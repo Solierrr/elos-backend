@@ -6,6 +6,8 @@ import java.sql.Types;
 import java.time.LocalDate;
 
 public enum DataTypesUsados {
+
+  //Variações do enum
   INTEGER(Types.INTEGER) {
     @Override
     public void realizarSet(PreparedStatement preparedStatement, int index, Object object)
@@ -128,19 +130,24 @@ public enum DataTypesUsados {
     }
   };
 
+  //Atributo
   private final int dataType;
 
+  //Construtor
   DataTypesUsados(int dataType) {
     this.dataType = dataType;
   }
 
+  //Getter
   public int getDataType() {
     return dataType;
   }
 
+  //Método utilizado para realizar o setValor no PreparedStatement de maneira própria em cada versão do enum
   public abstract void realizarSet(PreparedStatement preparedStatement, int index, Object object)
       throws SQLException;
 
+  //Método auxiliar
   public static DataTypesUsados descobrirDataType(int dataType) {
     for (DataTypesUsados dataTypesUsados : DataTypesUsados.values()) {
       if (dataTypesUsados.getDataType() == dataType) {

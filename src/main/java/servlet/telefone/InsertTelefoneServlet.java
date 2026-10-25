@@ -16,37 +16,39 @@ import java.util.List;
 import java.util.Map;
 import model.Admin;
 import service.telefone.TelefoneService;
-import service.usuario.UsuarioService;
 
 @WebServlet("/crudTelefone-insert")
 public class InsertTelefoneServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-      .create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final TelefoneService telefoneService = new TelefoneService();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    response.sendRedirect(request.getContextPath()+"/crudTelefone");
+    response.sendRedirect(request.getContextPath() + "/crudTelefone");
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException{
+      throws IOException {
 
     HttpSession session = request.getSession(true);
     Admin admin = (Admin) session.getAttribute("adm");
-    if(admin == null)
-      response.sendRedirect(request.getContextPath()+"/login");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
+    }
 
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-    List<GenericExceptionEnum> mensagensInsert = telefoneService.realizarInsert(jsonObject, admin.getId());
-    if(!mensagensInsert.isEmpty()){
+    List<GenericExceptionEnum> mensagensInsert =
+        telefoneService.realizarInsert(jsonObject, admin.getId());
+    if (!mensagensInsert.isEmpty()) {
       Map<String, String> mapaJson = new HashMap<>();
       for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {
         mapaJson.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
@@ -55,7 +57,7 @@ public class InsertTelefoneServlet extends HttpServlet {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
       response.getWriter().write(gson.toJson(mapaJson));
-    } else{
+    } else {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
       response.getWriter().write("{}");

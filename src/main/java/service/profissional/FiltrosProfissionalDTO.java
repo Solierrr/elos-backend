@@ -2,10 +2,14 @@ package service.profissional;
 
 import util.Criptografia;
 
-public record FiltrosProfissionalDTO(String idFiltro, String idUsuarioFiltro, String profissaoFiltro,
-                                     String cpfFiltro, String idFornecedorFiltro,
-                                     String joinFiltro,
-                                     String filtroRapido) {
+public record FiltrosProfissionalDTO(
+    String idFiltro,
+    String idUsuarioFiltro,
+    String profissaoFiltro,
+    String cpfFiltro,
+    String idFornecedorFiltro,
+    String joinFiltro,
+    String filtroRapido) {
 
   public Long formatarId() {
     return Long.parseLong(idFiltro.strip());
@@ -22,13 +26,11 @@ public record FiltrosProfissionalDTO(String idFiltro, String idUsuarioFiltro, St
   public String formatarCpf() {
     Criptografia criptografia = new Criptografia();
 
-    return criptografia.criptografarHmac(cpfFiltro.strip()
-                    .replaceAll("\\.", "")
-                    .replaceAll("-", ""));
+    return criptografia.criptografarHmac(
+        cpfFiltro.strip().replaceAll("\\.", "").replaceAll("-", ""));
   }
 
   public Long formatarIdFornecedor() {
     return Long.parseLong(idFornecedorFiltro.strip());
   }
-
 }

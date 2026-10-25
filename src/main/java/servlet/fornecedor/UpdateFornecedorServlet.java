@@ -4,17 +4,15 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
+import exception.GenericExceptionEnum;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import exception.GenericExceptionEnum;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import model.Admin;
 import service.fornecedor.FornecedorService;
@@ -22,6 +20,7 @@ import service.fornecedor.FornecedorService;
 @WebServlet("/crudFornecedor-update")
 public final class UpdateFornecedorServlet extends HttpServlet {
 
+  // Constantes utilizadas pelo código
   private final Gson gson =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
@@ -40,8 +39,7 @@ public final class UpdateFornecedorServlet extends HttpServlet {
 
     String id = request.getParameter("id");
 
-    List<Map<String, Object>> fornecedor =
-        fornecedorService.exibirFornecedorParaUpdate(id, admin);
+    List<Map<String, Object>> fornecedor = fornecedorService.exibirFornecedorParaUpdate(id, admin);
     if (fornecedor.isEmpty()) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
@@ -64,6 +62,7 @@ public final class UpdateFornecedorServlet extends HttpServlet {
     Admin admin = (Admin) session.getAttribute("adm");
     if (admin == null) {
       response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
     request.setCharacterEncoding("UTF-8");

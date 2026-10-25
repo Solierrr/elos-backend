@@ -24,9 +24,9 @@ import service.usuario.UsuarioService;
 @WebServlet("/crudUsuario")
 public final class ReadUsuarioServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-      .create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final UsuarioService usuarioService = new UsuarioService();
 
@@ -34,7 +34,8 @@ public final class ReadUsuarioServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -46,8 +47,8 @@ public final class ReadUsuarioServlet extends HttpServlet {
       return;
     }
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
-        "/WEB-INF/view/usuario/crudUsuario.jsp");
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -77,12 +78,13 @@ public final class ReadUsuarioServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> usuarios = usuarioService.realizarSelect(
-        gson.fromJson(jsonObject, FiltrosUsuarioDTO.class), erros, admin);
+    List<Map<String, Object>> usuarios =
+        usuarioService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosUsuarioDTO.class), erros, admin);
     if (erros.isEmpty()) {
-        if (!usuarios.isEmpty()) {
-            json.put("valores", usuarios);
-        }
+      if (!usuarios.isEmpty()) {
+        json.put("valores", usuarios);
+      }
 
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

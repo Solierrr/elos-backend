@@ -1,7 +1,8 @@
 package exception;
 
 public enum ErrosGeraisDados implements GenericExceptionEnum {
-  ATRIBUTO_NULL(-1, "Atributo null", "null"),
+
+  //Variações do enum
   VALIDACAO_OK(0, "Dado válido", "valicacao-ok"),
   ID_INVALIDO(1, "O ID inserido é inválido", "id"),
   ID_USUARIO_INVALIDO(2, "O ID do usuário inserido é inválido", "id-usuario"),
@@ -37,18 +38,23 @@ public enum ErrosGeraisDados implements GenericExceptionEnum {
       21,
       "O email inserido possui um tamanho maior que o permitido, insira um email com até 256 caracteres",
       "email"),
-  JOIN_INVALIDO(22, "Os registros que se deseja conectar não possuem conexão!", "join");
+  JOIN_INVALIDO(22, "Os registros que se deseja conectar não possuem conexão!", "join"),
+  ID_ADMIN_NAO_REGISTRADO(3, "O ID do admin inserido não foi encontrado", "id-admin"),
+  ;
 
+  //Atributos
   private final int codigo;
   private final String mensagem;
   private final String nomeCampoErro;
 
+  //Construtor
   ErrosGeraisDados(int codigo, String mensagem, String nomeCampoErro) {
     this.codigo = codigo;
     this.mensagem = mensagem;
     this.nomeCampoErro = nomeCampoErro;
   }
 
+  //Getters
   public int getCodigo() {
     return codigo;
   }
@@ -61,6 +67,7 @@ public enum ErrosGeraisDados implements GenericExceptionEnum {
     return nomeCampoErro;
   }
 
+  //Métodos implementados
   @Override
   public String exibirMensagem() {
     return getMensagem();

@@ -3,6 +3,8 @@ package service.fornecedor;
 import service.GenericEnumCampos;
 
 public enum CamposFornecedor implements GenericEnumCampos {
+
+  // Variações do enum
   ID("id"),
   ID_USUARIO("id_usuario"),
   TIPO_USUARIO("tipo_usuario"),
@@ -11,30 +13,20 @@ public enum CamposFornecedor implements GenericEnumCampos {
   RAZAO_SOCIAL("razao_social"),
   INVALIDO("campo_do_fornecedor_invalido");
 
-  private final String campoFornecedor;
+  // Atributo
+  private final String nomeCampo;
 
-  CamposFornecedor(String campoFornecedor) {
-    this.campoFornecedor = campoFornecedor;
+  // Construtor
+  CamposFornecedor(String nomeCampo) {
+    this.nomeCampo = nomeCampo;
   }
 
-  public String getCampoFornecedor() {
-    return campoFornecedor;
+  // Getter
+  public String getNomeCampo() {
+    return nomeCampo;
   }
 
-  public static CamposFornecedor descobrirCampoFornecedor(String campoFornecedorEntrada) {
-    if (campoFornecedorEntrada == null || campoFornecedorEntrada.isBlank()) {
-      return INVALIDO;
-    }
-
-    String campoFornecedorEntradaTratado = campoFornecedorEntrada.strip().toLowerCase();
-    for (CamposFornecedor campoFornecedor : CamposFornecedor.values()) {
-      if (campoFornecedor.getCampoFornecedor().equalsIgnoreCase(campoFornecedorEntradaTratado)) {
-        return campoFornecedor;
-      }
-    }
-    return INVALIDO;
-  }
-
+  // Método implementado
   @Override
   public boolean isValido() {
     return this != INVALIDO;

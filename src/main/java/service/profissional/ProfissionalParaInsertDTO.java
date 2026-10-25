@@ -4,23 +4,38 @@ import model.Profissional;
 import model.TiposUsuario;
 import util.Criptografia;
 
-public record ProfissionalParaInsertDTO(String tipoUsuario, String profissao, String cpf, String idFornecedor, String documentoContrato) {
+public record ProfissionalParaInsertDTO(
+    String tipoUsuario,
+    String profissao,
+    String cpf,
+    String idFornecedor,
+    String documentoContrato) {
 
-    public Profissional construirProfissional(){
-        Long idFornecedorTratado = idFornecedor != null && !idFornecedor.isBlank() ? Long.parseLong(idFornecedor.strip()) : null;
+  public Profissional construirProfissional() {
+    Long idFornecedorTratado =
+        idFornecedor != null && !idFornecedor.isBlank()
+            ? Long.parseLong(idFornecedor.strip())
+            : null;
 
-        String tipoUsuarioTratado = tipoUsuario.strip().toUpperCase();
-        String profissaoTratada = profissao.strip();
-        String cpfTratado = cpf.strip()
-                    .replaceAll("\\.", "")
-                    .replaceAll("-", "");
+    String tipoUsuarioTratado = tipoUsuario.strip().toUpperCase();
+    String profissaoTratada = profissao.strip();
+    String cpfTratado = cpf.strip().replaceAll("\\.", "").replaceAll("-", "");
 
-        String documentoContratoTratado = documentoContrato != null && !documentoContrato.isBlank() ? documentoContrato.strip() : null;
+    String documentoContratoTratado =
+        documentoContrato != null && !documentoContrato.isBlank()
+            ? documentoContrato.strip()
+            : null;
 
-        Criptografia criptografia = new Criptografia();
+    Criptografia criptografia = new Criptografia();
 
-        return new Profissional(null, null, TiposUsuario.descobrirTipoUsuario(tipoUsuarioTratado),
-                profissaoTratada, criptografia.criptografarHmac(cpfTratado),
-                criptografia.criptografarAes(cpfTratado), idFornecedorTratado, documentoContratoTratado);
-    }
+    return new Profissional(
+        null,
+        null,
+        TiposUsuario.descobrirTipoUsuario(tipoUsuarioTratado),
+        profissaoTratada,
+        criptografia.criptografarHmac(cpfTratado),
+        criptografia.criptografarAes(cpfTratado),
+        idFornecedorTratado,
+        documentoContratoTratado);
+  }
 }

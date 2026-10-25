@@ -2,37 +2,42 @@ package exception;
 
 public enum ErrosDadosEmpresaDemandante implements GenericExceptionEnum {
 
-    EH_MANDANTE_INVALIDO(401, "Não foi informado se a conta é ou não mandante", "eh-mandante");
+  // Variações do enum
+  EH_MANDANTE_INVALIDO(201, "Não foi informado se a conta é ou não mandante", "eh-mandante");
 
-    private final int codigo;
-    private final String mensagem;
-    private final String nomeCampoErro;
+  // Atributos
+  private final int codigo;
+  private final String mensagem;
+  private final String nomeCampoErro;
 
-    ErrosDadosEmpresaDemandante(int codigo, String mensagem, String nomeCampoErro) {
-        this.codigo = codigo;
-        this.mensagem = mensagem;
-        this.nomeCampoErro = nomeCampoErro;
-    }
+  // Construtor
+  ErrosDadosEmpresaDemandante(int codigo, String mensagem, String nomeCampoErro) {
+    this.codigo = codigo;
+    this.mensagem = mensagem;
+    this.nomeCampoErro = nomeCampoErro;
+  }
 
-    public int getCodigo() {
-        return codigo;
-    }
+  // Getters
+  public int getCodigo() {
+    return codigo;
+  }
 
-    public String getMensagem() {
-        return mensagem;
-    }
+  public String getMensagem() {
+    return mensagem;
+  }
 
-    public String getNomeCampoErro() {
-        return nomeCampoErro;
-    }
+  public String getNomeCampoErro() {
+    return nomeCampoErro;
+  }
 
-    @Override
-    public String exibirMensagem() {
-        return getMensagem();
-    }
+  // Métodos implementados
+  @Override
+  public String exibirMensagem() {
+    return getMensagem();
+  }
 
-    @Override
-    public String nomeCampoErro() {
-        return getNomeCampoErro();
-    }
+  @Override
+  public String nomeCampoErro() {
+    return getNomeCampoErro();
+  }
 }

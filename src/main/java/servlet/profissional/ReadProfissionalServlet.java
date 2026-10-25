@@ -24,8 +24,9 @@ import service.profissional.ProfissionalService;
 @WebServlet("/crudProfissional")
 public final class ReadProfissionalServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final ProfissionalService profissionalService = new ProfissionalService();
 
@@ -33,7 +34,8 @@ public final class ReadProfissionalServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -45,8 +47,8 @@ public final class ReadProfissionalServlet extends HttpServlet {
       return;
     }
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
-        "/WEB-INF/view/profissional/crudProfissional.jsp");
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/profissional/crudProfissional.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -76,10 +78,11 @@ public final class ReadProfissionalServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> usuario = profissionalService.realizarSelect(gson.fromJson(jsonObject, FiltrosProfissionalDTO.class), erros, admin);
+    List<Map<String, Object>> usuario =
+        profissionalService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosProfissionalDTO.class), erros, admin);
     if (erros.isEmpty()) {
-      if (!usuario.isEmpty())
-        json.put("valores", usuario);
+      if (!usuario.isEmpty()) json.put("valores", usuario);
 
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

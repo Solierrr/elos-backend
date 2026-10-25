@@ -5,9 +5,14 @@ import java.time.format.DateTimeFormatter;
 import model.NavegadoresAdmin;
 import model.SistemasOperacionaisAdmin;
 
-public record FiltrosLogAcessosAdminDTO(String idFiltro, String idAdminFiltro, String dataAcessoFiltro,
-                                        String navegadorFiltro, String sistemaOperacionalFiltro,
-                                        String joinFiltro, String filtroRapido) {
+public record FiltrosLogAcessosAdminDTO(
+    String idFiltro,
+    String idAdminFiltro,
+    String dataAcessoFiltro,
+    String navegadorFiltro,
+    String sistemaOperacionalFiltro,
+    String joinFiltro,
+    String filtroRapido) {
 
   public Long formatarId() {
     return Long.parseLong(idFiltro.strip());
@@ -30,6 +35,4 @@ public record FiltrosLogAcessosAdminDTO(String idFiltro, String idAdminFiltro, S
   public SistemasOperacionaisAdmin formatarSistemaOperacional() {
     return SistemasOperacionaisAdmin.valueOf(sistemaOperacionalFiltro.toUpperCase().strip());
   }
-
-
 }

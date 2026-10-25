@@ -1,9 +1,10 @@
 package exception;
 
+//Criada para permitir um polimorfismo ao transportar diferentes enums
 public interface GenericExceptionEnum {
 
-    public String exibirMensagem();
+  //Métodos de assinatura
+  public String exibirMensagem();
 
-    public String nomeCampoErro();
-
+  public String nomeCampoErro();
 }

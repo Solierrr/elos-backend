@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import model.Telefone;
 
 public final class TelefoneDAO implements GenericDAO {
 
+  // Constante utilitaria
   private static final String TABELA = "telefone";
 
+  // Métodos implementados
   @Override
   public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
       throws SQLException {
@@ -37,6 +38,7 @@ public final class TelefoneDAO implements GenericDAO {
     return null;
   }
 
+  // Uso do ResultSetMetaData para resolver os conflitos de campos com o mesmo valor ao realizar joins
   @Override
   public List<Map<String, Object>> readAll(
       CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {

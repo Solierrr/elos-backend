@@ -24,8 +24,9 @@ import service.empresaDemandante.FiltrosEmpresaDemandanteDTO;
 @WebServlet("/crudEmpresaDemandante")
 public class ReadEmpresaDemandanteServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final EmpresaDemandanteService empresaDemandanteService = new EmpresaDemandanteService();
 
@@ -33,7 +34,8 @@ public class ReadEmpresaDemandanteServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -45,8 +47,8 @@ public class ReadEmpresaDemandanteServlet extends HttpServlet {
       return;
     }
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
-        "/WEB-INF/view/empresaDemandante/crudEmpresaDemandante.jsp");
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/empresaDemandante/crudEmpresaDemandante.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -76,8 +78,9 @@ public class ReadEmpresaDemandanteServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> usuario = empresaDemandanteService.realizarSelect(
-        gson.fromJson(jsonObject, FiltrosEmpresaDemandanteDTO.class), erros, admin);
+    List<Map<String, Object>> usuario =
+        empresaDemandanteService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosEmpresaDemandanteDTO.class), erros, admin);
     if (erros.isEmpty()) {
       if (!usuario.isEmpty()) {
         json.put("valores", usuario);

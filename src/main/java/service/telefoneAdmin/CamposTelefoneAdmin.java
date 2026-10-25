@@ -3,6 +3,8 @@ package service.telefoneAdmin;
 import service.GenericEnumCampos;
 
 public enum CamposTelefoneAdmin implements GenericEnumCampos {
+
+  // Variações do enum
   ID("id"),
   ID_ADMIN("id_admin"),
   TELEFONE("telefone"),
@@ -10,30 +12,20 @@ public enum CamposTelefoneAdmin implements GenericEnumCampos {
   PRINCIPAL("principal"),
   INVALIDO("campo_invalido");
 
-  private final String campoTelefone;
+  // Atributo
+  private final String nomeCampo;
 
-  CamposTelefoneAdmin(String campoTelefone) {
-    this.campoTelefone = campoTelefone;
+  // Construtor
+  CamposTelefoneAdmin(String nomeCampo) {
+    this.nomeCampo = nomeCampo;
   }
 
-  public String getCampoTelefone() {
-    return campoTelefone;
+  // Getter
+  public String getNomeCampo() {
+    return nomeCampo;
   }
 
-  public static CamposTelefoneAdmin descobrirCampoTelefone(String campoTelefoneEntrada) {
-    if (campoTelefoneEntrada == null || campoTelefoneEntrada.isBlank()) {
-      return INVALIDO;
-    }
-
-    String campoTelefoneEntradaTratada = campoTelefoneEntrada.strip().toLowerCase();
-    for (CamposTelefoneAdmin campoTelefone : CamposTelefoneAdmin.values()) {
-      if (campoTelefone.getCampoTelefone().equalsIgnoreCase(campoTelefoneEntradaTratada)) {
-        return campoTelefone;
-      }
-    }
-    return INVALIDO;
-  }
-
+  // Método implementado
   @Override
   public boolean isValido() {
     return this != INVALIDO;

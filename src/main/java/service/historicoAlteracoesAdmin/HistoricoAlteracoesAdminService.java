@@ -32,9 +32,10 @@ import util.Anonimizador;
 
 public final class HistoricoAlteracoesAdminService {
 
+  // Constante utilizada pelo código
   private static final String[] ACOES = new String[] {"UPDATE", "DELETE", "INSERT"};
 
-  // Usamos isso para permitir que seja possivel ver as alterações e quem as fez
+  // Usado  para permitir que seja possivel ver as alterações do banco e qual admin as fez
   public static void salvarAcao(
       HistoricoAlteracoesAdmin historicoAlteracoesAdmin, Connection connection)
       throws SQLException {
@@ -58,6 +59,8 @@ public final class HistoricoAlteracoesAdminService {
     dao.insert(criarInstrucaoDinamica, connection);
   }
 
+  // Validações
+
   // Validação do id do admin
   private static GenericExceptionEnum validarIdAdmin(String idAdmin) {
     if (idAdmin == null) {
@@ -80,7 +83,7 @@ public final class HistoricoAlteracoesAdminService {
     return VALIDACAO_OK;
   }
 
-  // Validação da data de alteraçãoo
+  // Validação da data de alteração
   private static GenericExceptionEnum validarDataAlteracao(String dataAlteracao) {
     DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -147,19 +150,19 @@ public final class HistoricoAlteracoesAdminService {
 
       if (filtrosHistoricoAlteracoesDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposHistoricoAlteracoes.ID.getCampoHistoricoAlteracoes(),
+            CamposHistoricoAlteracoes.ID.getNomeCampo(),
             IGUAL,
             VAZIO,
             filtrosHistoricoAlteracoesDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposHistoricoAlteracoes.ID.getCampoHistoricoAlteracoes(),
+            CamposHistoricoAlteracoes.ID.getNomeCampo(),
             AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosHistoricoAlteracoesDTO.idAdminFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-                CamposHistoricoAlteracoes.ID_ADMIN.getCampoHistoricoAlteracoes(),
+            CamposHistoricoAlteracoes.ID_ADMIN.getNomeCampo(),
             IGUAL,
             AND,
             filtrosHistoricoAlteracoesDTO.formatarIdAdmin(),
@@ -168,7 +171,7 @@ public final class HistoricoAlteracoesAdminService {
 
       if (filtrosHistoricoAlteracoesDTO.idRegistroFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposHistoricoAlteracoes.ID_REGISTRO.getCampoHistoricoAlteracoes(),
+            CamposHistoricoAlteracoes.ID_REGISTRO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosHistoricoAlteracoesDTO.formatarIdRegistro(),
@@ -177,7 +180,7 @@ public final class HistoricoAlteracoesAdminService {
 
       if (filtrosHistoricoAlteracoesDTO.dataAlteracaoFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposHistoricoAlteracoes.DATA_ALTERACAO.getCampoHistoricoAlteracoes(),
+            CamposHistoricoAlteracoes.DATA_ALTERACAO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosHistoricoAlteracoesDTO.formatarDataAlteracao(),
@@ -186,7 +189,7 @@ public final class HistoricoAlteracoesAdminService {
 
       if (filtrosHistoricoAlteracoesDTO.acaoFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposHistoricoAlteracoes.ACAO.getCampoHistoricoAlteracoes(),
+            CamposHistoricoAlteracoes.ACAO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosHistoricoAlteracoesDTO.formatarAcao(),
@@ -209,24 +212,25 @@ public final class HistoricoAlteracoesAdminService {
         }
       }
 
-      List<Map<String, Object>> acessosAdmin = dao.readAll(criarInstrucaoDinamica, connection);
+      List<Map<String, Object>> historicosAlteracao =
+          dao.readAll(criarInstrucaoDinamica, connection);
 
       if (filtrosHistoricoAlteracoesDTO.filtroRapido() != null
           && !filtrosHistoricoAlteracoesDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosHistoricoAlteracoesDTO.filtroRapido();
 
-        acessosAdmin.removeIf(
-            telefone ->
-                telefone.values().stream()
+        historicosAlteracao.removeIf(
+            historicoAlteracao ->
+                historicoAlteracao.values().stream()
                     .filter(Objects::nonNull)
                     .map(String::valueOf)
                     .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
-      anonimizador.anonimizarDadosLidos(acessosAdmin, admin);
+      anonimizador.anonimizarDadosLidos(historicosAlteracao, admin);
 
-      return acessosAdmin;
+      return historicosAlteracao;
     } catch (SQLException | ClassCastException exception) {
       return new ArrayList<>();
     }

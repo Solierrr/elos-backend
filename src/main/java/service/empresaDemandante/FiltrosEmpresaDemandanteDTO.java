@@ -33,5 +33,4 @@ public record FiltrosEmpresaDemandanteDTO(
   public Boolean formatarEhMandante() {
     return ehMandanteFiltro.equalsIgnoreCase("true");
   }
-
 }

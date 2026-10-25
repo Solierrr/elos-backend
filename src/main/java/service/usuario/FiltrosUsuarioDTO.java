@@ -1,25 +1,31 @@
 package service.usuario;
 
-public record FiltrosUsuarioDTO(String idFiltro, String emailFiltro, String nomeFiltro, String tipoUsuarioFiltro, String raioProcuraKmFiltro, String joinFiltro, String filtroRapido){
+public record FiltrosUsuarioDTO(
+    String idFiltro,
+    String emailFiltro,
+    String nomeFiltro,
+    String tipoUsuarioFiltro,
+    String raioProcuraKmFiltro,
+    String joinFiltro,
+    String filtroRapido) {
 
-  public Long formatarId(){
+  public Long formatarId() {
     return Long.parseLong(idFiltro.strip());
   }
 
-  public String formatarEmail(){
+  public String formatarEmail() {
     return emailFiltro.toLowerCase().strip();
   }
 
-  public String formatarNome(){
+  public String formatarNome() {
     return nomeFiltro.strip();
   }
 
-  public String formatarTipoUsuario(){
+  public String formatarTipoUsuario() {
     return tipoUsuarioFiltro.toUpperCase().strip();
   }
 
-  public Double formatarRaioProcura(){
+  public Double formatarRaioProcura() {
     return Double.parseDouble(raioProcuraKmFiltro.strip().replace(',', '.'));
   }
-
 }

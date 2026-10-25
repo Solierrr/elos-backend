@@ -8,6 +8,7 @@ import model.FuncoesAdmin;
 
 public final class Anonimizador {
 
+  //Métodos auxiliares para anonimizar os dados quando o usuário não tem autorização de vê-los na integra
   private static String anonimizarEmail(String email) {
     char[] emailEmChar = email.toCharArray();
     int posicaoArroba = email.lastIndexOf('@');
@@ -99,7 +100,7 @@ public final class Anonimizador {
     return String.join(".", dadosParte);
   }
 
-
+  //Método para anonimizar os dados utilizando os utilitarios e o enum
   public void anonimizarDadosLidos(List<Map<String, Object>> dados,
       Admin admin) {
     List<CampoParaAnonimizar> campos = new ArrayList<>();
@@ -320,10 +321,17 @@ public final class Anonimizador {
         if (admin.getFuncao() != FuncoesAdmin.SUPERADMIN) {
           try {
             registro.replace(this.getNomeCampo(),
-                anonimizarComplemento((String) registro.get(this.getNomeCampo())));
+                registro.get(this.getNomeCampo())==null? "Sem complemento" : anonimizarComplemento((String) registro.get(this.getNomeCampo())));
           } catch (ClassCastException classCastException) {
             registro.replace(this.getNomeCampo(), "Erro ao ler o complemento");
           }
+          return;
+        }
+        try {
+          registro.replace(this.getNomeCampo(),
+                  registro.get(this.getNomeCampo())==null? "Sem complemento" : registro.get(this.getNomeCampo()));
+        } catch (ClassCastException classCastException) {
+          registro.replace(this.getNomeCampo(), "Erro ao ler o complemento");
         }
       }
     }, DADOS_ANTIGOS("dados_antigos") {
@@ -388,7 +396,7 @@ public final class Anonimizador {
           registro.replace(this.getNomeCampo(), "Não");
         }
       }
-    }, MOTIVTO_FALHA("motivo_falha"){
+    }, MOTIVO_FALHA("motivo_falha"){
       @Override
       public void anonimizar(Map<String, Object> registro, Admin admin) {
         if(registro.get(this.getNomeCampo()) == null){

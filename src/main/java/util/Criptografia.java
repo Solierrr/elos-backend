@@ -23,12 +23,13 @@ public final class Criptografia extends Env {
   private static final byte[] HMAC_KEY = getHmacKey();
   private static final byte[] AES_KEY = getAesKey();
 
-  //Constantes suportes para evitar valores mágicos no código
+  //Constantes utilizadas pelo código
   private static final String NOME_ALGORITMO_HMAC = "HmacSHA256";
   private static final String NOME_ALGORITMO_AES = "AES/GCM/NoPadding";
   private static final int TAMANHO_VETOR_INICIALIZACAO = 12;
   private static final int TAMANHO_TAG_AUTENTICACAO = 128;
 
+  //Métodos do BCrypt
   public String colocarHashNaSenha(String senha) {
     return BCrypt.hashpw(senha, BCrypt.gensalt());
   }
@@ -37,6 +38,7 @@ public final class Criptografia extends Env {
     return BCrypt.checkpw(senhaSemHash, senhaComHash);
   }
 
+  //Método do HMAC
   public String criptografarHmac(String stringParaHmac) {
     try {
       Mac gerarMac = Mac.getInstance(NOME_ALGORITMO_HMAC);
@@ -51,6 +53,7 @@ public final class Criptografia extends Env {
     }
   }
 
+  //Métodos do AES
   public byte[] criptografarAes(String stringParaAes) {
     try {
       byte[] vetorInicializacao = new byte[TAMANHO_VETOR_INICIALIZACAO];

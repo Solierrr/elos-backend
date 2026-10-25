@@ -1,6 +1,8 @@
 package dao;
 
 public enum AcoesInstrucao {
+
+  // Variações do enum
   ILIKE(" ilike "),
   MENOR_IGUAL(" <= "),
   MAIOR_IGUAL(" >= "),
@@ -15,12 +17,15 @@ public enum AcoesInstrucao {
   LEFT_JOIN("left join"),
   RIGHT_JOIN("right join");
 
+  // Atributo do enum
   private final String acao;
 
+  // Construtor
   AcoesInstrucao(String acao) {
     this.acao = acao;
   }
 
+  // Getter
   public String getAcao() {
     return acao;
   }

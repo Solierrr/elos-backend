@@ -1,25 +1,31 @@
 package service.admin;
 
-public record FiltrosAdminDTO(String idFiltro, String emailFiltro, String nomeFiltro, String funcaoFiltro, String emAtividadeFiltro, String joinFiltro, String filtroRapido){
+public record FiltrosAdminDTO(
+    String idFiltro,
+    String emailFiltro,
+    String nomeFiltro,
+    String funcaoFiltro,
+    String emAtividadeFiltro,
+    String joinFiltro,
+    String filtroRapido) {
 
-  public Long formatarId(){
+  public Long formatarId() {
     return Long.parseLong(idFiltro.strip());
   }
 
-  public String formatarEmail(){
+  public String formatarEmail() {
     return emailFiltro.toLowerCase().strip();
   }
 
-  public String formatarNome(){
+  public String formatarNome() {
     return nomeFiltro.strip();
   }
 
-  public String formatarFuncao(){
+  public String formatarFuncao() {
     return funcaoFiltro.toUpperCase().strip();
   }
 
-  public Boolean formatarEmAtividade(){
+  public Boolean formatarEmAtividade() {
     return Boolean.parseBoolean(emAtividadeFiltro.strip());
   }
-
 }

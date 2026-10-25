@@ -2,30 +2,35 @@ package model;
 
 public enum TiposTelefone {
 
-    PESSOAL("PESSOAL"),
-    EMPRESARIAL("EMPRESARIAL");
+  // Variações do enum
+  PESSOAL("PESSOAL"),
+  EMPRESARIAL("EMPRESARIAL");
 
-    private final String tipoTelefone;
+  // Atributo
+  private final String tipoTelefone;
 
-    TiposTelefone(String tipoTelefone) {
-        this.tipoTelefone = tipoTelefone;
+  // Construtor
+  TiposTelefone(String tipoTelefone) {
+    this.tipoTelefone = tipoTelefone;
+  }
+
+  // Getter
+  public String getTipoTelefone() {
+    return tipoTelefone;
+  }
+
+  // Método utilitario
+  public static TiposTelefone descobrirTipoTelefone(String tipoTelefoneRecebido) {
+    if (tipoTelefoneRecebido == null) {
+      return null;
     }
 
-    public String getTipoTelefone() {
-        return tipoTelefone;
+    String tipoTelefoneRecebidoTratado = tipoTelefoneRecebido.toUpperCase().strip();
+    for (TiposTelefone tiposTelefone : TiposTelefone.values()) {
+      if (tiposTelefone.tipoTelefone.equalsIgnoreCase(tipoTelefoneRecebidoTratado)) {
+        return tiposTelefone;
+      }
     }
-
-    public static TiposTelefone descobrirTipoTelefone(String tipoTelefoneRecebido){
-        if(tipoTelefoneRecebido == null){
-            return null;
-        }
-
-        String tipoTelefoneRecebidoTratado = tipoTelefoneRecebido.toUpperCase().strip();
-        for(TiposTelefone tiposTelefone : TiposTelefone.values()){
-            if(tiposTelefone.tipoTelefone.equalsIgnoreCase(tipoTelefoneRecebidoTratado)){
-                return tiposTelefone;
-            }
-        }
-        return null;
-    }
+    return null;
+  }
 }

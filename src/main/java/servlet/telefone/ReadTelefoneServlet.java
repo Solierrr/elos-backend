@@ -24,8 +24,9 @@ import service.telefone.TelefoneService;
 @WebServlet("/crudTelefone")
 public class ReadTelefoneServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final TelefoneService telefoneService = new TelefoneService();
 
@@ -33,7 +34,8 @@ public class ReadTelefoneServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -45,8 +47,8 @@ public class ReadTelefoneServlet extends HttpServlet {
       return;
     }
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
-        "/WEB-INF/view/telefone/crudTelefone.jsp");
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/telefone/crudTelefone.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -76,8 +78,9 @@ public class ReadTelefoneServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> telefones = telefoneService.realizarSelect(
-        gson.fromJson(jsonObject, FiltrosTelefoneDTO.class), erros, admin);
+    List<Map<String, Object>> telefones =
+        telefoneService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosTelefoneDTO.class), erros, admin);
     if (erros.isEmpty()) {
       if (!telefones.isEmpty()) {
         json.put("valores", telefones);

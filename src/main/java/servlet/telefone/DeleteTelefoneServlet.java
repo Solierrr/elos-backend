@@ -19,8 +19,9 @@ import service.telefone.TelefoneService;
 @WebServlet("/crudTelefone-delete")
 public class DeleteTelefoneServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final TelefoneService telefoneService = new TelefoneService();
 
@@ -44,8 +45,8 @@ public class DeleteTelefoneServlet extends HttpServlet {
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-    GenericExceptionEnum resultado = telefoneService.realizarDelete(
-        jsonObject.get("id").getAsString(), admin.getId());
+    GenericExceptionEnum resultado =
+        telefoneService.realizarDelete(jsonObject.get("id").getAsString(), admin.getId());
     if (resultado == SUCESSO) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

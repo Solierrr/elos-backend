@@ -3,8 +3,12 @@ package service.admin;
 import model.Admin;
 import util.Criptografia;
 
-public record AdminParaUpdateDTO(String idUpdate,
-        String emailUpdate, String senhaUpdate, String nomeUpdate, String emAtividadeUpdate) {
+public record AdminParaUpdateDTO(
+    String idUpdate,
+    String emailUpdate,
+    String senhaUpdate,
+    String nomeUpdate,
+    String emAtividadeUpdate) {
 
   public Admin construirAdmin() {
     Boolean emAtividadeTratada = Boolean.parseBoolean(emAtividadeUpdate);

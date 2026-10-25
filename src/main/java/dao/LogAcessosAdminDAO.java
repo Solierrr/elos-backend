@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import model.LogAcessosAdmin;
 
 public final class LogAcessosAdminDAO implements GenericDAO {
 
+  // Constante utilitaria
   private static final String TABELA = "log_acessos_admin";
 
+  // Métodos implementados
   @Override
   public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
       throws SQLException {
@@ -44,6 +45,7 @@ public final class LogAcessosAdminDAO implements GenericDAO {
         connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
     criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
+    // Uso do ResultSetMetaData para resolver os conflitos de campos com o mesmo valor ao realizar joins
     ResultSet resultSet = preparedStatement.executeQuery();
     ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
     while (resultSet.next()) {

@@ -1,6 +1,8 @@
 package model;
 
 public enum SistemasOperacionaisAdmin {
+
+  // Variações do enum
   WINDOWS("WINDOWS"),
   MAC("MAC"),
   LINUX("LINUX"),
@@ -8,16 +10,20 @@ public enum SistemasOperacionaisAdmin {
   IOS("IOS"),
   SISTEMA_OPERACIONAL_INVALIDO("SISTEMA_OPERACIONAL_INVALIDO");
 
+  // Atributo
   private final String sistemaOperacional;
 
+  // Construtor
   SistemasOperacionaisAdmin(String sistemaOperacional) {
     this.sistemaOperacional = sistemaOperacional;
   }
 
+  // Getter
   public String getSistemaOperacional() {
     return sistemaOperacional;
   }
 
+  // Método utilitario
   public static SistemasOperacionaisAdmin descobrirSistemaOperacionalAdmin(String userAgent) {
     if (userAgent == null || userAgent.isBlank()) return SISTEMA_OPERACIONAL_INVALIDO;
 

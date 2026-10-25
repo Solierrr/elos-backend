@@ -7,14 +7,14 @@ import exception.GenericExceptionEnum;
 
 public class ValidacoesComunsService {
 
+  //Método utilitario utilizado em todos os services
   public static GenericExceptionEnum validarId(String id) {
     try {
       String idTratado = id.strip();
       Long.parseLong(idTratado);
       return VALIDACAO_OK;
-    } catch (NumberFormatException numberFormatException) {
+    } catch (NumberFormatException | NullPointerException exception) {
       return ID_INVALIDO;
     }
   }
-
 }

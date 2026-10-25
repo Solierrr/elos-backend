@@ -20,6 +20,7 @@ import service.empresaDemandante.EmpresaDemandanteService;
 @WebServlet("/crudEmpresaDemandante-update")
 public class UpdateEmpresaDemandanteServlet extends HttpServlet {
 
+  // Constantes utilizadas pelo código
   private final Gson gson =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
@@ -62,6 +63,7 @@ public class UpdateEmpresaDemandanteServlet extends HttpServlet {
     Admin admin = (Admin) session.getAttribute("adm");
     if (admin == null) {
       response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
     request.setCharacterEncoding("UTF-8");

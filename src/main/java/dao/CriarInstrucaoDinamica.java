@@ -9,7 +9,7 @@ import java.util.List;
 
 public final class CriarInstrucaoDinamica {
 
-  // Records
+  // Records utilizados na classe
   private record CampoComValor(String campo, Object valor, int dataType) {}
 
   private record CondicaoWhere(
@@ -33,7 +33,7 @@ public final class CriarInstrucaoDinamica {
 
   private final List<DadosJoin> joins = new ArrayList<>();
 
-  // metodos para construir as instruções
+  // Métodos para construir as instruções
   public String construirSelect(String tabela) {
     exigirTabela(tabela);
 
@@ -124,7 +124,7 @@ public final class CriarInstrucaoDinamica {
     return sb.toString().strip();
   }
 
-  // metodos para adicionar elementos na instrução
+  // Métodos para adicionar elementos na instrução
   public void setCampo(String campo, Object valor, int dataType) {
     camposInsertOuUpdate.add(new CampoComValor(campo, valor, dataType));
   }
@@ -138,7 +138,8 @@ public final class CriarInstrucaoDinamica {
     Object valorTratado = tratarValorWhere(operacaoWhere, valorWhere);
     String campoWhereTratado = tratarCampoWhere(campoWhere, valorWhere);
     condicoesWhere.add(
-        new CondicaoWhere(campoWhereTratado, operacaoWhere, operadorLogico, valorTratado, dataType));
+        new CondicaoWhere(
+            campoWhereTratado, operacaoWhere, operadorLogico, valorTratado, dataType));
   }
 
   public void setOrderBy(String campo, AcoesInstrucao sentido) {
@@ -159,6 +160,7 @@ public final class CriarInstrucaoDinamica {
     joins.add(new DadosJoin(tipo, tabelaDestino, conectorOrigem, conectorDestino));
   }
 
+  // Método utilitario para construir o PreparedStatement
   public void aplicarValoresDoPreparedStatement(PreparedStatement preparedStatement)
       throws SQLException {
     int index = 1;
@@ -215,7 +217,11 @@ public final class CriarInstrucaoDinamica {
         sb.append(", ");
       }
 
-      sb.append(tabelaOrigem).append(".").append(orderBy.campo()).append(" ").append(orderBy.sentido().getAcao());
+      sb.append(tabelaOrigem)
+          .append(".")
+          .append(orderBy.campo())
+          .append(" ")
+          .append(orderBy.sentido().getAcao());
     }
     return sb.toString();
   }
@@ -253,8 +259,8 @@ public final class CriarInstrucaoDinamica {
     return valorWhere;
   }
 
-  private String tratarCampoWhere(String campoWhere, Object valorWhere){
-    return valorWhere instanceof LocalDate ? ("date("+campoWhere+")") : campoWhere;
+  private String tratarCampoWhere(String campoWhere, Object valorWhere) {
+    return valorWhere instanceof LocalDate ? ("date(" + campoWhere + ")") : campoWhere;
   }
 
   // Utilitários para caso de erro

@@ -3,6 +3,8 @@ package service.profissional;
 import service.GenericEnumCampos;
 
 public enum CamposProfissional implements GenericEnumCampos {
+
+  // Variações do enum
   ID("id"),
   ID_USUARIO("id_usuario"),
   TIPO_USUARIO("tipo_usuario"),
@@ -13,32 +15,20 @@ public enum CamposProfissional implements GenericEnumCampos {
   DOCUMENTO_CONTRATO("documento_contrato"),
   INVALIDO("campo_invalido");
 
-  private final String campoProfissional;
+  // Atributo
+  private final String nomeCampo;
 
-  CamposProfissional(String campoProfissional) {
-    this.campoProfissional = campoProfissional;
+  // Construtor
+  CamposProfissional(String nomeCampo) {
+    this.nomeCampo = nomeCampo;
   }
 
-  public String getCampoProfissional() {
-    return campoProfissional;
+  // Getter
+  public String getNomeCampo() {
+    return nomeCampo;
   }
 
-  public static CamposProfissional descobrirCampoProfissional(String campoProfissionalEntrada) {
-    if (campoProfissionalEntrada == null || campoProfissionalEntrada.isBlank()) {
-      return INVALIDO;
-    }
-
-    String campoProfissionalEntradaTratada = campoProfissionalEntrada.strip().toLowerCase();
-    for (CamposProfissional campoProfissional : CamposProfissional.values()) {
-      if (campoProfissional
-          .getCampoProfissional()
-          .equalsIgnoreCase(campoProfissionalEntradaTratada)) {
-        return campoProfissional;
-      }
-    }
-    return INVALIDO;
-  }
-
+  // Método implementado
   @Override
   public boolean isValido() {
     return this != INVALIDO;

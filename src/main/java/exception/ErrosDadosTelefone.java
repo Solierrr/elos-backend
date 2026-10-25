@@ -2,41 +2,46 @@ package exception;
 
 public enum ErrosDadosTelefone implements GenericExceptionEnum {
 
-    TELEFONE_VAZIO(501, "Nenhum telefone foi inserido", "telefone"),
-    TELEFONE_INVALIDO(502, "O telefone inserido é inválido", "telefone"),
-    TIPO_VAZIO(503, "O tipo do telefone não foi inserido", "tipo"),
-    TIPO_INVALIDO(504, "O tipo do telefone inserido é inválido", "tipo"),
-    PRINCIPAL_INVALIDO(505, "Não foi informado se o telefone é ou não o seu principalFiltro", "principalFiltro");
+  // Variações do enum
+  TELEFONE_VAZIO(801, "Nenhum telefone foi inserido", "telefone"),
+  TELEFONE_INVALIDO(802, "O telefone inserido é inválido", "telefone"),
+  TIPO_VAZIO(803, "O tipo do telefone não foi inserido", "tipo"),
+  TIPO_INVALIDO(804, "O tipo do telefone inserido é inválido", "tipo"),
+  PRINCIPAL_INVALIDO(805, "Não foi informado se o telefone é ou não o seu principal", "principal");
 
-    private final int codigo;
-    private final String mensagem;
-    private final String nomeCampoErro;
+  // Atributos
+  private final int codigo;
+  private final String mensagem;
+  private final String nomeCampoErro;
 
-    ErrosDadosTelefone(int codigo, String mensagem, String nomeCampoErro) {
-        this.codigo = codigo;
-        this.mensagem = mensagem;
-        this.nomeCampoErro = nomeCampoErro;
-    }
+  // Construtor
+  ErrosDadosTelefone(int codigo, String mensagem, String nomeCampoErro) {
+    this.codigo = codigo;
+    this.mensagem = mensagem;
+    this.nomeCampoErro = nomeCampoErro;
+  }
 
-    public int getCodigo() {
-        return codigo;
-    }
+  // Getters
+  public int getCodigo() {
+    return codigo;
+  }
 
-    public String getMensagem() {
-        return mensagem;
-    }
+  public String getMensagem() {
+    return mensagem;
+  }
 
-    public String getNomeCampoErro() {
-        return nomeCampoErro;
-    }
+  public String getNomeCampoErro() {
+    return nomeCampoErro;
+  }
 
-    @Override
-    public String exibirMensagem() {
-        return getMensagem();
-    }
+  // Métodos implementados
+  @Override
+  public String exibirMensagem() {
+    return getMensagem();
+  }
 
-    @Override
-    public String nomeCampoErro() {
-        return getNomeCampoErro();
-    }
+  @Override
+  public String nomeCampoErro() {
+    return getNomeCampoErro();
+  }
 }

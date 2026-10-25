@@ -19,8 +19,9 @@ import service.admin.AdminService;
 @WebServlet("/crudAdmin-delete")
 public final class DeleteAdminServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final AdminService adminService = new AdminService();
 
@@ -44,8 +45,8 @@ public final class DeleteAdminServlet extends HttpServlet {
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-    GenericExceptionEnum resultado = adminService.realizarDelete(
-        jsonObject.get("id").getAsString(), admin.getId());
+    GenericExceptionEnum resultado =
+        adminService.realizarDelete(jsonObject.get("id").getAsString(), admin.getId());
     if (resultado == SUCESSO) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

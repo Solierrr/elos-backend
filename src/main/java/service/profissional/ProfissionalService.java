@@ -45,7 +45,7 @@ import util.PorMascara;
 
 public final class ProfissionalService {
 
-  // Atributo usado para operações json no código
+  // Constante usada para operações json no código
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
@@ -189,9 +189,9 @@ public final class ProfissionalService {
 
         criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, idConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> usuario = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        List<Map<String, Object>> profissional = dao.readAll(criarInstrucaoDinamicaRead, connection);
 
-        if (usuario.isEmpty()) {
+        if (profissional.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
         }
 
@@ -208,7 +208,7 @@ public final class ProfissionalService {
                 idConvertido,
                 "PROFISSIONAL",
                 "DELETE",
-                GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                GSON.toJsonTree(profissional.getFirst()).getAsJsonObject(),
                 new JsonObject(),
                 null),
             connection);
@@ -266,18 +266,18 @@ public final class ProfissionalService {
 
       if (filtrosProfissionalDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposProfissional.ID.getCampoProfissional(),
+            CamposProfissional.ID.getNomeCampo(),
             IGUAL,
             VAZIO,
             filtrosProfissionalDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposProfissional.ID.getCampoProfissional(), AcoesInstrucao.ORDEM_CRESCENTE);
+            CamposProfissional.ID.getNomeCampo(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosProfissionalDTO.idUsuarioFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            ID_USUARIO.getCampoProfissional(),
+            ID_USUARIO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosProfissionalDTO.formatarIdUsuario(),
@@ -286,7 +286,7 @@ public final class ProfissionalService {
 
       if (filtrosProfissionalDTO.profissaoFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            PROFISSAO.getCampoProfissional(),
+            PROFISSAO.getNomeCampo(),
             ILIKE,
             AND,
             filtrosProfissionalDTO.formatarProfissao(),
@@ -295,7 +295,7 @@ public final class ProfissionalService {
 
       if (filtrosProfissionalDTO.cpfFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposProfissional.CPF_HMAC.getCampoProfissional(),
+            CamposProfissional.CPF_HMAC.getNomeCampo(),
             IGUAL,
             AND,
             filtrosProfissionalDTO.formatarCpf(),
@@ -304,7 +304,7 @@ public final class ProfissionalService {
 
       if (filtrosProfissionalDTO.idFornecedorFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            ID_FORNECEDOR.getCampoProfissional(),
+            ID_FORNECEDOR.getNomeCampo(),
             IGUAL,
             AND,
             filtrosProfissionalDTO.formatarIdFornecedor(),
@@ -438,13 +438,13 @@ public final class ProfissionalService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposProfissional.ID_FORNECEDOR.getCampoProfissional(),
+            CamposProfissional.ID_FORNECEDOR.getNomeCampo(),
             profissional.getIdFornecedor(),
             Types.BIGINT);
         criarInstrucaoDinamicaUpdate.setCampo(
-            PROFISSAO.getCampoProfissional(), profissional.getProfissao(), Types.VARCHAR);
+            PROFISSAO.getNomeCampo(), profissional.getProfissao(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            DOCUMENTO_CONTRATO.getCampoProfissional(),
+            DOCUMENTO_CONTRATO.getNomeCampo(),
             profissional.getDocumentoContrato(),
             Types.VARCHAR);
 
@@ -574,7 +574,7 @@ public final class ProfissionalService {
     }
 
     GenericExceptionEnum validacaoCpf = validarCpf(profissionalParaInsertDTO.cpf());
-    if (validacaoCpf != VALIDACAO_OK && validacaoCpf != ATRIBUTO_NULL) {
+    if (validacaoCpf != VALIDACAO_OK) {
       listaDeErros.add(validacaoCpf);
     }
 

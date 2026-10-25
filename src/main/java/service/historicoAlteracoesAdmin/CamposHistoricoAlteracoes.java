@@ -1,10 +1,10 @@
 package service.historicoAlteracoesAdmin;
 
 import service.GenericEnumCampos;
-import service.logAcessosAdmin.CamposLogAcessosAdmin;
 
-public enum CamposHistoricoAlteracoes   implements GenericEnumCampos {
+public enum CamposHistoricoAlteracoes implements GenericEnumCampos {
 
+  // Variações do enum
   ID("id"),
   ID_ADMIN("id_admin"),
   ID_REGISTRO("id_registro"),
@@ -15,33 +15,22 @@ public enum CamposHistoricoAlteracoes   implements GenericEnumCampos {
   DATA_ALTERACAO("data_alteracao"),
   INVALIDO("campo_do_acesso_invalido");
 
-  private final String campoHistoricoAlteracoes;
+  // Atributo
+  private final String nomeCampo;
 
-  CamposHistoricoAlteracoes(String campoHistoricoAlteracoes) {
-    this.campoHistoricoAlteracoes = campoHistoricoAlteracoes;
+  // Construtor
+  CamposHistoricoAlteracoes(String nomeCampo) {
+    this.nomeCampo = nomeCampo;
   }
 
-  public String getCampoHistoricoAlteracoes() {
-    return campoHistoricoAlteracoes;
+  // Getter
+  public String getNomeCampo() {
+    return nomeCampo;
   }
 
-  public static CamposHistoricoAlteracoes descobrirCampoHistoricoAlteracoes(String campoHistoricoAlteracoesEntrada){
-    if(campoHistoricoAlteracoesEntrada == null || campoHistoricoAlteracoesEntrada.isBlank()){
-      return INVALIDO;
-    }
-
-    String campoLogAcessosAdminEntradaTratado = campoHistoricoAlteracoesEntrada.strip().toLowerCase();
-    for(CamposHistoricoAlteracoes campoLogAcessosAdmin : CamposHistoricoAlteracoes.values()){
-      if(campoLogAcessosAdmin.getCampoHistoricoAlteracoes().equalsIgnoreCase(campoLogAcessosAdminEntradaTratado)){
-        return campoLogAcessosAdmin;
-      }
-    }
-    return INVALIDO;
-  }
-
+  // Método implementado
   @Override
-  public boolean isValido(){
+  public boolean isValido() {
     return this != INVALIDO;
   }
-
 }

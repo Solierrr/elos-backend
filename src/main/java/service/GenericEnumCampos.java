@@ -1,7 +1,7 @@
 package service;
 
-public interface GenericEnumCampos{
+public interface GenericEnumCampos {
 
-    public boolean isValido();
-
+  // Método de assinatura
+  public boolean isValido();
 }

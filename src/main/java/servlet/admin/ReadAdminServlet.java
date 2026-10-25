@@ -26,9 +26,9 @@ import service.usuario.FiltrosUsuarioDTO;
 @WebServlet("/crudAdmin")
 public final class ReadAdminServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES)
-      .create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final AdminService adminService = new AdminService();
 
@@ -36,7 +36,8 @@ public final class ReadAdminServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -48,11 +49,10 @@ public final class ReadAdminServlet extends HttpServlet {
       return;
     }
 
-    if(admin.getFuncao() == FuncoesAdmin.SUPERADMIN)
-      request.setAttribute("acessoTotal", true);
+    if (admin.getFuncao() == FuncoesAdmin.SUPERADMIN) request.setAttribute("acessoTotal", true);
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
-        "/WEB-INF/view/admin/crudAdmin.jsp");
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/admin/crudAdmin.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -82,12 +82,12 @@ public final class ReadAdminServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> admins = adminService.realizarSelect(
-        gson.fromJson(jsonObject, FiltrosAdminDTO.class), erros, admin);
+    List<Map<String, Object>> admins =
+        adminService.realizarSelect(gson.fromJson(jsonObject, FiltrosAdminDTO.class), erros, admin);
     if (erros.isEmpty()) {
-        if (!admins.isEmpty()) {
-            json.put("valores", admins);
-        }
+      if (!admins.isEmpty()) {
+        json.put("valores", admins);
+      }
 
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

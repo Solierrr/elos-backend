@@ -3,7 +3,7 @@ package service.endereco;
 import model.Endereco;
 import model.EstadosBrasileiros;
 
-public record EnderecoParaInsert(
+public record EnderecoParaInsertDTO(
     String idUsuario,
     String estado,
     String cidade,

@@ -25,8 +25,9 @@ import service.telefone.TelefoneService;
 @WebServlet("/crudTelefoneAdmin")
 public class ReadTelefoneAdminServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-      FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final TelefoneService telefoneService = new TelefoneService();
 
@@ -34,7 +35,8 @@ public class ReadTelefoneAdminServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -46,11 +48,10 @@ public class ReadTelefoneAdminServlet extends HttpServlet {
       return;
     }
 
-    if(admin.getFuncao() == FuncoesAdmin.SUPERADMIN)
-      request.setAttribute("acessoTotal", true);
+    if (admin.getFuncao() == FuncoesAdmin.SUPERADMIN) request.setAttribute("acessoTotal", true);
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
-        "/WEB-INF/view/telefoneAdmin/crudTelefoneAdmin.jsp");
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/telefoneAdmin/crudTelefoneAdmin.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -80,8 +81,9 @@ public class ReadTelefoneAdminServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> telefones = telefoneService.realizarSelect(
-        gson.fromJson(jsonObject, FiltrosTelefoneDTO.class), erros, admin);
+    List<Map<String, Object>> telefones =
+        telefoneService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosTelefoneDTO.class), erros, admin);
     if (erros.isEmpty()) {
       if (!telefones.isEmpty()) {
         json.put("valores", telefones);

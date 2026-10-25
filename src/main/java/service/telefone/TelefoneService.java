@@ -7,7 +7,6 @@ import static dao.AcoesInstrucao.INNER_JOIN;
 import static dao.AcoesInstrucao.VAZIO;
 import static exception.ErrosGerais.ERRO_GENERICO;
 import static exception.ErrosGerais.SUCESSO;
-import static exception.ErrosGeraisDados.ATRIBUTO_NULL;
 import static exception.ErrosGeraisDados.JOIN_INVALIDO;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
 import static service.ValidacoesComunsService.validarId;
@@ -44,11 +43,11 @@ import util.Anonimizador;
 
 public final class TelefoneService {
 
-  // Atributo usado para operações json no código
+  // Constante usada para operações json no código
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-
+  //Constante utilizada pelo código
   private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}(9)?[0-9]{8}$");
 
   // Validações
@@ -91,14 +90,14 @@ public final class TelefoneService {
         : VALIDACAO_OK;
   }
 
-  // Validação do principalFiltro
-  private static GenericExceptionEnum validarPrincipal(String ehMandante) {
-    if (ehMandante == null || ehMandante.isBlank()) {
+  // Validação do principal
+  private static GenericExceptionEnum validarPrincipal(String principal) {
+    if (principal == null || principal.isBlank()) {
       return ErrosDadosTelefone.PRINCIPAL_INVALIDO;
     }
 
-    if ("true".equalsIgnoreCase(ehMandante.toLowerCase().trim())
-        || "false".equalsIgnoreCase(ehMandante.toLowerCase().trim())) {
+    if ("true".equalsIgnoreCase(principal.toLowerCase().trim())
+        || "false".equalsIgnoreCase(principal.toLowerCase().trim())) {
       return VALIDACAO_OK;
     }
     return ErrosDadosTelefone.PRINCIPAL_INVALIDO;
@@ -201,18 +200,18 @@ public final class TelefoneService {
 
       if (filtrosTelefoneDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposTelefone.ID.getCampoTelefone(),
+            CamposTelefone.ID.getNomeCampo(),
             IGUAL,
             VAZIO,
             filtrosTelefoneDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposTelefone.ID.getCampoTelefone(), AcoesInstrucao.ORDEM_CRESCENTE);
+            CamposTelefone.ID.getNomeCampo(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosTelefoneDTO.idUsuarioFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposTelefone.ID_USUARIO.getCampoTelefone(),
+            CamposTelefone.ID_USUARIO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosTelefoneDTO.formatarIdUsuario(),
@@ -221,7 +220,7 @@ public final class TelefoneService {
 
       if (filtrosTelefoneDTO.telefoneFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposTelefone.TELEFONE.getCampoTelefone(),
+            CamposTelefone.TELEFONE.getNomeCampo(),
             ILIKE,
             AND,
             filtrosTelefoneDTO.formatarTelefone(),
@@ -230,7 +229,7 @@ public final class TelefoneService {
 
       if (filtrosTelefoneDTO.tipoFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposTelefone.TIPO.getCampoTelefone(),
+            CamposTelefone.TIPO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosTelefoneDTO.formatarTipo(),
@@ -239,7 +238,7 @@ public final class TelefoneService {
 
       if (filtrosTelefoneDTO.principalFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposTelefone.PRINCIPAL.getCampoTelefone(),
+            CamposTelefone.PRINCIPAL.getNomeCampo(),
             IGUAL,
             AND,
             filtrosTelefoneDTO.formatarPrincipal(),
@@ -367,13 +366,13 @@ public final class TelefoneService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposTelefone.TELEFONE.getCampoTelefone(), telefone.getTelefone(), Types.VARCHAR);
+            CamposTelefone.TELEFONE.getNomeCampo(), telefone.getTelefone(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposTelefone.TIPO.getCampoTelefone(),
+            CamposTelefone.TIPO.getNomeCampo(),
             telefone.getTipo().getTipoTelefone(),
             Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposTelefone.PRINCIPAL.getCampoTelefone(), telefone.isPrincipal(), Types.BOOLEAN);
+            CamposTelefone.PRINCIPAL.getNomeCampo(), telefone.isPrincipal(), Types.BOOLEAN);
 
         criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
@@ -453,7 +452,7 @@ public final class TelefoneService {
 
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
-        CamposTelefone.ID.getCampoTelefone(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
+        CamposTelefone.ID.getNomeCampo(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
     try (Connection connection = Conexao.getConnection()) {
       TelefoneDAO dao = new TelefoneDAO();
 
@@ -505,7 +504,7 @@ public final class TelefoneService {
     }
 
     GenericExceptionEnum validacaoPrincipal = validarPrincipal(telefoneParaInsertDTO.principal());
-    if (validacaoPrincipal != VALIDACAO_OK && validacaoPrincipal != ATRIBUTO_NULL) {
+    if (validacaoPrincipal != VALIDACAO_OK) {
       listaDeErros.add(validacaoPrincipal);
     }
     return listaDeErros;
@@ -523,15 +522,15 @@ public final class TelefoneService {
       try {
 
         criarInstrucaoDinamica.setCampo(
-            CamposTelefone.TELEFONE.getCampoTelefone(), telefone.getTelefone(), Types.VARCHAR);
+            CamposTelefone.TELEFONE.getNomeCampo(), telefone.getTelefone(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
-            CamposTelefone.ID_USUARIO.getCampoTelefone(), telefone.getIdUsuario(), Types.BIGINT);
+            CamposTelefone.ID_USUARIO.getNomeCampo(), telefone.getIdUsuario(), Types.BIGINT);
         criarInstrucaoDinamica.setCampo(
-            CamposTelefone.TIPO.getCampoTelefone(),
+            CamposTelefone.TIPO.getNomeCampo(),
             telefone.getTipo().getTipoTelefone(),
             Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
-            CamposTelefone.PRINCIPAL.getCampoTelefone(), telefone.isPrincipal(), Types.BOOLEAN);
+            CamposTelefone.PRINCIPAL.getNomeCampo(), telefone.isPrincipal(), Types.BOOLEAN);
 
         Long idRegistro = dao.insert(criarInstrucaoDinamica, connection);
 

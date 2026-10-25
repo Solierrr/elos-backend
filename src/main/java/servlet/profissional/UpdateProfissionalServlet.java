@@ -1,6 +1,5 @@
 package servlet.profissional;
 
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +20,7 @@ import service.profissional.ProfissionalService;
 @WebServlet("/crudProfissional-update")
 public final class UpdateProfissionalServlet extends HttpServlet {
 
+  // Constantes utilizadas pelo código
   private final Gson gson =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
@@ -63,6 +63,7 @@ public final class UpdateProfissionalServlet extends HttpServlet {
     Admin admin = (Admin) session.getAttribute("adm");
     if (admin == null) {
       response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
     request.setCharacterEncoding("UTF-8");

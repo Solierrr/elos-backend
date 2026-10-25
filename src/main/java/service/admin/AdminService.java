@@ -42,10 +42,11 @@ import util.Anonimizador;
 
 public final class AdminService {
 
-  // Atributo usado para operações json no código
+  // Constante usada para operações json no código
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
+  //Constantes utilizadas pelo código
   private static final int TAMANHO_MINIMO_SENHA = 8;
   private static final int TAMANHO_MAXIMO_SENHA = 60;
   private static final Pattern PATTERN_SENHA =
@@ -56,13 +57,12 @@ public final class AdminService {
   private static final int TAMANHO_MAXIMO_EMAIL = 256;
 
   private static final int TAMANHO_MAXIMO_NOME = 150;
-
   private static final Pattern PATTERN_PESSOA_FISICA =
       Pattern.compile("^[\\p{Script=Latin}']+[\\p{Script=Latin}'\\s\\-]+$");
 
   // Validações
 
-  // Validações do emailUpdate
+  // Validações do email
   private static GenericExceptionEnum validarEmail(String email) {
     if (email == null || email.isBlank()) {
       return ErrosGeraisDados.EMAIL_VAZIO;
@@ -81,7 +81,7 @@ public final class AdminService {
     return PATTERN_EMAIL.matcher(email).matches() ? VALIDACAO_OK : ErrosGeraisDados.EMAIL_INVALIDO;
   }
 
-  // Validações da senhaUpdate
+  // Validações da senha
   private static GenericExceptionEnum validarSenha(String senha) {
     if (senha == null || senha.isBlank()) {
       return ErrosGeraisDados.SENHA_VAZIA;
@@ -103,7 +103,7 @@ public final class AdminService {
     return PATTERN_SENHA.matcher(senha).matches() ? VALIDACAO_OK : ErrosGeraisDados.SENHA_FRACA;
   }
 
-  // Validações do nomeUpdate
+  // Validações do nome
   private static GenericExceptionEnum validarNome(String nome) {
     if (nome == null || nome.isBlank()) {
       return ErrosDadosAdmin.NOME_VAZIO;
@@ -151,7 +151,7 @@ public final class AdminService {
     return EM_ATIVIDADE_INVALIDO;
   }
 
-  // Validacao para o login
+  // Validação para o login
   public static boolean validarDadosLogin(String email, String senha) {
     return validarEmail(email) == VALIDACAO_OK && validarSenha(senha) == VALIDACAO_OK;
   }
@@ -201,10 +201,10 @@ public final class AdminService {
         try {
           if ((Boolean) adminMap.get("em_atividade")) {
             criarInstrucaoDinamicaDelete.setCampo(
-                CamposAdmin.EM_ATIVIDADE.getCampoAdmin(), false, Types.BOOLEAN);
+                CamposAdmin.EM_ATIVIDADE.getNomeCampo(), false, Types.BOOLEAN);
           } else {
             criarInstrucaoDinamicaDelete.setCampo(
-                CamposAdmin.EM_ATIVIDADE.getCampoAdmin(), true, Types.BOOLEAN);
+                CamposAdmin.EM_ATIVIDADE.getNomeCampo(), true, Types.BOOLEAN);
           }
         } catch (ClassCastException classCastException) {
           System.out.println(
@@ -277,18 +277,18 @@ public final class AdminService {
 
       if (filtrosAdminDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposAdmin.ID.getCampoAdmin(),
+            CamposAdmin.ID.getNomeCampo(),
             IGUAL,
             VAZIO,
             filtrosAdminDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposAdmin.ID.getCampoAdmin(), AcoesInstrucao.ORDEM_CRESCENTE);
+            CamposAdmin.ID.getNomeCampo(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosAdminDTO.emailFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposAdmin.EMAIL.getCampoAdmin(),
+            CamposAdmin.EMAIL.getNomeCampo(),
             ILIKE,
             AND,
             filtrosAdminDTO.formatarEmail(),
@@ -297,7 +297,7 @@ public final class AdminService {
 
       if (filtrosAdminDTO.nomeFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposAdmin.NOME.getCampoAdmin(),
+            CamposAdmin.NOME.getNomeCampo(),
             ILIKE,
             AND,
             filtrosAdminDTO.formatarNome(),
@@ -306,7 +306,7 @@ public final class AdminService {
 
       if (filtrosAdminDTO.funcaoFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposAdmin.FUNCAO.getCampoAdmin(),
+            CamposAdmin.FUNCAO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosAdminDTO.formatarFuncao(),
@@ -315,7 +315,7 @@ public final class AdminService {
 
       if (filtrosAdminDTO.emAtividadeFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposAdmin.EM_ATIVIDADE.getCampoAdmin(),
+            CamposAdmin.EM_ATIVIDADE.getNomeCampo(),
             IGUAL,
             AND,
             filtrosAdminDTO.formatarEmAtividade(),
@@ -336,23 +336,23 @@ public final class AdminService {
         }
       }
 
-      List<Map<String, Object>> usuarios = dao.readAll(criarInstrucaoDinamica, connection);
+      List<Map<String, Object>> admins = dao.readAll(criarInstrucaoDinamica, connection);
 
       if (filtrosAdminDTO.filtroRapido() != null && !filtrosAdminDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosAdminDTO.filtroRapido();
 
-        usuarios.removeIf(
-            usuario ->
-                usuario.values().stream()
+        admins.removeIf(
+            adminTemp ->
+                adminTemp.values().stream()
                     .filter(Objects::nonNull)
                     .map(String::valueOf)
                     .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
-      anonimizador.anonimizarDadosLidos(usuarios, admin);
+      anonimizador.anonimizarDadosLidos(admins, admin);
 
-      return usuarios;
+      return admins;
     } catch (SQLException | ClassCastException exception) {
       return new ArrayList<>();
     }
@@ -445,13 +445,13 @@ public final class AdminService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposAdmin.EMAIL.getCampoAdmin(), admin.getEmail(), Types.VARCHAR);
+            CamposAdmin.EMAIL.getNomeCampo(), admin.getEmail(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposAdmin.SENHA.getCampoAdmin(), admin.getSenha(), Types.VARCHAR);
+            CamposAdmin.SENHA.getNomeCampo(), admin.getSenha(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposAdmin.NOME.getCampoAdmin(), admin.getNome(), Types.VARCHAR);
+            CamposAdmin.NOME.getNomeCampo(), admin.getNome(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposAdmin.EM_ATIVIDADE.getCampoAdmin(), admin.isEmAtividade(), Types.BOOLEAN);
+            CamposAdmin.EM_ATIVIDADE.getNomeCampo(), admin.isEmAtividade(), Types.BOOLEAN);
 
         criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
@@ -496,34 +496,34 @@ public final class AdminService {
   private List<GenericExceptionEnum> validarUpdate(JsonObject jsonObject) {
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    AdminParaUpdateDTO usuarioParaUpdateDTO = GSON.fromJson(jsonObject, AdminParaUpdateDTO.class);
+    AdminParaUpdateDTO adminParaUpdateDTO = GSON.fromJson(jsonObject, AdminParaUpdateDTO.class);
 
-    GenericExceptionEnum emailValidacao = validarEmail(usuarioParaUpdateDTO.emailUpdate());
+    GenericExceptionEnum emailValidacao = validarEmail(adminParaUpdateDTO.emailUpdate());
     if (emailValidacao != VALIDACAO_OK
-        && (usuarioParaUpdateDTO.emailUpdate() != null
-            && !usuarioParaUpdateDTO.emailUpdate().isBlank())) {
+        && (adminParaUpdateDTO.emailUpdate() != null
+            && !adminParaUpdateDTO.emailUpdate().isBlank())) {
       erros.add(emailValidacao);
     }
 
-    GenericExceptionEnum senhaValidacao = validarSenha(usuarioParaUpdateDTO.senhaUpdate());
+    GenericExceptionEnum senhaValidacao = validarSenha(adminParaUpdateDTO.senhaUpdate());
     if (senhaValidacao != VALIDACAO_OK
-        && (usuarioParaUpdateDTO.senhaUpdate() != null
-            && !usuarioParaUpdateDTO.senhaUpdate().isBlank())) {
+        && (adminParaUpdateDTO.senhaUpdate() != null
+            && !adminParaUpdateDTO.senhaUpdate().isBlank())) {
       erros.add(senhaValidacao);
     }
 
-    GenericExceptionEnum nomeValidacao = validarNome(usuarioParaUpdateDTO.nomeUpdate());
+    GenericExceptionEnum nomeValidacao = validarNome(adminParaUpdateDTO.nomeUpdate());
     if (nomeValidacao != VALIDACAO_OK
-        && (usuarioParaUpdateDTO.nomeUpdate() != null
-            && !usuarioParaUpdateDTO.nomeUpdate().isBlank())) {
+        && (adminParaUpdateDTO.nomeUpdate() != null
+            && !adminParaUpdateDTO.nomeUpdate().isBlank())) {
       erros.add(nomeValidacao);
     }
 
     GenericExceptionEnum emAtividadeValidacao =
-        validarEmAtividade(usuarioParaUpdateDTO.emAtividadeUpdate());
+        validarEmAtividade(adminParaUpdateDTO.emAtividadeUpdate());
     if (emAtividadeValidacao != VALIDACAO_OK
-        && (usuarioParaUpdateDTO.emAtividadeUpdate() != null
-            && !usuarioParaUpdateDTO.emAtividadeUpdate().isBlank())) {
+        && (adminParaUpdateDTO.emAtividadeUpdate() != null
+            && !adminParaUpdateDTO.emAtividadeUpdate().isBlank())) {
       erros.add(emAtividadeValidacao);
     }
     return erros;
@@ -536,7 +536,7 @@ public final class AdminService {
 
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
-        CamposAdmin.ID.getCampoAdmin(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
+        CamposAdmin.ID.getNomeCampo(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
     try (Connection connection = Conexao.getConnection()) {
       AdminDAO dao = new AdminDAO();
 
@@ -610,15 +610,15 @@ public final class AdminService {
         }
 
         criarInstrucaoDinamica.setCampo(
-            CamposAdmin.EMAIL.getCampoAdmin(), admin.getEmail(), Types.VARCHAR);
+            CamposAdmin.EMAIL.getNomeCampo(), admin.getEmail(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
-            CamposAdmin.SENHA.getCampoAdmin(), admin.getSenha(), Types.VARCHAR);
+            CamposAdmin.SENHA.getNomeCampo(), admin.getSenha(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
-            CamposAdmin.FUNCAO.getCampoAdmin(), admin.getFuncao().getFuncao(), Types.VARCHAR);
+            CamposAdmin.FUNCAO.getNomeCampo(), admin.getFuncao().getFuncao(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
-            CamposAdmin.NOME.getCampoAdmin(), admin.getNome(), Types.VARCHAR);
+            CamposAdmin.NOME.getNomeCampo(), admin.getNome(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
-            CamposAdmin.EM_ATIVIDADE.getCampoAdmin(), admin.isEmAtividade(), Types.BOOLEAN);
+            CamposAdmin.EM_ATIVIDADE.getNomeCampo(), admin.isEmAtividade(), Types.BOOLEAN);
 
         Long idRegistro = dao.insert(criarInstrucaoDinamica, connection);
 

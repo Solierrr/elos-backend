@@ -2,14 +2,13 @@ package service.logAcessosAdmin;
 
 import static dao.AcoesInstrucao.AND;
 import static dao.AcoesInstrucao.IGUAL;
-import static dao.AcoesInstrucao.ILIKE;
 import static dao.AcoesInstrucao.INNER_JOIN;
 import static dao.AcoesInstrucao.VAZIO;
 import static exception.ErrosDadosLogAcessosAdmin.DATA_INVALIDA;
-import static exception.ErrosGerais.ADMIN_INATIVO;
-import static exception.ErrosGerais.SENHA_INVALIDA;
 import static exception.ErrosDadosLogAcessosAdmin.NAVEGADOR_INVALIDO;
 import static exception.ErrosDadosLogAcessosAdmin.SISTEMA_OPERACIONAL_INVALIDO;
+import static exception.ErrosGerais.ADMIN_INATIVO;
+import static exception.ErrosGerais.SENHA_INVALIDA;
 import static exception.ErrosGeraisDados.JOIN_INVALIDO;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
 import static service.ValidacoesComunsService.validarId;
@@ -20,9 +19,6 @@ import static service.logAcessosAdmin.CamposLogAcessosAdmin.NAVEGADOR;
 import static service.logAcessosAdmin.CamposLogAcessosAdmin.SISTEMA_OPERACIONAL;
 import static service.logAcessosAdmin.CamposLogAcessosAdmin.SUCESSO;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import conexao.Conexao;
 import dao.AcoesInstrucao;
 import dao.CriarInstrucaoDinamica;
@@ -48,13 +44,11 @@ import util.Anonimizador;
 
 public final class LogAcessosAdminService {
 
-  // Atributo usado para operações json no código
-  private static final Gson GSON =
-      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
-
+  //Constante utilizada pelo código
   private static final int INET = -1000;
 
-  public List<GenericExceptionEnum> validarDados(String userAgent) {
+  //Métodos para o login
+  public List<GenericExceptionEnum> validarDadosNoLogin(String userAgent) {
     List<GenericExceptionEnum> erros = new ArrayList<>();
       if (NavegadoresAdmin.descobrirNavegadorAdmin(userAgent)
           == NavegadoresAdmin.NAVEGADOR_INVALIDO) {
@@ -79,19 +73,19 @@ public final class LogAcessosAdminService {
       return;
     }
 
-    criarInstrucaoDinamica.setCampo(ID_ADMIN.getCampoLogAcessosAdmin(), idAdmin, Types.BIGINT);
+    criarInstrucaoDinamica.setCampo(ID_ADMIN.getNomeCampo(), idAdmin, Types.BIGINT);
 
     if (erros.contains(NAVEGADOR_INVALIDO)) {
-      criarInstrucaoDinamica.setCampo(NAVEGADOR.getCampoLogAcessosAdmin(),
+      criarInstrucaoDinamica.setCampo(NAVEGADOR.getNomeCampo(),
           NavegadoresAdmin.NAVEGADOR_INVALIDO.getNavegador(), Types.VARCHAR);
       mensagemErro.append("Navegador inválido");
     } else {
-      criarInstrucaoDinamica.setCampo(NAVEGADOR.getCampoLogAcessosAdmin(),
+      criarInstrucaoDinamica.setCampo(NAVEGADOR.getNomeCampo(),
           NavegadoresAdmin.descobrirNavegadorAdmin(userAgent).getNavegador(), Types.VARCHAR);
     }
 
     if (erros.contains(SISTEMA_OPERACIONAL_INVALIDO)) {
-      criarInstrucaoDinamica.setCampo(SISTEMA_OPERACIONAL.getCampoLogAcessosAdmin(),
+      criarInstrucaoDinamica.setCampo(SISTEMA_OPERACIONAL.getNomeCampo(),
           SistemasOperacionaisAdmin.SISTEMA_OPERACIONAL_INVALIDO.getSistemaOperacional(),
           Types.VARCHAR);
       if (mensagemErro.isEmpty()) {
@@ -100,7 +94,7 @@ public final class LogAcessosAdminService {
         mensagemErro.append("e sistema operacional inválido");
       }
     } else {
-      criarInstrucaoDinamica.setCampo(SISTEMA_OPERACIONAL.getCampoLogAcessosAdmin(),
+      criarInstrucaoDinamica.setCampo(SISTEMA_OPERACIONAL.getNomeCampo(),
           SistemasOperacionaisAdmin.descobrirSistemaOperacionalAdmin(userAgent)
               .getSistemaOperacional(),
           Types.VARCHAR);
@@ -122,14 +116,14 @@ public final class LogAcessosAdminService {
       }
     }
 
-    criarInstrucaoDinamica.setCampo(ENDERECO_IP.getCampoLogAcessosAdmin(), ip, INET);
+    criarInstrucaoDinamica.setCampo(ENDERECO_IP.getNomeCampo(), ip, INET);
 
     if (erros.isEmpty()) {
-      criarInstrucaoDinamica.setCampo(SUCESSO.getCampoLogAcessosAdmin(), true, Types.BOOLEAN);
-      criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getCampoLogAcessosAdmin(), null, Types.VARCHAR);
+      criarInstrucaoDinamica.setCampo(SUCESSO.getNomeCampo(), true, Types.BOOLEAN);
+      criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getNomeCampo(), null, Types.VARCHAR);
     } else {
-      criarInstrucaoDinamica.setCampo(SUCESSO.getCampoLogAcessosAdmin(), false, Types.BOOLEAN);
-      criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getCampoLogAcessosAdmin(),
+      criarInstrucaoDinamica.setCampo(SUCESSO.getNomeCampo(), false, Types.BOOLEAN);
+      criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getNomeCampo(),
           mensagemErro.toString(), Types.VARCHAR);
     }
 
@@ -138,6 +132,7 @@ public final class LogAcessosAdminService {
     logAcessosAdminDAO.insert(criarInstrucaoDinamica, connection);
   }
 
+  // Validações
 
   // Validação do id do admin
   private static GenericExceptionEnum validarIdAdmin(String idAdmin) {
@@ -185,20 +180,18 @@ public final class LogAcessosAdminService {
     return sistemasOperacionaisAdmin == null ? null : SISTEMA_OPERACIONAL_INVALIDO;
   }
 
-
-
   // Métodos relacionados ao select
   public List<Map<String, Object>> realizarSelectInicial(Admin admin) {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     LogAcessosAdminDAO dao = new LogAcessosAdminDAO();
 
     try (Connection connection = Conexao.getConnection()) {
-      List<Map<String, Object>> telefones = dao.readAll(criarInstrucaoDinamica, connection);
+      List<Map<String, Object>> acessosAdmin = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
-      anonimizador.anonimizarDadosLidos(telefones, admin);
+      anonimizador.anonimizarDadosLidos(acessosAdmin, admin);
 
-      return telefones;
+      return acessosAdmin;
     } catch (SQLException | ClassCastException exception) {
       return new ArrayList<>();
     }
@@ -227,18 +220,18 @@ public final class LogAcessosAdminService {
 
       if (filtrosLogAcessosAdminDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposLogAcessosAdmin.ID.getCampoLogAcessosAdmin(),
+            CamposLogAcessosAdmin.ID.getNomeCampo(),
             IGUAL,
             VAZIO,
             filtrosLogAcessosAdminDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposLogAcessosAdmin.ID.getCampoLogAcessosAdmin(), AcoesInstrucao.ORDEM_CRESCENTE);
+            CamposLogAcessosAdmin.ID.getNomeCampo(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosLogAcessosAdminDTO.idAdminFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            ID_ADMIN.getCampoLogAcessosAdmin(),
+            ID_ADMIN.getNomeCampo(),
             IGUAL,
             AND,
             filtrosLogAcessosAdminDTO.formatarIdAdmin(),
@@ -247,7 +240,7 @@ public final class LogAcessosAdminService {
 
       if (filtrosLogAcessosAdminDTO.dataAcessoFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposLogAcessosAdmin.DATA_ACESSO.getCampoLogAcessosAdmin(),
+            CamposLogAcessosAdmin.DATA_ACESSO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosLogAcessosAdminDTO.formatarDataAcesso(),
@@ -256,7 +249,7 @@ public final class LogAcessosAdminService {
 
       if (filtrosLogAcessosAdminDTO.navegadorFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            NAVEGADOR.getCampoLogAcessosAdmin(),
+            NAVEGADOR.getNomeCampo(),
             IGUAL,
             AND,
             filtrosLogAcessosAdminDTO.formatarNavegador(),
@@ -265,7 +258,7 @@ public final class LogAcessosAdminService {
 
         if (filtrosLogAcessosAdminDTO.sistemaOperacionalFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            SISTEMA_OPERACIONAL.getCampoLogAcessosAdmin(),
+            SISTEMA_OPERACIONAL.getNomeCampo(),
             IGUAL,
             AND,
             filtrosLogAcessosAdminDTO.formatarSistemaOperacional(),
@@ -293,8 +286,8 @@ public final class LogAcessosAdminService {
         String termoFiltro = filtrosLogAcessosAdminDTO.filtroRapido();
 
         acessosAdmin.removeIf(
-            telefone ->
-                telefone.values().stream()
+            acessoAdmin ->
+                acessoAdmin.values().stream()
                     .filter(Objects::nonNull)
                     .map(String::valueOf)
                     .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));

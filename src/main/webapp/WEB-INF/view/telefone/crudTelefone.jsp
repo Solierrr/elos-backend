@@ -114,8 +114,7 @@
     <div id="conteiner-botoes">
       <p id="titulo-tabela" class="text">Telefone</p>
       <div id="traco-filtros"></div>
-      <form id="formulario-filtro-rapido" method="POST"
-            action="crudUsuario">
+      <form id="formulario-filtro-rapido">
         <div id="caixa-busca-rapida">
           <button type="submit">
             <img src="assets/icone/crud/lupa_busca_rapida.svg">

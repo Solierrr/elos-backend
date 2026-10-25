@@ -870,3 +870,11 @@ option {
   }
 
 }
+
+@media (max-width: 370px){
+
+  #traco-filtros{
+    display: none;
+  }
+
+}

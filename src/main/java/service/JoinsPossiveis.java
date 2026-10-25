@@ -4,52 +4,51 @@ import java.util.Arrays;
 
 public enum JoinsPossiveis {
 
+  // Variações do enum
+
   // Tabelas relacionadas ao usuário
   USUARIO(
       "usuario",
       "id_usuario",
-      new String[] {},
       new String[] {"telefone", "endereco", "empresa_demandante", "profissional", "fornecedor"}),
-  TELEFONE("telefone", "id_telefone", new String[] {"usuario"}, new String[] {}),
-  ENDERECO("endereco", "id_encereco", new String[] {"usuario"}, new String[] {}),
+  TELEFONE("telefone", "id_telefone", new String[] {}),
+  ENDERECO("endereco", "id_endereco", new String[] {}),
   EMPRESA_DEMANDANTE(
-      "empresa_demandante", "id_empresa_demandante", new String[] {"usuario"}, new String[] {}),
+      "empresa_demandante", "id_empresa_demandante",new String[] {}),
   PROFISSIONAL(
-      "profissional", "id_profissional", new String[] {"usuario", "fornecedor"}, new String[] {}),
+      "profissional", "id_profissional", new String[] {}),
   FORNECEDOR(
-      "fornecedor", "id_fornecedor", new String[] {"usuario"}, new String[] {"profissional"}),
+      "fornecedor", "id_fornecedor", new String[] {"profissional"}),
 
   // Tabelas relacionadas aos admins
   ADMIN(
       "admin",
       "id_admin",
-      new String[] {},
       new String[] {"historico_alteracoes", "log_acessos_admin", "telefone_admin"}),
   HISTORICO_ALTERACOES(
       "historico_alteracoes",
       "id_historico_alteracoes",
-      new String[] {"id_admin"},
       new String[] {}),
   LOG_ACESSOS_ADMIN(
-      "log_acessos_admin", "id_log_acessos_admin", new String[] {"id_admin"}, new String[] {}),
-  TELEFONE_ADMIN("telefone_admin", "id_telefone_admin", new String[] {"id_admin"}, new String[] {});
+      "log_acessos_admin", "id_log_acessos_admin", new String[] {}),
+  TELEFONE_ADMIN("telefone_admin", "id_telefone_admin", new String[] {});
 
+  // Atributos
   private final String nomeTabela;
   private final String nomePkComoFk;
-  private final String[] tabelasConectaveisViaFk;
   private final String[] tabelasConectaveisViaPk;
 
+  // Construtor
   JoinsPossiveis(
       String nomeTabela,
       String nomePkComoFk,
-      String[] tabelasConectaveisViaFk,
       String[] tabelasConectaveisViaPk) {
     this.nomeTabela = nomeTabela;
     this.nomePkComoFk = nomePkComoFk;
-    this.tabelasConectaveisViaFk = tabelasConectaveisViaFk;
     this.tabelasConectaveisViaPk = tabelasConectaveisViaPk;
   }
 
+  // Getters
   public String getNomeTabela() {
     return nomeTabela;
   }
@@ -58,14 +57,11 @@ public enum JoinsPossiveis {
     return nomePkComoFk;
   }
 
-  public String[] getTabelasConectaveisViaFk() {
-    return tabelasConectaveisViaFk;
-  }
-
   public String[] getTabelasConectaveisViaPk() {
     return tabelasConectaveisViaPk;
   }
 
+  // Métodos utilitarios
   public static JoinsPossiveis encontrarTabelaReferente(String tabela) {
     if (tabela == null || tabela.isBlank()) {
       return null;

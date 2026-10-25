@@ -9,7 +9,6 @@ import static exception.ErrosDadosFornecedor.TIPO_FORNECEDOR_INVALIDO;
 import static exception.ErrosDadosFornecedor.TIPO_FORNECEDOR_VAZIO;
 import static exception.ErrosGerais.ERRO_GENERICO;
 import static exception.ErrosGerais.SUCESSO;
-import static exception.ErrosGeraisDados.ATRIBUTO_NULL;
 import static exception.ErrosGeraisDados.CNPJ_FORMATO_INVALIDO;
 import static exception.ErrosGeraisDados.CNPJ_INVALIDO;
 import static exception.ErrosGeraisDados.CNPJ_TAMANHO_INVALIDO;
@@ -32,7 +31,6 @@ import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
 import dao.FornecedorDAO;
-import dao.ProfissionalDAO;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -57,11 +55,11 @@ import util.PorMascara;
 
 public final class FornecedorService {
 
-  // Atributo usado para operações json no código
+  // Constante usada para operações json no código
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  // Constantes para evitar valores mágicos ou instancia desnecessária de objetos
+  // Constantes utilizadas pelo código
   private static final int TAMANHO_CNPJ = 14;
   private static final Pattern PATTERN_CNPJ = Pattern.compile("^[0-9-A-Z]{12}[0-9]{2}$");
 
@@ -69,6 +67,8 @@ public final class FornecedorService {
       Pattern.compile("^[\\p{Script=Latin}0-9&,.;'\\-]+[\\p{Script=Latin}0-9&,.;'\\-\\s]+$");
 
   private static final int TAMANHO_MAXIMO_RAZAO_SOCIAL = 150;
+
+  // Validações
 
   // Validação do id usuario
   private static GenericExceptionEnum validarIdUsuario(String idUsuario) {
@@ -203,9 +203,9 @@ public final class FornecedorService {
 
         criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, idConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> usuario = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        List<Map<String, Object>> fornecedor = dao.readAll(criarInstrucaoDinamicaRead, connection);
 
-        if (usuario.isEmpty()) {
+        if (fornecedor.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
         }
 
@@ -222,7 +222,7 @@ public final class FornecedorService {
                 idConvertido,
                 "FORNECEDOR",
                 "DELETE",
-                GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                GSON.toJsonTree(fornecedor.getFirst()).getAsJsonObject(),
                 new JsonObject(),
                 null),
             connection);
@@ -284,18 +284,18 @@ public final class FornecedorService {
 
       if (filtrosFornecedorDTO.idFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposFornecedor.ID.getCampoFornecedor(),
+            CamposFornecedor.ID.getNomeCampo(),
             IGUAL,
             VAZIO,
             filtrosFornecedorDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposFornecedor.ID.getCampoFornecedor(), AcoesInstrucao.ORDEM_CRESCENTE);
+            CamposFornecedor.ID.getNomeCampo(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosFornecedorDTO.idUsuarioFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposFornecedor.ID_USUARIO.getCampoFornecedor(),
+            CamposFornecedor.ID_USUARIO.getNomeCampo(),
             IGUAL,
             AND,
             filtrosFornecedorDTO.formatarIdUsuario(),
@@ -304,7 +304,7 @@ public final class FornecedorService {
 
       if (filtrosFornecedorDTO.tipoFornecedorFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposFornecedor.TIPO_FORNECEDOR.getCampoFornecedor(),
+            CamposFornecedor.TIPO_FORNECEDOR.getNomeCampo(),
             IGUAL,
             AND,
             filtrosFornecedorDTO.formatarTipoFornecedor(),
@@ -313,7 +313,7 @@ public final class FornecedorService {
 
       if (filtrosFornecedorDTO.cnpjFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposFornecedor.CNPJ.getCampoFornecedor(),
+            CamposFornecedor.CNPJ.getNomeCampo(),
             IGUAL,
             AND,
             filtrosFornecedorDTO.formatarCnpj(),
@@ -322,7 +322,7 @@ public final class FornecedorService {
 
       if (filtrosFornecedorDTO.razaoSocialFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
-            CamposFornecedor.RAZAO_SOCIAL.getCampoFornecedor(),
+            CamposFornecedor.RAZAO_SOCIAL.getNomeCampo(),
             ILIKE,
             AND,
             filtrosFornecedorDTO.formatarRazaoSocial(),
@@ -346,15 +346,16 @@ public final class FornecedorService {
 
       List<Map<String, Object>> fornecedores = dao.readAll(criarInstrucaoDinamica, connection);
 
-      if (filtrosFornecedorDTO.filtroRapido() != null && !filtrosFornecedorDTO.filtroRapido().isBlank()) {
+      if (filtrosFornecedorDTO.filtroRapido() != null
+          && !filtrosFornecedorDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosFornecedorDTO.filtroRapido();
 
-        fornecedores.removeIf(fornecedor ->
+        fornecedores.removeIf(
+            fornecedor ->
                 fornecedor.values().stream()
-                        .filter(Objects::nonNull)
-                        .map(String::valueOf)
-                        .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))
-        );
+                    .filter(Objects::nonNull)
+                    .map(String::valueOf)
+                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -455,11 +456,11 @@ public final class FornecedorService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposFornecedor.TIPO_FORNECEDOR.getCampoFornecedor(),
+            CamposFornecedor.TIPO_FORNECEDOR.getNomeCampo(),
             fornecedor.getTipoFornecedor().getTipoFornecedor(),
             Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposFornecedor.RAZAO_SOCIAL.getCampoFornecedor(),
+            CamposFornecedor.RAZAO_SOCIAL.getNomeCampo(),
             fornecedor.getRazaoSocial(),
             Types.VARCHAR);
 
@@ -580,7 +581,7 @@ public final class FornecedorService {
     }
 
     GenericExceptionEnum validacaoCnpj = validarCnpj(fornecedorParaInsertDTO.cnpj());
-    if (validacaoCnpj != VALIDACAO_OK && validacaoCnpj != ATRIBUTO_NULL) {
+    if (validacaoCnpj != VALIDACAO_OK) {
       listaDeErros.add(validacaoCnpj);
     }
 

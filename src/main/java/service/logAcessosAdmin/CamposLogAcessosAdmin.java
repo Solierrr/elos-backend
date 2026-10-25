@@ -2,45 +2,35 @@ package service.logAcessosAdmin;
 
 import service.GenericEnumCampos;
 
-public enum CamposLogAcessosAdmin  implements GenericEnumCampos {
+public enum CamposLogAcessosAdmin implements GenericEnumCampos {
 
-    ID("id"),
-    ID_ADMIN("id_admin"),
-    DATA_ACESSO("data_acesso"),
-    SUCESSO("sucesso"),
-    ENDERECO_IP("endereco_ip"),
-    MOTIVO_FALHA("motivo_falha"),
-    NAVEGADOR("navegador"),
-    SISTEMA_OPERACIONAL("sistema_operacional"),
-    INVALIDO("campo_do_acesso_invalido");
+  // Variações enum
+  ID("id"),
+  ID_ADMIN("id_admin"),
+  DATA_ACESSO("data_acesso"),
+  SUCESSO("sucesso"),
+  ENDERECO_IP("endereco_ip"),
+  MOTIVO_FALHA("motivo_falha"),
+  NAVEGADOR("navegador"),
+  SISTEMA_OPERACIONAL("sistema_operacional"),
+  INVALIDO("campo_do_acesso_invalido");
 
-    private final String campoLogAcessosAdmin;
+  // Atributo
+  private final String nomeCampo;
 
-    CamposLogAcessosAdmin(String campoLogAcessosAdmin) {
-        this.campoLogAcessosAdmin = campoLogAcessosAdmin;
-    }
+  // Construtor
+  CamposLogAcessosAdmin(String nomeCampo) {
+    this.nomeCampo = nomeCampo;
+  }
 
-    public String getCampoLogAcessosAdmin() {
-        return campoLogAcessosAdmin;
-    }
+  // Getter
+  public String getNomeCampo() {
+    return nomeCampo;
+  }
 
-    public static CamposLogAcessosAdmin descobrirCampoLogAcessosAdmin(String campoLogAcessosAdminEntrada){
-        if(campoLogAcessosAdminEntrada == null || campoLogAcessosAdminEntrada.isBlank()){
-            return INVALIDO;
-        }
-
-        String campoLogAcessosAdminEntradaTratado = campoLogAcessosAdminEntrada.strip().toLowerCase();
-        for(CamposLogAcessosAdmin campoLogAcessosAdmin : CamposLogAcessosAdmin.values()){
-            if(campoLogAcessosAdmin.getCampoLogAcessosAdmin().equalsIgnoreCase(campoLogAcessosAdminEntradaTratado)){
-                return campoLogAcessosAdmin;
-            }
-        }
-        return INVALIDO;
-    }
-
-    @Override
-    public boolean isValido(){
-        return this != INVALIDO;
-    }
-
+  // Método implementado
+  @Override
+  public boolean isValido() {
+    return this != INVALIDO;
+  }
 }

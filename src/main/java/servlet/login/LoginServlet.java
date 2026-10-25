@@ -16,60 +16,71 @@ import service.login.LoginService;
 @WebServlet("/login")
 public final class LoginServlet extends HttpServlet {
 
-    private final Gson gson = new Gson();
+  // Constantes utilizadas pelo código
+  private final Gson gson = new Gson();
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
 
-        HttpSession sessionAtual = request.getSession(true);
-        sessionAtual.invalidate();
-        request.getRequestDispatcher("/WEB-INF/view/login/login.jsp").forward(request, response);
+    HttpSession sessionAtual = request.getSession(true);
+    sessionAtual.invalidate();
+    request.getRequestDispatcher("/WEB-INF/view/login/login.jsp").forward(request, response);
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    String ip = request.getHeader("CF-Connecting-IP");
+    if (ip == null) ip = request.getRemoteAddr();
+
+    request.setCharacterEncoding("UTF-8");
+
+    JsonObject dadosFormulario;
+    try {
+      dadosFormulario = gson.fromJson(request.getReader(), JsonObject.class);
+    } catch (JsonSyntaxException e) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    if (dadosFormulario == null) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String ip = request.getHeader("CF-Connecting-IP");
-        if (ip == null) ip = request.getRemoteAddr();
+    LoginService loginService = new LoginService();
 
-        request.setCharacterEncoding("UTF-8");
+    Admin admin =
+        loginService.realizarLogin(
+            dadosFormulario.has("email") && !dadosFormulario.get("email").isJsonNull()
+                ? dadosFormulario.get("email").getAsString()
+                : null,
+            dadosFormulario.has("senha") && !dadosFormulario.get("senha").isJsonNull()
+                ? dadosFormulario.get("senha").getAsString()
+                : null,
+            dadosFormulario.has("userAgent") && !dadosFormulario.get("userAgent").isJsonNull()
+                ? dadosFormulario.get("userAgent").getAsString()
+                : null,
+            ip);
 
-        JsonObject dadosFormulario;
-        try {
-            dadosFormulario = gson.fromJson(request.getReader(), JsonObject.class);
-        } catch (JsonSyntaxException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        if (dadosFormulario == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
+    if (admin == null) {
+      HttpSession httpSession = request.getSession(true);
+      httpSession.setAttribute("adm", null);
 
-        LoginService loginService = new LoginService();
-
-        Admin admin = loginService.realizarLogin(
-                dadosFormulario.has("email") && !dadosFormulario.get("email").isJsonNull() ? dadosFormulario.get("email").getAsString() : null,
-                dadosFormulario.has("senha") && !dadosFormulario.get("senha").isJsonNull() ? dadosFormulario.get("senha").getAsString() : null,
-                dadosFormulario.has("userAgent") && !dadosFormulario.get("userAgent").isJsonNull() ? dadosFormulario.get("userAgent").getAsString() : null,
-                ip);
-
-        if (admin == null) {
-            HttpSession httpSession = request.getSession(true);
-            httpSession.setAttribute("adm", null);
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        HttpSession httpSession = request.getSession(true);
-        httpSession.setAttribute("adm", admin);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(request.getContextPath() + "/crudUsuario");
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
     }
+
+    HttpSession httpSession = request.getSession(true);
+    httpSession.setAttribute("adm", admin);
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(request.getContextPath() + "/crudUsuario");
+  }
 }

@@ -20,21 +20,23 @@ import java.util.Map;
 import model.Admin;
 import service.historicoAlteracoesAdmin.FiltrosHistoricoAlteracoesDTO;
 import service.historicoAlteracoesAdmin.HistoricoAlteracoesAdminService;
-import service.logAcessosAdmin.FiltrosLogAcessosAdminDTO;
 
 @WebServlet("/crudHistoricoAlteracoes")
 public class ReadHistoricoAlteracoesServlet extends HttpServlet {
 
-  private final Gson gson = new GsonBuilder().setFieldNamingPolicy(
-          FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  private final HistoricoAlteracoesAdminService historicoAlteracoesAdminService = new HistoricoAlteracoesAdminService();
+  private final HistoricoAlteracoesAdminService historicoAlteracoesAdminService =
+      new HistoricoAlteracoesAdminService();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
+      throws ServletException, IOException {
 
-    //Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do crud
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
 
@@ -46,14 +48,15 @@ public class ReadHistoricoAlteracoesServlet extends HttpServlet {
       return;
     }
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher(
             "/WEB-INF/view/historicoAlteracoes/crudHistoricoAlteracoes.jsp");
     dispatcher.forward(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-          throws IOException {
+      throws IOException {
 
     HttpSession session = request.getSession(true);
     Admin admin = (Admin) session.getAttribute("adm");
@@ -77,7 +80,8 @@ public class ReadHistoricoAlteracoesServlet extends HttpServlet {
 
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
-    List<Map<String, Object>> usuario = historicoAlteracoesAdminService.realizarSelect(
+    List<Map<String, Object>> usuario =
+        historicoAlteracoesAdminService.realizarSelect(
             gson.fromJson(jsonObject, FiltrosHistoricoAlteracoesDTO.class), erros, admin);
     if (erros.isEmpty()) {
       if (!usuario.isEmpty()) {

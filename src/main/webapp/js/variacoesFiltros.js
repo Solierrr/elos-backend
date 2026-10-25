@@ -714,6 +714,127 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
+        }, "endereco":{
+            "ID" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-filtro">ID</label>
+                    <div>
+                        <input type="text" name="id-filtro" id="id-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id" class="span-erro"></span>
+                </div>`,
+            "ID_USUARIO" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="id-usuario-filtro">ID do usuário</label>
+                    <div>
+                        <input type="text" name="id-usuario-filtro" id="id-usuario-filtro" placeholder="ex: 2">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-id-usuario" class="span-erro"></span>
+                </div>`,
+            "ESTADO" : `
+                <div class="caixa-filtro label-e-input">
+                    <label for="estado-filtro">Estado</label>
+                    <div>
+                        <select name="estado-filtro" id="estado-filtro">
+                          <option value="" disabled selected>Selecione um estado</option>
+                          <option value="AC">Acre</option>
+                          <option value="AL">Alagoas</option>
+                          <option value="AP">Amapá</option>
+                          <option value="AM">Amazonas</option>
+                          <option value="BA">Bahia</option>
+                          <option value="CE">Ceará</option>
+                          <option value="DF">Distrito Federal</option>
+                          <option value="ES">Espírito Santo</option>
+                          <option value="GO">Goiás</option>
+                          <option value="MA">Maranhão</option>
+                          <option value="MT">Mato Grosso</option>
+                          <option value="MS">Mato Grosso do Sul</option>
+                          <option value="MG">Minas Gerais</option>
+                          <option value="PA">Pará</option>
+                          <option value="PB">Paraíba</option>
+                          <option value="PR">Paraná</option>
+                          <option value="PE">Pernambuco</option>
+                          <option value="PI">Piauí</option>
+                          <option value="RJ">Rio de Janeiro</option>
+                          <option value="RN">Rio Grande do Norte</option>
+                          <option value="RS">Rio Grande do Sul</option>
+                          <option value="RO">Rondônia</option>
+                          <option value="RR">Roraima</option>
+                          <option value="SC">Santa Catarina</option>
+                          <option value="SP">São Paulo</option>
+                          <option value="SE">Sergipe</option>
+                          <option value="TO">Tocantins</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-estado" class="span-erro"></span>
+                </div>`,
+            "CIDADE": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="cidade-filtro">Cidade</label>
+                    <div>
+                        <input type="text" name="cidade-filtro" id="cidade-filtro" placeholder="ex: São Paulo">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-cidade" class="span-erro"></span>
+                </div>`,
+            "BAIRRO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="bairro-filtro">Bairro</label>
+                    <div>
+                        <input type="text" name="bairro-filtro" id="bairro-filtro" placeholder="ex: Jaragua">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-bairro" class="span-erro"></span>
+                </div>`,
+            "CEP": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="cep-filtro">CEP</label>
+                    <div>
+                        <input type="text" name="cep-filtro" id="cep-filtro" placeholder="ex: 01311-000">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-cep" class="span-erro"></span>
+                </div>`,
+            "LOGRADOURO": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="logradouro-filtro">Logradouro</label>
+                    <div>
+                        <input type="text" name="logradouro-filtro" id="logradouro-filtro" placeholder="ex: Rua Borboletas Psicodélicas">
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-logradouro" class="span-erro"></span>
+                </div>`,
+            "JOIN": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
+                    <div>
+                        <select name="join-filtro" id=join-filtro" required>
+                            <option value="INVALIDO" disabled selected hidden>Dados conectaveis</option>
+                            <option value="USUARIO">Usuário</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-join" class="span-erro"></span>
+                </div>`
         }
     };
 };

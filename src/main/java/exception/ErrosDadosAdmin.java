@@ -2,43 +2,46 @@ package exception;
 
 public enum ErrosDadosAdmin implements GenericExceptionEnum {
 
-    NOME_VAZIO(105, "Nenhum nomeUpdate foi inserido", "nome"),
-    NOME_TAMANHO_INVALIDO(106, "O tamanho do nome inserido é inválido, insira um nome com até 150 caracteres", "nome"),
-    NOME_INVALIDO(107, "O nome inserido é inválido", "nome"),
-    FUNCAO_INVALIDA(108, "A função inserida é inválida", "funcao"),
-    EM_ATIVIDADE_INVALIDO(110, "A opção escolhida é inválida", "em-atividade"),
+  // Variações do enum
+  NOME_VAZIO(101, "Nenhum nomeUpdate foi inserido", "nome"),
+  NOME_TAMANHO_INVALIDO(102, "O tamanho do nome inserido é inválido, insira um nome com até 150 caracteres", "nome"),
+  NOME_INVALIDO(103, "O nome inserido é inválido", "nome"),
+  FUNCAO_INVALIDA(104, "A função inserida é inválida", "funcao"),
+  EM_ATIVIDADE_INVALIDO(105, "A opção escolhida é inválida", "em-atividade");
 
-    ;
+  // Atributos
+  private final int codigo;
+  private final String mensagem;
+  private final String nomeCampoErro;
 
-    private final int codigo;
-    private final String mensagem;
-    private final String nomeCampoErro;
+  // Construtor
+  ErrosDadosAdmin(int codigo, String mensagem, String nomeCampoErro) {
+    this.codigo = codigo;
+    this.mensagem = mensagem;
+    this.nomeCampoErro = nomeCampoErro;
+  }
 
-    ErrosDadosAdmin(int codigo, String mensagem, String nomeCampoErro) {
-        this.codigo = codigo;
-        this.mensagem = mensagem;
-        this.nomeCampoErro = nomeCampoErro;
-    }
+  // Getters
+  public int getCodigo() {
+    return codigo;
+  }
 
-    public int getCodigo() {
-        return codigo;
-    }
+  public String getMensagem() {
+    return mensagem;
+  }
 
-    public String getMensagem() {
-        return mensagem;
-    }
+  public String getNomeCampoErro() {
+    return nomeCampoErro;
+  }
 
-    public String getNomeCampoErro() {
-        return nomeCampoErro;
-    }
+  // Métodos implementados
+  @Override
+  public String exibirMensagem() {
+    return getMensagem();
+  }
 
-    @Override
-    public String exibirMensagem() {
-        return getMensagem();
-    }
-
-    @Override
-    public String nomeCampoErro() {
-        return getNomeCampoErro();
-    }
+  @Override
+  public String nomeCampoErro() {
+    return getNomeCampoErro();
+  }
 }

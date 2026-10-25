@@ -1,44 +1,45 @@
 package exception;
 
-public enum ErrosDadosLogAcessosAdmin implements GenericExceptionEnum{
+public enum ErrosDadosLogAcessosAdmin implements GenericExceptionEnum {
 
-    SISTEMA_OPERACIONAL_INVALIDO(222,"O sistema operacional utilizado não é aceito", null),
-    DATA_INVALIDA( 223,"A data inserida é inválida, siga o padrão dia/mês/ano", "data-acesso"),
-    NAVEGADOR_INVALIDO(224,"O navegador utilizado não é aceito", null);
+  // Variações do enum
+  SISTEMA_OPERACIONAL_INVALIDO(601, "O sistema operacional utilizado não é aceito", "sistema-operacional"),
+  DATA_INVALIDA(602, "A data inserida é inválida, siga o padrão dia/mês/ano", "data-acesso"),
+  NAVEGADOR_INVALIDO(603, "O navegador utilizado não é aceito", "navegador"),;
 
-    //Atributos
-    private final int codigo;
-    private final String mensagem;
-    private final String nomeCampo;
+  // Atributos
+  private final int codigo;
+  private final String mensagem;
+  private final String nomeCampo;
 
-    //Construtor
-    ErrosDadosLogAcessosAdmin(int codigo, String mensagem, String nomeCampo) {
-        this.codigo = codigo;
-        this.mensagem = mensagem;
-        this.nomeCampo = nomeCampo;
-    }
+  // Construtor
+  ErrosDadosLogAcessosAdmin(int codigo, String mensagem, String nomeCampo) {
+    this.codigo = codigo;
+    this.mensagem = mensagem;
+    this.nomeCampo = nomeCampo;
+  }
 
-    //Getters
-    public int getCodigo() {
-        return codigo;
-    }
+  // Getters
+  public int getCodigo() {
+    return codigo;
+  }
 
-    public String getMensagem() {
-        return mensagem;
-    }
+  public String getMensagem() {
+    return mensagem;
+  }
 
-    public String getNomeCampo() {
-        return nomeCampo;
-    }
+  public String getNomeCampo() {
+    return nomeCampo;
+  }
 
-    //Metodos da interface
-    @Override
-    public String exibirMensagem() {
-        return getMensagem();
-    }
+  // Métodos implementados
+  @Override
+  public String exibirMensagem() {
+    return getMensagem();
+  }
 
-    @Override
-    public String nomeCampoErro() {
-        return getNomeCampo();
-    }
+  @Override
+  public String nomeCampoErro() {
+    return getNomeCampo();
+  }
 }

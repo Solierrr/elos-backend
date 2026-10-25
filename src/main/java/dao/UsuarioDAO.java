@@ -18,8 +18,12 @@ import java.util.Map;
 
 public final class UsuarioDAO implements GenericDAO {
 
-  private static String TABELA = "usuario";
+  // Constante utilitaria
+  private final static String TABELA = "usuario";
 
+  // Métodos implementados
+
+  //Esse DAO necessita de uma implementação diferente do insert pelo fato de que ele é uma entidade pai
   @Override
   public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
       throws IllegalArgumentException {
@@ -64,6 +68,7 @@ public final class UsuarioDAO implements GenericDAO {
         connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
     criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
+    // Uso do ResultSetMetaData para resolver os conflitos de campos com o mesmo valor ao realizar joins
     ResultSet resultSet = preparedStatement.executeQuery();
     ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
     while (resultSet.next()) {
