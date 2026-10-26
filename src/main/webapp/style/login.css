@@ -34,18 +34,20 @@ header {
 .container {
     background: var(--white);
     width: 40%;
-    height: 75%;
+    height: 70%;
     max-width: 600px;
     min-width: 400px;
     min-height: 400px;
     min-height: auto;
-    padding-left: 4rem;
-    padding-right: 4rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
     border-style: solid;
     border-color: var(--grey);
     border-width: 0.125rem;
     border-radius: 10px;
-    padding-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+
     position: fixed;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -54,7 +56,7 @@ header {
 
 .tela-login{
     width: 100%;
-    height: 90%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -63,7 +65,7 @@ form {
     flex:1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     gap: 1.5rem;
     border-bottom: 1rem;
 }
@@ -114,7 +116,7 @@ input {
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 3.125rem ;
+    gap: 20% ;
 }
 
 ::placeholder {
@@ -131,13 +133,11 @@ input {
 
 p.subTitle {
     color: rgba(43, 43, 43, 0.40);
-    padding-bottom: 2.0625rem;
 }
 
 p.title {
     font-size: 1.875rem;
     color: var(--black);
-    padding-bottom: 2.8125rem;
 }
 
 p.little-title {
@@ -207,3 +207,22 @@ button {
     padding-right: 1rem;
 }
 
+@media (max-height: 785px) {
+
+    header{
+        margin-top: 2.25rem;
+    }
+
+}
+
+@media (max-width: 450px){
+
+    .container{
+        min-width: 350px;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+}

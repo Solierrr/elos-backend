@@ -26,7 +26,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
@@ -194,7 +194,7 @@ public final class FornecedorService {
   private GenericExceptionEnum deletarFornecedor(String id, Long idAdmin) {
     FornecedorDAO dao = new FornecedorDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -245,7 +245,7 @@ public final class FornecedorService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     FornecedorDAO dao = new FornecedorDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> fornecedores = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -278,7 +278,7 @@ public final class FornecedorService {
 
   private List<Map<String, Object>> lerFornecedores(
       FiltrosFornecedorDTO filtrosFornecedorDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       FornecedorDAO dao = new FornecedorDAO();
 
@@ -436,7 +436,7 @@ public final class FornecedorService {
   private GenericExceptionEnum atualizarFornecedor(JsonObject jsonObject, Long idAdmin) {
     FornecedorDAO dao = new FornecedorDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -536,7 +536,7 @@ public final class FornecedorService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposUsuario.ID.getCampoUsuario(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       FornecedorDAO dao = new FornecedorDAO();
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);

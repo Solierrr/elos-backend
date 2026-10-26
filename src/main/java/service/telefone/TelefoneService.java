@@ -15,7 +15,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
@@ -114,7 +114,7 @@ public final class TelefoneService {
   private GenericExceptionEnum deletarTelefone(String id, Long idAdmin) {
     TelefoneDAO dao = new TelefoneDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -165,7 +165,7 @@ public final class TelefoneService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     TelefoneDAO dao = new TelefoneDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> telefones = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -194,7 +194,7 @@ public final class TelefoneService {
 
   private List<Map<String, Object>> lerTelefones(
       FiltrosTelefoneDTO filtrosTelefoneDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       TelefoneDAO dao = new TelefoneDAO();
 
@@ -345,7 +345,7 @@ public final class TelefoneService {
   private GenericExceptionEnum atualizarTelefone(JsonObject jsonObject, Long idAdmin) {
     TelefoneDAO dao = new TelefoneDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -453,7 +453,7 @@ public final class TelefoneService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposTelefone.ID.getNomeCampo(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       TelefoneDAO dao = new TelefoneDAO();
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);
@@ -516,7 +516,7 @@ public final class TelefoneService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     Telefone telefone = GSON.fromJson(jsonObject, TelefoneParaInsertDTO.class).construirTelefone();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {

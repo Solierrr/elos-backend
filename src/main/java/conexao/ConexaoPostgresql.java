@@ -6,18 +6,18 @@ import config.Env;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class Conexao extends Env {
+public class ConexaoPostgresql extends Env {
 
   //Constante responsável por gerenciar as conexões do banco
-  private static final HikariDataSource dataSource = criarDataSource();
+  private static final HikariDataSource postgresqlPool = criarPool();
 
-  private static HikariDataSource criarDataSource() {
+  private static HikariDataSource criarPool() {
 
     HikariConfig config = new HikariConfig();
     config.setDriverClassName("org.postgresql.Driver");
-    config.setJdbcUrl(getDbUrl());
-    config.setUsername(getDbUsuario());
-    config.setPassword(getDbSenha());
+    config.setJdbcUrl(getPostgresqlUrl());
+    config.setUsername(getPostgresqlUsuario());
+    config.setPassword(getPostgresqlSenha());
     config.setConnectionTimeout(15000L);
     config.setIdleTimeout(300000L);
     config.setMaxLifetime(600000L);
@@ -34,7 +34,7 @@ public class Conexao extends Env {
   }
 
   public static Connection getConnection() throws SQLException {
-    return dataSource.getConnection();
+    return postgresqlPool.getConnection();
   }
 
 }

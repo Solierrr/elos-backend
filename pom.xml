@@ -87,6 +87,13 @@
           <scope>compile</scope>
       </dependency>
 
+      <!-- Jedis: cliente Redis para Java -->
+      <dependency>
+          <groupId>redis.clients</groupId>
+          <artifactId>jedis</artifactId>
+          <version>5.2.0</version>
+      </dependency>
+
   </dependencies>
 
   <build>

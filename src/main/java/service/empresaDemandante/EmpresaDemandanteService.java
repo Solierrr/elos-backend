@@ -25,7 +25,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
@@ -193,7 +193,7 @@ public final class EmpresaDemandanteService {
   private GenericExceptionEnum deletarEmpresaDemandante(String id, Long idAdmin) {
     EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -244,7 +244,7 @@ public final class EmpresaDemandanteService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> empresasDemandante =
           dao.readAll(criarInstrucaoDinamica, connection);
 
@@ -278,7 +278,7 @@ public final class EmpresaDemandanteService {
 
   private List<Map<String, Object>> lerEmpresaDemandante(
       FiltrosEmpresaDemandanteDTO filtrosEmpresaDemandanteDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 
@@ -441,7 +441,7 @@ public final class EmpresaDemandanteService {
   private GenericExceptionEnum atualizarEmpresaDemandante(JsonObject jsonObject, Long idAdmin) {
     EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -542,7 +542,7 @@ public final class EmpresaDemandanteService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposUsuario.ID.getCampoUsuario(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);

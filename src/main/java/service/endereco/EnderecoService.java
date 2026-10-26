@@ -17,7 +17,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
@@ -194,7 +194,7 @@ public final class EnderecoService {
   private GenericExceptionEnum deletarEndereco(String id, Long idAdmin) {
     EnderecoDAO dao = new EnderecoDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -245,7 +245,7 @@ public final class EnderecoService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     EnderecoDAO dao = new EnderecoDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> enderecos = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -274,7 +274,7 @@ public final class EnderecoService {
 
   private List<Map<String, Object>> lerEnderecos(
       FiltrosEnderecoDTO filtrosEnderecoDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       EnderecoDAO dao = new EnderecoDAO();
 
@@ -448,7 +448,7 @@ public final class EnderecoService {
   private GenericExceptionEnum atualizarEndereco(JsonObject jsonObject, Long idAdmin) {
     EnderecoDAO dao = new EnderecoDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -590,7 +590,7 @@ public final class EnderecoService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposEndereco.ID.getNomeCampo(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       EnderecoDAO dao = new EnderecoDAO();
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);
@@ -675,7 +675,7 @@ public final class EnderecoService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     Endereco endereco = GSON.fromJson(jsonObject, EnderecoParaInsertDTO.class).construirEndereco();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {

@@ -105,7 +105,7 @@
 
     <div class="caixa-sidebar">
       <span id="span-opcoes">Opções</span>
-      <a href="">
+      <a href="${pageContext.request.contextPath}/logout">
         <img src="${pageContext.request.contextPath}/assets/icone/crud/sair.svg"
              alt="Deslogar do CRUD">
         <span id="span-sair">Sair</span>

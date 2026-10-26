@@ -8,7 +8,7 @@ import static exception.ErrosGeraisDados.JOIN_INVALIDO;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
 import static service.ValidacoesComunsService.validarId;
 
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.CriarInstrucaoDinamica;
 import dao.HistoricoAlteracoesAdminDAO;
@@ -114,7 +114,7 @@ public final class HistoricoAlteracoesAdminService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     HistoricoAlteracoesAdminDAO dao = new HistoricoAlteracoesAdminDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> historicosAlteracoes =
           dao.readAll(criarInstrucaoDinamica, connection);
 
@@ -144,7 +144,7 @@ public final class HistoricoAlteracoesAdminService {
 
   private List<Map<String, Object>> lerHistoricoAlteracoes(
       FiltrosHistoricoAlteracoesDTO filtrosHistoricoAlteracoesDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       HistoricoAlteracoesAdminDAO dao = new HistoricoAlteracoesAdminDAO();
 

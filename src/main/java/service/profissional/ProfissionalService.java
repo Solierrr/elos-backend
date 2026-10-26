@@ -16,7 +16,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
@@ -180,7 +180,7 @@ public final class ProfissionalService {
   private GenericExceptionEnum deletarProfissional(String id, Long idAdmin) {
     ProfissionalDAO dao = new ProfissionalDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -231,7 +231,7 @@ public final class ProfissionalService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     ProfissionalDAO dao = new ProfissionalDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> profissionais = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -260,7 +260,7 @@ public final class ProfissionalService {
 
   private List<Map<String, Object>> lerProfissional(
       FiltrosProfissionalDTO filtrosProfissionalDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       ProfissionalDAO dao = new ProfissionalDAO();
 
@@ -418,7 +418,7 @@ public final class ProfissionalService {
   private GenericExceptionEnum atualizarProfissional(JsonObject jsonObject, Long idAdmin) {
     ProfissionalDAO dao = new ProfissionalDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -520,7 +520,7 @@ public final class ProfissionalService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposUsuario.ID.getCampoUsuario(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       ProfissionalDAO dao = new ProfissionalDAO();
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);

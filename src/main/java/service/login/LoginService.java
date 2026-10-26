@@ -3,7 +3,7 @@ package service.login;
 import static exception.ErrosGerais.ADMIN_INATIVO;
 import static exception.ErrosGerais.SENHA_INVALIDA;
 
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.AdminDAO;
 import dao.CriarInstrucaoDinamica;
@@ -35,7 +35,7 @@ public final class LoginService {
 
     List<GenericExceptionEnum> erros = logAcessosAdminService.validarDadosNoLogin(userAgent);
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {

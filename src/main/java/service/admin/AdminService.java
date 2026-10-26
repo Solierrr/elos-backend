@@ -17,7 +17,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.AdminDAO;
 import dao.ConstraintsBanco;
@@ -167,7 +167,7 @@ public final class AdminService {
   private GenericExceptionEnum deletarAdmin(String id, Long idAdmin) {
     AdminDAO dao = new AdminDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -245,7 +245,7 @@ public final class AdminService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     AdminDAO dao = new AdminDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> admins = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -271,7 +271,7 @@ public final class AdminService {
   }
 
   private List<Map<String, Object>> lerAdmin(FiltrosAdminDTO filtrosAdminDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       AdminDAO dao = new AdminDAO();
 
@@ -415,7 +415,7 @@ public final class AdminService {
   private GenericExceptionEnum atualizarAdmin(JsonObject jsonObject, Long idAdmin) {
     AdminDAO dao = new AdminDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -537,7 +537,7 @@ public final class AdminService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposAdmin.ID.getNomeCampo(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       AdminDAO dao = new AdminDAO();
 
       List<Map<String, Object>> dados = dao.readAll(criarInstrucaoDinamica, connection);
@@ -601,7 +601,7 @@ public final class AdminService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     Admin admin = GSON.fromJson(jsonObject, AdminParaInsertDTO.class).construirAdmin();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {

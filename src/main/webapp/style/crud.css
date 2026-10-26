@@ -47,11 +47,15 @@
   flex-direction: column;
 
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
 
   width: 80%;
   height: auto;
+}
+
+.side-bar > div> span {
+  align-self: start;
 }
 
 #conteiner-abrir-sidebar {
@@ -70,6 +74,10 @@
 .side-bar .conteiner-logo {
   width: 80%;
   gap: 0.5rem;
+}
+
+.side-bar> .caixa-sidebar>span{
+  margin-bottom: -0.6rem;
 }
 
 .traco-abaixo-logo {
@@ -212,6 +220,8 @@ a > span {
   justify-content: center;
 
   min-width: 0;
+
+
 }
 
 /*Botões acima da tabela*/
@@ -860,6 +870,12 @@ option {
   }
 }
 
+@media (max-height: 680px) {
+  .side-bar > div:not(.conteiner-logo) > :is(a, img) {
+    height: 1.5rem;
+  }
+}
+
 @media (max-width: 600px) {
 
   #botoes-filtro {
@@ -878,3 +894,4 @@ option {
   }
 
 }
+

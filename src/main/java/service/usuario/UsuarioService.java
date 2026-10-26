@@ -16,7 +16,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
@@ -210,7 +210,7 @@ public final class UsuarioService {
   private GenericExceptionEnum deletarUsuario(String id, Long idAdmin) {
     UsuarioDAO dao = new UsuarioDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
       try {
         Long idConvertido = Long.parseLong(id.strip());
@@ -261,7 +261,7 @@ public final class UsuarioService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     UsuarioDAO dao = new UsuarioDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> usuarios = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -289,7 +289,7 @@ public final class UsuarioService {
   }
 
   private List<Map<String, Object>> lerUsuarios(FiltrosUsuarioDTO filtrosUsuarioDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       UsuarioDAO dao = new UsuarioDAO();
 
@@ -436,7 +436,7 @@ public final class UsuarioService {
   private GenericExceptionEnum atualizarUsuario(JsonObject jsonObject, Long idAdmin) {
     UsuarioDAO dao = new UsuarioDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {
@@ -552,7 +552,7 @@ public final class UsuarioService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     criarInstrucaoDinamica.setWhere(
         CamposUsuario.ID.getCampoUsuario(), IGUAL, VAZIO, Long.parseLong(id), Types.BIGINT);
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       UsuarioDAO dao = new UsuarioDAO();
 
       List<Map<String, Object>> resultados = dao.readAll(criarInstrucaoDinamica, connection);
@@ -659,7 +659,7 @@ public final class UsuarioService {
     Usuario usuario = GSON.fromJson(jsonObject, UsuarioParaInsertDTO.class).construirUsuario();
     String tabelaFilho = null;
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
       try {

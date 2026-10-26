@@ -19,7 +19,7 @@ import static service.logAcessosAdmin.CamposLogAcessosAdmin.NAVEGADOR;
 import static service.logAcessosAdmin.CamposLogAcessosAdmin.SISTEMA_OPERACIONAL;
 import static service.logAcessosAdmin.CamposLogAcessosAdmin.SUCESSO;
 
-import conexao.Conexao;
+import conexao.ConexaoPostgresql;
 import dao.AcoesInstrucao;
 import dao.CriarInstrucaoDinamica;
 import dao.LogAcessosAdminDAO;
@@ -185,7 +185,7 @@ public final class LogAcessosAdminService {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
     LogAcessosAdminDAO dao = new LogAcessosAdminDAO();
 
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       List<Map<String, Object>> acessosAdmin = dao.readAll(criarInstrucaoDinamica, connection);
 
       Anonimizador anonimizador = new Anonimizador();
@@ -214,7 +214,7 @@ public final class LogAcessosAdminService {
 
   private List<Map<String, Object>> lerLogAcessoAdmin(
       FiltrosLogAcessosAdminDTO filtrosLogAcessosAdminDTO, Admin admin) {
-    try (Connection connection = Conexao.getConnection()) {
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
       LogAcessosAdminDAO dao = new LogAcessosAdminDAO();
 
