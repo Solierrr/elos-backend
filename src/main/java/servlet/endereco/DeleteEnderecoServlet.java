@@ -17,7 +17,7 @@ import model.Admin;
 import service.endereco.EnderecoService;
 
 @WebServlet("/crudEndereco-delete")
-public class DeleteEnderecoServlet extends HttpServlet {
+public final class DeleteEnderecoServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

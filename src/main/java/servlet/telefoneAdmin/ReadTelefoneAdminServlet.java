@@ -23,7 +23,7 @@ import service.telefone.FiltrosTelefoneDTO;
 import service.telefone.TelefoneService;
 
 @WebServlet("/crudTelefoneAdmin")
-public class ReadTelefoneAdminServlet extends HttpServlet {
+public final class ReadTelefoneAdminServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

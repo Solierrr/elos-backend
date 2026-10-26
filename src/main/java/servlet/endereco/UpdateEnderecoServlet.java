@@ -19,7 +19,7 @@ import model.Admin;
 import service.endereco.EnderecoService;
 
 @WebServlet("/crudEndereco-update")
-public class UpdateEnderecoServlet extends HttpServlet {
+public final class UpdateEnderecoServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

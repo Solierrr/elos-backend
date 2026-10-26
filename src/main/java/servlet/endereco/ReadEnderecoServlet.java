@@ -22,7 +22,7 @@ import service.endereco.FiltrosEnderecoDTO;
 import service.endereco.EnderecoService;
 
 @WebServlet("/crudEndereco")
-public class ReadEnderecoServlet extends HttpServlet {
+public final class ReadEnderecoServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

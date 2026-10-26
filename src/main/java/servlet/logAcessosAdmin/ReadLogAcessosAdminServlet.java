@@ -22,7 +22,7 @@ import service.logAcessosAdmin.FiltrosLogAcessosAdminDTO;
 import service.logAcessosAdmin.LogAcessosAdminService;
 
 @WebServlet("/crudAcessoAdmin")
-public class ReadLogAcessosAdminServlet extends HttpServlet {
+public final class ReadLogAcessosAdminServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

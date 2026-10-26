@@ -17,7 +17,7 @@ import model.Admin;
 import service.telefoneAdmin.TelefoneAdminService;
 
 @WebServlet("/crudTelefoneAdmin-delete")
-public class DeleteTelefoneAdminServlet extends HttpServlet {
+public final class DeleteTelefoneAdminServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

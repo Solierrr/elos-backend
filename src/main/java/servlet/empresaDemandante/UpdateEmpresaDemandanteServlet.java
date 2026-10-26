@@ -18,7 +18,7 @@ import model.Admin;
 import service.empresaDemandante.EmpresaDemandanteService;
 
 @WebServlet("/crudEmpresaDemandante-update")
-public class UpdateEmpresaDemandanteServlet extends HttpServlet {
+public final class UpdateEmpresaDemandanteServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

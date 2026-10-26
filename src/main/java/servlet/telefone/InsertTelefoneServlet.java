@@ -18,7 +18,7 @@ import model.Admin;
 import service.telefone.TelefoneService;
 
 @WebServlet("/crudTelefone-insert")
-public class InsertTelefoneServlet extends HttpServlet {
+public final class InsertTelefoneServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

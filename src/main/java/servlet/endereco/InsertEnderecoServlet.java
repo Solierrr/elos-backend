@@ -18,7 +18,7 @@ import model.Admin;
 import service.endereco.EnderecoService;
 
 @WebServlet("/crudEndereco-insert")
-public class InsertEnderecoServlet extends HttpServlet {
+public final class InsertEnderecoServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

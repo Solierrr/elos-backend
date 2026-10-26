@@ -64,7 +64,7 @@ public abstract class Env {
           "A variável " + nomeVariavel + " não está registrada no .env");
     }
     valor = valor.strip();
-    if (valor.isEmpty()) {
+    if (valor.isBlank() && !nomeVariavel.startsWith("REDIS_SENHA")) {
       throw new IllegalStateException("A variável " + nomeVariavel + " não possui valor");
     }
     return valor;

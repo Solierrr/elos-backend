@@ -17,7 +17,7 @@ import model.Admin;
 import service.empresaDemandante.EmpresaDemandanteService;
 
 @WebServlet("/crudEmpresaDemandante-delete")
-public class DeleteEmpresaDemandanteServlet extends HttpServlet {
+public final class DeleteEmpresaDemandanteServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

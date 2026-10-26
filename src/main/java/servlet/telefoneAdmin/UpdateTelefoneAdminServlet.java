@@ -19,7 +19,7 @@ import model.Admin;
 import service.telefoneAdmin.TelefoneAdminService;
 
 @WebServlet("/crudTelefoneAdmin-update")
-public class UpdateTelefoneAdminServlet extends HttpServlet {
+public final class UpdateTelefoneAdminServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

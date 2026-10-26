@@ -22,7 +22,7 @@ import service.historicoAlteracoesAdmin.FiltrosHistoricoAlteracoesDTO;
 import service.historicoAlteracoesAdmin.HistoricoAlteracoesAdminService;
 
 @WebServlet("/crudHistoricoAlteracoes")
-public class ReadHistoricoAlteracoesServlet extends HttpServlet {
+public final class ReadHistoricoAlteracoesServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =

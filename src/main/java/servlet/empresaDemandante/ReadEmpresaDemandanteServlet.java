@@ -22,7 +22,7 @@ import service.empresaDemandante.EmpresaDemandanteService;
 import service.empresaDemandante.FiltrosEmpresaDemandanteDTO;
 
 @WebServlet("/crudEmpresaDemandante")
-public class ReadEmpresaDemandanteServlet extends HttpServlet {
+public final class ReadEmpresaDemandanteServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =
