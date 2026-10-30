@@ -282,23 +282,6 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-razao-social" class="span-erro"></span>
                 </div>`,
-            "EH_MANDANTE":`
-                <div class="caixa-filtro label-e-input">
-                    <label for="eh-mandante-filtro">A empresa é uma filial?</label>
-                    <div>
-                        <select name="eh-mandante-filtro" id="eh-mandante-filtro">
-                            <option value="CAMPO_VAZIO" disabled selected hidden
-                                    id="eh-mandante-filtro-estado-vazio">Selecione a opção que mais se adequa
-                            </option>
-                            <option value="true">Sim</option>
-                            <option value="false">Não</option>
-                        </select>
-                        <button type="button" class="remover-filtro botoes-sair">
-                            <img src="${urlApagar}" class="icone-lixeira">
-                        </button>
-                    </div>
-                    <span id="filtro-erro-eh-mandante" class="span-erro"></span>
-                </div>`,
             "JOIN":`
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>

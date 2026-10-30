@@ -188,14 +188,6 @@
             <span id="erro-razao-social-update" class="span-erro"></span>
           </div>
 
-          <div>
-            <div class="label-e-input">
-              <label for="cnpj-update">CNPJ</label>
-              <div  class="div-update"
-                   id="cnpj-update"></div>
-            </div>
-            <span id="erro-cnpj-update" class="span-erro"></span>
-          </div>
         </div>
       </form>
     </dialog>
@@ -250,6 +242,8 @@
 
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
+
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
 
 </body>
 </html>

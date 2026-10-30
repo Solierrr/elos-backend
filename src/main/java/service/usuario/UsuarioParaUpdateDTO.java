@@ -25,7 +25,7 @@ public record UsuarioParaUpdateDTO(
     return new Usuario(
         Long.parseLong(idUpdate.strip()),
         emailTratado,
-        senhaUpdate == null ? null : criptografia.colocarHashNaSenha(senhaTratada),
+        senhaUpdate == null ? null : criptografia.porEmBcrypt(senhaTratada),
         nomeTratado,
         null,
         raioProcuraKmTratado);

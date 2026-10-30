@@ -5,7 +5,6 @@ public record FiltrosEmpresaDemandanteDTO(
     String idUsuarioFiltro,
     String cnpjFiltro,
     String razaoSocialFiltro,
-    String ehMandanteFiltro,
     String joinFiltro,
     String filtroRapido) {
 
@@ -30,7 +29,4 @@ public record FiltrosEmpresaDemandanteDTO(
     return razaoSocialFiltro.strip();
   }
 
-  public Boolean formatarEhMandante() {
-    return ehMandanteFiltro.equalsIgnoreCase("true");
-  }
 }

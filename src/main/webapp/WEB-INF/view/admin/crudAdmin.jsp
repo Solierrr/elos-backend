@@ -210,7 +210,7 @@
 
             <div>
               <div class="label-e-input">
-                <label for="em-atividade-update">Raio de procura (KM)</label>
+                <label for="em-atividade-update">O admin está ativo?</label>
                 <select name="em-atividade-update" id="em-atividade-update" required>
                   <option value="" disabled selected hidden>O admin está ativo?
                   </option>
@@ -219,15 +219,6 @@
                 </select>
               </div>
               <span id="erro-em-atividade-update" class="span-erro"></span>
-            </div>
-
-            <div>
-              <div class="label-e-input">
-                <label for="funcao-update">Função</label>
-                <div class="div-update"
-                     id="funcao-update"></div>
-              </div>
-              <span id="erro-funcao-update" class="span-erro"></span>
             </div>
           </div>
         </form>
@@ -371,6 +362,8 @@
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
 <script src="${pageContext.request.contextPath}/js/botoesSenha.js"></script>
+
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
 
 </body>
 </html>

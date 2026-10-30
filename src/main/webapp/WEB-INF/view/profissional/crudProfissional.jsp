@@ -186,14 +186,6 @@
             </div>
             <span id="erro-documento-contrato-update" class="span-erro"></span>
           </div>
-          <div>
-            <div class="label-e-input">
-              <label for="cpf-update">CPF</label>
-              <div class="div-update"
-                   id="cpf-update"></div>
-            </div>
-            <span id="erro-cpf-update" class="span-erro"></span>
-          </div>
         </div>
 
 
@@ -249,6 +241,8 @@
 
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
+
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
 
 </body>
 </html>

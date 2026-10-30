@@ -208,15 +208,6 @@
             </div>
             <span id="erro-raio-procura-km-update" class="span-erro"></span>
           </div>
-
-          <div>
-            <div class="label-e-input">
-              <label for="tipo-usuario-update">Tipo do usuário</label>
-              <div class="div-update"
-                   id="tipo-usuario-update"></div>
-            </div>
-            <span id="erro-tipo-usuario-update" class="span-erro"></span>
-          </div>
         </div>
       </form>
     </dialog>
@@ -355,6 +346,8 @@
 <script src="${pageContext.request.contextPath}/js/formularioInsertUsuario.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
 <script src="${pageContext.request.contextPath}/js/botoesSenha.js"></script>
+
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
 
 </body>
 </html>

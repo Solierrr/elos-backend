@@ -136,7 +136,6 @@
           <th class="littleText">ID do Usuário</th>
           <th class="littleText">CNPJ</th>
           <th class="littleText">Razão Social</th>
-          <th class="littleText">É uma filial?</th>
           <th class="littleText">Ações</th>
         </tr>
         </thead>
@@ -172,27 +171,6 @@
             <span id="erro-razao-social-update" class="span-erro"></span>
           </div>
 
-          <div>
-            <div class="label-e-input">
-              <label for="eh-mandante-update">A empresa é uma filial?</label>
-              <select name="eh-mandante-update" id="eh-mandante-update">
-                <option value="CAMPO_VAZIO" disabled selected hidden
-                        id="eh-mandante-update-estado-vazio">É uma filial?
-                </option>
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-              </select>
-              <span id="erro-eh-mandante-update" class="span-erro"></span>
-            </div>
-          </div>
-          <div>
-            <div class="label-e-input">
-              <label for="cnpj-update">CNPJ</label>
-              <div class="div-update"
-                   id="cnpj-update"></div>
-            </div>
-            <span id="erro-cnpj-update" class="span-erro"></span>
-          </div>
         </div>
 
       </form>
@@ -210,7 +188,6 @@
             <option value="ID_USUARIO">ID do usuário</option>
             <option value="CNPJ">CNPJ</option>
             <option value="RAZAO_SOCIAL">Razão social</option>
-            <option value="EH_MANDANTE">É uma filial?</option>
             <option value="JOIN">Conectar com registro interligado</option>
           </select>
           <button id="adicionar-filtro" class="botoes-pop-up-laranjas">Adicionar filtro
@@ -248,6 +225,8 @@
 
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
+
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
 
 </body>
 </html>

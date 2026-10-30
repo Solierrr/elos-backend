@@ -8,7 +8,6 @@ const mensagens = {
     "erro-tipo-usuario": "Selecione um tipo de usuário",
     "erro-cnpj": "CNPJ inválido",
     "erro-razao-social": "Razão social inválida",
-    "erro-eh-mandante": "Opção inválida",
     "erro-tipo-fornecedor": "Selecione um tipo do fornecedor",
     "erro-profissao": "Profissão inválida",
     "erro-cpf": "CPF inválido",
@@ -32,7 +31,6 @@ const mensagens = {
     "erro-id": "O ID inserido é inválido",
     "erro-cnpj": "CNPJ inválido",
     "erro-razao-social": "Razão social inválida",
-    "erro-eh-mandante": "Opção inválida",
     "erro-id-usuario": "ID do usuário inválido",
     "erro-join": "O registro inserido não se conecta com o atual"
   }, "telefone":{

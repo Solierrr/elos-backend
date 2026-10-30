@@ -40,4 +40,5 @@ caixaBotaoSideBar.addEventListener('click', () => {
     conteinerDoConteudo.style.marginLeft = "10rem";
   }
 
-})
+});
+

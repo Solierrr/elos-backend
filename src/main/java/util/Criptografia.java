@@ -30,11 +30,11 @@ public final class Criptografia extends Env {
   private static final int TAMANHO_TAG_AUTENTICACAO = 128;
 
   //Métodos do BCrypt
-  public String colocarHashNaSenha(String senha) {
+  public String porEmBcrypt(String senha) {
     return BCrypt.hashpw(senha, BCrypt.gensalt());
   }
 
-  public boolean verificarSeSenhaBate(String senhaSemHash, String senhaComHash) {
+  public boolean verificarBcrypt(String senhaSemHash, String senhaComHash) {
     return BCrypt.checkpw(senhaSemHash, senhaComHash);
   }
 

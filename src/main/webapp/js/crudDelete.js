@@ -2,6 +2,7 @@ import {enviarFiltro} from "./crudRead.js";
 
 const formularioDelete = document.getElementById("formulario-delete");
 const corpoTabelaGlobal = document.querySelector('#caixa-tabela table tbody');
+const contextPath = document.querySelector('meta[name="context-path"]').content;
 
 corpoTabelaGlobal.addEventListener("click", event => {
   const botao = event.target.closest('.excluir');
@@ -46,7 +47,6 @@ corpoTabelaGlobal.addEventListener("click", event => {
       }
     })
     .catch(erro => {
-      console.error('Erro ao excluir:', erro);
-      alert("Erro na exclusão, tente novamente!");
+      window.location.href = contextPath;
     });
 });

@@ -469,7 +469,7 @@ public final class EnderecoService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposEndereco.ESTADO.getNomeCampo(), endereco.getEstado(), Types.VARCHAR);
+            CamposEndereco.ESTADO.getNomeCampo(), endereco.getEstado().getSiglaEstado(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
             CamposEndereco.CIDADE.getNomeCampo(), endereco.getCidade(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
@@ -683,7 +683,7 @@ public final class EnderecoService {
         criarInstrucaoDinamica.setCampo(
             CamposEndereco.ID_USUARIO.getNomeCampo(), endereco.getIdUsuario(), Types.BIGINT);
         criarInstrucaoDinamica.setCampo(
-            CamposEndereco.ESTADO.getNomeCampo(), endereco.getEstado(), Types.VARCHAR);
+            CamposEndereco.ESTADO.getNomeCampo(), endereco.getEstado().getSiglaEstado(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
             CamposEndereco.CIDADE.getNomeCampo(), endereco.getCidade(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(

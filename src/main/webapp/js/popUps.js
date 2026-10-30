@@ -45,7 +45,23 @@ if (popUpInsert && botaoInsertSair) {
 if (popUpFiltro && botaoFiltroSair) {
   botaoFiltroSair.addEventListener('click', () => popUpFiltro.close());
 }
+
 if (popUpUpdate && botaoUpdateSair) {
+
+  formularioUpdate = document.getElementById('formulario');
+  const todosInputs = formularioUpdate.querySelectorAll(
+    'input, select, textarea');
+  todosInputs.forEach(input => {
+    input.classList.remove('caixa-erro');
+
+    const spanErro = formularioUpdate.querySelector(`#erro-${input.name}`);
+    if (spanErro) {
+      spanErro.textContent = '';
+    }
+  });
+
+  formularioUpdate.reset();
+
   botaoUpdateSair.addEventListener('click', () => popUpUpdate.close());
 }
 

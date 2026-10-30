@@ -4,20 +4,19 @@ import model.EmpresaDemandante;
 import model.TiposUsuario;
 
 public record EmpresaDemandanteParaInsertDTO(
-    String tipoUsuario, String cnpj, String razaoSocial, String ehMandante) {
+    String tipoUsuario, String cnpj, String razaoSocial) {
 
   public EmpresaDemandante construirEmpresaDemandante() {
     TiposUsuario tiposUsuarioTratado =
         TiposUsuario.descobrirTipoUsuario(tipoUsuario.toUpperCase().strip());
 
     String cnpjTratado =
-        cnpj.strip().toUpperCase().replaceAll("\\.", "").replaceAll("-", "").replaceAll("/", "");
+        cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
 
     String razaoSocialTratada = razaoSocial.strip();
 
-    Boolean ehMandanteTratado = Boolean.parseBoolean(ehMandante);
 
     return new EmpresaDemandante(
-        null, null, tiposUsuarioTratado, cnpjTratado, razaoSocialTratada, ehMandanteTratado);
+        null, null, tiposUsuarioTratado, cnpjTratado, razaoSocialTratada);
   }
 }

@@ -15,6 +15,7 @@ botaoSenha.addEventListener('click', () => {
     inputSenha.type = tipo;
 });
 
+const contextPath = document.querySelector('meta[name="context-path"]').content;
 
 //Envio do formulario
 const formulario = document.getElementById('formulario-login');
@@ -95,5 +96,5 @@ formulario.addEventListener('submit', (event) =>{
             return;
         }
         window.location.href = resultado.texto;
-    }).catch(() => alert('Não foi possível conectar ao servidor.'));
+    }).catch(() => window.location.href = contextPath);
 });

@@ -1,5 +1,11 @@
 @import url('variables.css');
 
+*{
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+
 /* Conteiner pai */
 .conteiner {
   display: flex;

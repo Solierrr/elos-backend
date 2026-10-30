@@ -30,6 +30,7 @@ import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
 import dao.EmpresaDemandanteDAO;
+import dao.UsuarioDAO;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -93,8 +94,7 @@ public final class EmpresaDemandanteService {
       return CNPJ_VAZIO;
     }
 
-    String cnpjTratado =
-        cnpj.strip().toUpperCase().replaceAll(".", "").replaceAll("-", "").replaceAll("/", "");
+    String cnpjTratado = cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
 
     if (cnpjTratado.length() != TAMANHO_CNPJ) {
       return CNPJ_TAMANHO_INVALIDO;
@@ -169,19 +169,6 @@ public final class EmpresaDemandanteService {
         : RAZAO_SOCIAL_INVALIDA;
   }
 
-  // Validação do eh mandante
-  private static GenericExceptionEnum validarEhMandante(String ehMandante) {
-    if (ehMandante == null || ehMandante.isBlank()) {
-      return EH_MANDANTE_INVALIDO;
-    }
-
-    if ("true".equalsIgnoreCase(ehMandante.toLowerCase().trim())
-        || "false".equalsIgnoreCase(ehMandante.toLowerCase().trim())) {
-      return VALIDACAO_OK;
-    }
-    return EH_MANDANTE_INVALIDO;
-  }
-
   // Métodos relacionados ao delete
   public GenericExceptionEnum realizarDelete(String id, Long idAdmin) {
     if (validarId(id) != VALIDACAO_OK) {
@@ -192,6 +179,7 @@ public final class EmpresaDemandanteService {
 
   private GenericExceptionEnum deletarEmpresaDemandante(String id, Long idAdmin) {
     EmpresaDemandanteDAO dao = new EmpresaDemandanteDAO();
+    UsuarioDAO daoUsuario = new UsuarioDAO();
 
     try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
@@ -225,6 +213,36 @@ public final class EmpresaDemandanteService {
                 new JsonObject(),
                 null),
             connection);
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaReadUsuario = new CriarInstrucaoDinamica();
+
+        Long idUsuarioConvertido =  Long.parseLong((String.valueOf(empresaDemandante.getFirst().get("id_usuario")).strip()));
+
+        criarInstrucaoDinamicaReadUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+
+        List<Map<String, Object>> usuario =  daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
+
+        if (usuario.isEmpty()) {
+          throw new IllegalArgumentException("ID não possui um correspondente no banco!");
+        }
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaDeleteUsuario = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamicaDeleteUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+
+        daoUsuario.delete(criarInstrucaoDinamicaDeleteUsuario, connection);
+
+        HistoricoAlteracoesAdminService.salvarAcao(
+                new HistoricoAlteracoesAdmin(
+                        null,
+                        idAdmin,
+                        idUsuarioConvertido,
+                        "USUARIO",
+                        "DELETE",
+                        GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                        new JsonObject(),
+                        null),
+                connection);
 
         connection.commit();
         return SUCESSO;
@@ -320,15 +338,6 @@ public final class EmpresaDemandanteService {
             Types.VARCHAR);
       }
 
-      if (filtrosEmpresaDemandanteDTO.ehMandanteFiltro() != null) {
-        criarInstrucaoDinamica.setWhere(
-            CamposEmpresaDemandante.EH_MANDANTE.getNomeCampo(),
-            IGUAL,
-            AND,
-            filtrosEmpresaDemandanteDTO.formatarEhMandante(),
-            Types.VARCHAR);
-      }
-
       JoinsPossiveis tabelaConectada =
           JoinsPossiveis.encontrarTabelaReferente(filtrosEmpresaDemandanteDTO.joinFiltro());
       if (filtrosEmpresaDemandanteDTO.joinFiltro() != null) {
@@ -407,14 +416,6 @@ public final class EmpresaDemandanteService {
       }
     }
 
-    if (filtrosEmpresaDemandanteDTO.ehMandanteFiltro() != null) {
-      GenericExceptionEnum validacao =
-          validarEhMandante(filtrosEmpresaDemandanteDTO.ehMandanteFiltro());
-      if (validacao != VALIDACAO_OK) {
-        erros.add(validacao);
-      }
-    }
-
     if (filtrosEmpresaDemandanteDTO.joinFiltro() != null) {
       if (JoinsPossiveis.joinValido("empresa_demandante", filtrosEmpresaDemandanteDTO.joinFiltro())
           == null) {
@@ -465,10 +466,6 @@ public final class EmpresaDemandanteService {
             CamposEmpresaDemandante.RAZAO_SOCIAL.getNomeCampo(),
             empresaDemandante.getRazaoSocial(),
             Types.VARCHAR);
-        criarInstrucaoDinamicaUpdate.setCampo(
-            CamposEmpresaDemandante.EH_MANDANTE.getNomeCampo(),
-            empresaDemandante.isEhMandante(),
-            Types.BOOLEAN);
 
         criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
@@ -524,13 +521,6 @@ public final class EmpresaDemandanteService {
       erros.add(razaoSocialValidacao);
     }
 
-    GenericExceptionEnum ehMandanteValidacao =
-        validarEhMandante(empresaDemandanteParaUpdateDTO.ehMandanteUpdate());
-    if (ehMandanteValidacao != VALIDACAO_OK
-        && (empresaDemandanteParaUpdateDTO.ehMandanteUpdate() != null
-            && !empresaDemandanteParaUpdateDTO.ehMandanteUpdate().isBlank())) {
-      erros.add(ehMandanteValidacao);
-    }
     return erros;
   }
 
@@ -580,11 +570,6 @@ public final class EmpresaDemandanteService {
       listaDeErros.add(validacaoTipoUsuario);
     }
 
-    GenericExceptionEnum ehMandanteValidacao =
-        validarEhMandante(empresaDemandanteParaInsertDTO.ehMandante());
-    if (ehMandanteValidacao != VALIDACAO_OK) {
-      listaDeErros.add(ehMandanteValidacao);
-    }
 
     GenericExceptionEnum validacaoCnpj = validarCnpj(empresaDemandanteParaInsertDTO.cnpj());
     if (validacaoCnpj != VALIDACAO_OK) {

@@ -31,6 +31,7 @@ import dao.AcoesInstrucao;
 import dao.ConstraintsBanco;
 import dao.CriarInstrucaoDinamica;
 import dao.FornecedorDAO;
+import dao.UsuarioDAO;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -108,7 +109,7 @@ public final class FornecedorService {
     }
 
     String cnpjTratado =
-        cnpj.strip().toUpperCase().replaceAll("\\.", "").replaceAll("-", "").replaceAll("/", "");
+            cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
 
     if (cnpjTratado.length() != TAMANHO_CNPJ) {
       return CNPJ_TAMANHO_INVALIDO;
@@ -193,6 +194,7 @@ public final class FornecedorService {
 
   private GenericExceptionEnum deletarFornecedor(String id, Long idAdmin) {
     FornecedorDAO dao = new FornecedorDAO();
+    UsuarioDAO daoUsuario = new UsuarioDAO();
 
     try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
@@ -226,6 +228,36 @@ public final class FornecedorService {
                 new JsonObject(),
                 null),
             connection);
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaReadUsuario = new CriarInstrucaoDinamica();
+
+        Long idUsuarioConvertido =  Long.parseLong((String.valueOf(fornecedor.getFirst().get("id_usuario")).strip()));
+
+        criarInstrucaoDinamicaReadUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+
+        List<Map<String, Object>> usuario =  daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
+
+        if (usuario.isEmpty()) {
+          throw new IllegalArgumentException("ID não possui um correspondente no banco!");
+        }
+
+        CriarInstrucaoDinamica criarInstrucaoDinamicaDeleteUsuario = new CriarInstrucaoDinamica();
+
+        criarInstrucaoDinamicaDeleteUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+
+        daoUsuario.delete(criarInstrucaoDinamicaDeleteUsuario, connection);
+
+        HistoricoAlteracoesAdminService.salvarAcao(
+                new HistoricoAlteracoesAdmin(
+                        null,
+                        idAdmin,
+                        idUsuarioConvertido,
+                        "USUARIO",
+                        "DELETE",
+                        GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                        new JsonObject(),
+                        null),
+                connection);
 
         connection.commit();
         return SUCESSO;

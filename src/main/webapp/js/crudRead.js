@@ -3,6 +3,8 @@ import {camposValores} from './variacoesFiltros.js';
 let camposTotais;
 let camposDisponiveis;
 
+const contextPath = document.querySelector('meta[name="context-path"]').content;
+
 document.addEventListener("DOMContentLoaded", () => {
   const elementoNomeArquivo = document.getElementById("nome-do-arquivo");
 
@@ -157,7 +159,7 @@ const enviarFiltro = () => {
       }
     })
     .catch(erro => {
-      console.error('Erro ao processar requisição:', erro);
+      window.location.href = contextPath;
     });
 };
 

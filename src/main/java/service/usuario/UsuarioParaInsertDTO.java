@@ -24,7 +24,7 @@ public record UsuarioParaInsertDTO(
     return new Usuario(
         null,
         emailTratado,
-        criptografia.colocarHashNaSenha(senhaTratada),
+        criptografia.porEmBcrypt(senhaTratada),
         nomeTratado,
         tipoUsuarioTratado,
         raioProcuraKmTratado);

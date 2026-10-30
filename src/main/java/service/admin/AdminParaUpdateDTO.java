@@ -21,7 +21,7 @@ public record AdminParaUpdateDTO(
     return new Admin(
         Long.parseLong(idUpdate),
         emailTratado,
-        criptografia.colocarHashNaSenha(senhaTratada),
+        criptografia.porEmBcrypt(senhaTratada),
         nomeTratado,
         null,
         emAtividadeTratada);

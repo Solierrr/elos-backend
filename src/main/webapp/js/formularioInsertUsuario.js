@@ -25,18 +25,7 @@ tipoUsuario.addEventListener('change', event => {
             </div>
             <span id="erro-razao-social" class="span-erro"></span>
         </div>
-        
-        <div>
-            <div class="label-e-input">
-                <label for="eh-mandante">É uma filial?</label>
-                <select name="eh-mandante" id="eh-mandanter" required>
-                    <option value="" disabled selected hidden>Selecione uma opção</option>
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
-                </select>      
-            </div>
-            <span id="erro-eh-mandante" class="span-erro"></span>
-        </div>
+
         `;
         
         dadosMutaveis.insertAdjacentHTML('beforeend',formulario);

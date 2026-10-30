@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import model.Admin;
 import model.FuncoesAdmin;
-import service.telefone.FiltrosTelefoneDTO;
-import service.telefone.TelefoneService;
+import service.telefoneAdmin.FiltrosTelefoneAdminDTO;
+import service.telefoneAdmin.TelefoneAdminService;
 
 @WebServlet("/crudTelefoneAdmin")
 public final class ReadTelefoneAdminServlet extends HttpServlet {
@@ -29,7 +29,7 @@ public final class ReadTelefoneAdminServlet extends HttpServlet {
   private final Gson gson =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  private final TelefoneService telefoneService = new TelefoneService();
+  private final TelefoneAdminService telefoneAdminService = new TelefoneAdminService();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -71,7 +71,7 @@ public final class ReadTelefoneAdminServlet extends HttpServlet {
 
     Map<String, Object> json = new HashMap<>();
     if (jsonObject.isEmpty()) {
-      json.put("valores", telefoneService.realizarSelectInicial(admin));
+      json.put("valores", telefoneAdminService.realizarSelectInicial(admin));
 
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
@@ -82,8 +82,8 @@ public final class ReadTelefoneAdminServlet extends HttpServlet {
     List<GenericExceptionEnum> erros = new ArrayList<>();
 
     List<Map<String, Object>> telefones =
-        telefoneService.realizarSelect(
-            gson.fromJson(jsonObject, FiltrosTelefoneDTO.class), erros, admin);
+        telefoneAdminService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosTelefoneAdminDTO.class), erros, admin);
     if (erros.isEmpty()) {
       if (!telefones.isEmpty()) {
         json.put("valores", telefones);

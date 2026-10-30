@@ -21,6 +21,10 @@ public abstract class Env {
   private static final byte[] AES_KEY = senhaCriptografia("AES_KEY");
   private static final byte[] HMAC_KEY = senhaCriptografia("HMAC_KEY");
 
+  // envs para enviar email
+  private static final String BREVO_API_KEY = obterEnvGenerico("BREVO_API_KEY");
+  private static final String EMAIL_USUARIO = obterEnvGenerico("EMAIL_USUARIO");
+
   // Métodos para as envs do PostgreSQL
   protected static String getPostgresqlUrl() {
     return POSTGRESQL_URL;
@@ -54,6 +58,15 @@ public abstract class Env {
 
   protected static byte[] getHmacKey() {
     return HMAC_KEY.clone();
+  }
+
+  // Métodos para as envs do email
+  protected static String getBrevoApiKey() {
+    return BREVO_API_KEY;
+  }
+
+  protected static String getEmailUsuario() {
+    return EMAIL_USUARIO;
   }
 
   // Métodos auxiliares

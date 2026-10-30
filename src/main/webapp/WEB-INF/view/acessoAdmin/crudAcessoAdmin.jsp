@@ -188,5 +188,7 @@
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
 
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
+
 </body>
 </html>

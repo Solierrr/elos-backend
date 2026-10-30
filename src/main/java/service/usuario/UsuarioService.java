@@ -7,7 +7,9 @@ import static dao.AcoesInstrucao.INNER_JOIN;
 import static dao.AcoesInstrucao.VAZIO;
 import static exception.ErrosGerais.ERRO_GENERICO;
 import static exception.ErrosGerais.SUCESSO;
+import static exception.ErrosGeraisDados.EMAIL_INVALIDO;
 import static exception.ErrosGeraisDados.JOIN_INVALIDO;
+import static exception.ErrosGeraisDados.SENHAS_DIFERENTES;
 import static exception.ErrosGeraisDados.VALIDACAO_OK;
 import static service.JoinsPossiveis.EMPRESA_DEMANDANTE;
 import static service.ValidacoesComunsService.validarId;
@@ -25,6 +27,7 @@ import exception.ErrosDadosUsuario;
 import exception.ErrosGeraisDados;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -52,6 +55,7 @@ import service.profissional.CamposProfissional;
 import service.profissional.ProfissionalParaInsertDTO;
 import service.profissional.ProfissionalService;
 import util.Anonimizador;
+import util.Criptografia;
 
 public final class UsuarioService {
 
@@ -65,9 +69,9 @@ public final class UsuarioService {
   private static final int TAMANHO_MAXIMO_NOME = 150;
 
   private static final Pattern PATTERN_PESSOA_FISICA =
-      Pattern.compile("^[\\p{Script=Latin}']+[\\p{Script=Latin}'\\s\\-]+$");
+      Pattern.compile("^(?=[\\p{Script=Latin} \\-]+$)[\\p{Script=Latin} \\-]+$");
   private static final Pattern PATTERN_PESSOA_JURIDICA =
-      Pattern.compile("^[\\p{Script=Latin}0-9&,.;'\\-]+[\\p{Script=Latin}0-9&,.;'\\-\\s]+$");
+      Pattern.compile("^(?=[\\p{Script=Latin}0-9&,.;' \\-]+$)[\\p{Script=Latin}0-9&,.;' \\-]+$");
 
   private static final int TAMANHO_MINIMO_SENHA = 8;
   private static final int TAMANHO_MAXIMO_SENHA = 60;
@@ -77,7 +81,7 @@ public final class UsuarioService {
       Pattern.compile("(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{8,}");
 
   private static final Pattern PATTERN_EMAIL =
-      Pattern.compile("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$");
+      Pattern.compile("^[a-z0-9._%+-]+@[a-z-0-9]+[a-z0-9.-]*\\.[a-z]{2,}$");
   private static final int TAMANHO_MAXIMO_EMAIL = 256;
 
   // Validações
@@ -124,7 +128,7 @@ public final class UsuarioService {
   }
 
   // Validações do nome
-  private static GenericExceptionEnum validarNome(String nome, String tipoUsuario) {
+  private static GenericExceptionEnum validarNome(String nome, String tipoUsuario, boolean isPesquisa) {
     if (nome == null || nome.isBlank()) {
       return ErrosDadosUsuario.NOME_VAZIO;
     }
@@ -134,8 +138,10 @@ public final class UsuarioService {
       return ErrosDadosUsuario.NOME_TAMANHO_INVALIDO;
     }
 
-    if (nomeTrim.toLowerCase().replace(nomeTrim.charAt(0), ' ').isBlank()) {
-      return ErrosDadosUsuario.NOME_INVALIDO;
+    if(!isPesquisa) {
+      if (nomeTrim.toLowerCase().replace(nomeTrim.charAt(0), ' ').isBlank()) {
+        return ErrosDadosUsuario.NOME_INVALIDO;
+      }
     }
 
     TiposUsuario tiposUsuarioInserido = TiposUsuario.descobrirTipoUsuario(tipoUsuario);
@@ -157,7 +163,7 @@ public final class UsuarioService {
   }
 
   // Validação do tipo do usuario
-  private static GenericExceptionEnum validarTipoUsuario(String tipoUsuario) {
+  public static GenericExceptionEnum validarTipoUsuario(String tipoUsuario) {
     if (tipoUsuario == null || tipoUsuario.isBlank()) {
       return ErrosDadosUsuario.TIPO_USUARIO_VAZIO;
     }
@@ -389,7 +395,7 @@ public final class UsuarioService {
     if (filtrosUsuarioDTO.nomeFiltro() != null) {
       GenericExceptionEnum validacao =
           validarNome(
-              filtrosUsuarioDTO.nomeFiltro(), TiposUsuario.EMPRESA_DEMANDANTE.getTipoDoUsuario());
+              filtrosUsuarioDTO.nomeFiltro(), TiposUsuario.EMPRESA_DEMANDANTE.getTipoDoUsuario(), true);
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
@@ -527,7 +533,7 @@ public final class UsuarioService {
 
     // Uso de um patter mais permissivo para garantir englobar qualquer tipo de usuário na validação
     GenericExceptionEnum nomeValidacao =
-        validarNome(usuarioParaUpdateDTO.nomeUpdate(), EMPRESA_DEMANDANTE.getNomeTabela());
+        validarNome(usuarioParaUpdateDTO.nomeUpdate(), EMPRESA_DEMANDANTE.getNomeTabela(), false);
     if (nomeValidacao != VALIDACAO_OK
         && (usuarioParaUpdateDTO.nomeUpdate() != null
             && !usuarioParaUpdateDTO.nomeUpdate().isBlank())) {
@@ -616,7 +622,7 @@ public final class UsuarioService {
     }
 
     GenericExceptionEnum validacaoNome =
-        validarNome(usuarioParaInsertDTO.nome(), usuarioParaInsertDTO.tipoUsuario());
+        validarNome(usuarioParaInsertDTO.nome(), usuarioParaInsertDTO.tipoUsuario(), false);
     if (validacaoNome != VALIDACAO_OK) {
       listaDeErros.add(validacaoNome);
     }
@@ -701,10 +707,7 @@ public final class UsuarioService {
               CamposEmpresaDemandante.RAZAO_SOCIAL.getNomeCampo(),
               empresaDemandante.getRazaoSocial(),
               Types.VARCHAR);
-          criarInstrucaoDinamicaCadastroFilha.setCampo(
-              CamposEmpresaDemandante.EH_MANDANTE.getNomeCampo(),
-              empresaDemandante.isEhMandante(),
-              Types.BOOLEAN);
+
           tabelaFilho = "empresa_demandante";
         } else if (usuario.getTipoUsuario() == TiposUsuario.FORNECEDOR) {
           Fornecedor fornecedor =
@@ -783,4 +786,55 @@ public final class UsuarioService {
       return ERRO_GENERICO;
     }
   }
+
+  //Método relacionados ao cadastro
+  public List<GenericExceptionEnum> validarCadastro(UsuarioCadastroDTO usuarioCadastroDTO) {
+    List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
+
+    GenericExceptionEnum validacaoEmail = validarEmail(usuarioCadastroDTO.email());
+    if (validacaoEmail != VALIDACAO_OK) {
+      listaDeErros.add(validacaoEmail);
+    }else{
+      GenericExceptionEnum validacaoEmailUnico = validarEmailUnico(usuarioCadastroDTO.email());
+      if(validacaoEmailUnico != VALIDACAO_OK){
+        listaDeErros.add(validacaoEmailUnico);
+      }
+    }
+
+    GenericExceptionEnum validacaoSenha = validarSenha(usuarioCadastroDTO.senha());
+    if(validacaoSenha != VALIDACAO_OK){
+      listaDeErros.add(validacaoSenha);
+    }
+
+    if(!usuarioCadastroDTO.senha().equals(usuarioCadastroDTO.senhaConfirmacao())){
+      listaDeErros.add(SENHAS_DIFERENTES);
+    }
+
+    GenericExceptionEnum validacaoRaioProcura =
+            validarRaioProcuraKm(usuarioCadastroDTO.raioProcuraKm());
+    if (validacaoRaioProcura != VALIDACAO_OK) {
+      listaDeErros.add(validacaoRaioProcura);
+    }
+    return listaDeErros;
+  }
+
+  private GenericExceptionEnum validarEmailUnico(String email){
+    UsuarioDAO dao = new UsuarioDAO();
+    CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
+
+    try(Connection conexao = ConexaoPostgresql.getConnection()){
+
+      criarInstrucaoDinamica.setWhere(CamposUsuario.EMAIL.getCampoUsuario(), IGUAL, VAZIO, email.toLowerCase().strip(), Types.VARCHAR);
+
+      List<Map<String, Object>> usuario = dao.readAll(criarInstrucaoDinamica, conexao);
+
+      if(usuario.isEmpty()){
+        return VALIDACAO_OK;
+      }
+      return EMAIL_INVALIDO;
+    }catch (SQLException | RuntimeException  exception){
+      return EMAIL_INVALIDO;
+    }
+  }
+
 }

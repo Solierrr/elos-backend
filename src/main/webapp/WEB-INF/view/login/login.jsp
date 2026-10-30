@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,28 +8,33 @@
 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/text.css">
-    <link rel="stylesheet" type="text/css"
-          href="${pageContext.request.contextPath}/style/variables.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/variables.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/login.css">
-    <link rel="icon" type="image/svg" href="${pageContext.request.contextPath}/assets/icone/LOGO.svg">
+    <link rel="icon" type="image/svg" href="${pageContext.request.contextPath}/assets/icone/LOGO.svg" >
 
 </head>
 <body>
-<div class="containerP">
+<div class ="containerP">
     <header>
-        <img src="${pageContext.request.contextPath}/assets/icone/Logo_com_nome.svg" alt="logo-elos">
+        <a href="${pageContext.request.contextPath}">
+            <img src="${pageContext.request.contextPath}/assets/icone/Logo_com_nome.svg" alt="logo-elos" width="146" height="60">
+        </a>
     </header>
     <div class="container">
         <div class="tela-login">
-            <p class="subTitle">Bem-vindo de volta!</p>
+            <div class="home">
+                <a href="${pageContext.request.contextPath}">
+                    <img id="iconHome"src="${pageContext.request.contextPath}/assets/icone/home.svg" width="24" height="24">
+                </a>
+            </div>
+            <p class="sub_title">Bem-vindo de volta!</p>
             <p class="title">Acesse a sua conta</p>
-            <form id="formulario-login" method="POST"
-                  action="${pageContext.request.contextPath}/login">
+            <form id="formulario-login">
                 <div class="form-group">
                     <div>
                         <input class="text-input" type="email" name="email"
                                placeholder="Coloque o seu e-mail aqui" value="" autocomplete="on"
-                               required>
+                               required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
                         <span id="erro-email" class="span-erro"></span>
                     </div>
                     <div>
@@ -47,17 +51,22 @@
                         <div id="informacoes-caixa-senha">
                             <span id="erro-senha" class="span-erro"></span>
                             <div class="direction">
-                                <p class="little-title" style="text-decoration: underline;">Esqueceu
-                                    a senha?</p>
+                                <a href="${pageContext.request.contextPath}/redefinirSenha">
+                                    <p class="little_title" style="text-decoration: underline;">Esqueceu
+                                        a senha?</p>
+
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="button-text-group">
-                    <button class="subTitle" type="submit">Logar</button>
-                    <p class="little-title">
+                    <button class="sub_title" type="submit">Logar</button>
+                    <p class="little_title">
                         <span class="color">Não tem conta?</span>
-                        <span class="link-cadastro">Fazer cadastro</span>
+                        <a href="${pageContext.request.contextPath}/cadastro">
+                            <span class="link-cadastro">Fazer cadastro</span>
+                        </a>
                     </p>
                 </div>
                 <input type="hidden" name="navegador-e-sop">
@@ -65,6 +74,9 @@
         </div>
     </div>
 </div>
+
 <script src="${pageContext.request.contextPath}/js/login.js" defer></script>
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
+
 </body>
 </html>

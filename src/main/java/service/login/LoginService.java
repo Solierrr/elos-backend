@@ -108,6 +108,6 @@ public final class LoginService {
   private boolean senhaCerta(String senhaEmHash, String senhaEntrada) {
     Criptografia criptografia = new Criptografia();
 
-    return criptografia.verificarSeSenhaBate(senhaEntrada.strip(), senhaEmHash);
+    return criptografia.verificarBcrypt(senhaEntrada.strip(), senhaEmHash);
   }
 }

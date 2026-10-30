@@ -47,7 +47,7 @@ public final class TelefoneAdminService {
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   //Constante utilizada pelo código
-  private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}(9)?[0-9]{8}$");
+  private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}[0-9]{8,9}$");
 
   // Validações
 

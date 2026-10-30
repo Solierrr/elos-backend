@@ -9,9 +9,9 @@ import java.sql.SQLException;
 public class ConexaoPostgresql extends Env {
 
   //Constante responsável por gerenciar as conexões do banco
-  private static final HikariDataSource postgresqlPool = criarPool();
+  private static HikariDataSource postgresqlPool;
 
-  private static HikariDataSource criarPool() {
+  public static void criarPool() {
 
     HikariConfig config = new HikariConfig();
     config.setDriverClassName("org.postgresql.Driver");
@@ -30,11 +30,15 @@ public class ConexaoPostgresql extends Env {
     config.addDataSourceProperty("prepStmtCacheSize", "250");
     config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
-    return new HikariDataSource(config);
+    postgresqlPool = new HikariDataSource(config);
   }
 
   public static Connection getConnection() throws SQLException {
     return postgresqlPool.getConnection();
+  }
+
+  public static void closePool(){
+    postgresqlPool.close();
   }
 
 }

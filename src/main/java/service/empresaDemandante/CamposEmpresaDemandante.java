@@ -10,7 +10,6 @@ public enum CamposEmpresaDemandante implements GenericEnumCampos {
   TIPO_USUARIO("tipo_usuario"),
   CNPJ("cnpj"),
   RAZAO_SOCIAL("razao_social"),
-  EH_MANDANTE("eh_mandante"),
   INVALIDO(null);
 
   // Atributo

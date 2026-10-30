@@ -2,14 +2,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--orange);
     background: linear-gradient(180deg, var(--orange) 50%, rgba(255, 255, 255, 0.75) 50%);
-    position: relative;
+    margin: 0;
+    height: 100dvh;
+    overflow: hidden;
 }
 
 header {
-    margin-left: 3.25rem;
-    margin-top: 3.25rem;
+    margin-left: 2.25rem;
+    margin-top: 2.25rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -23,100 +24,84 @@ header {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    justify-items: center;
     align-items: center;
     margin: 0;
     width: 100%;
-    height: 100dvh;
-    position: relative;
+    height: 100%;
+    overflow: hidden;
 }
 
 .container {
     background: var(--white);
-    width: 40%;
-    height: 70%;
-    max-width: 600px;
-    min-width: 400px;
-    min-height: 400px;
-    min-height: auto;
-    padding-left: 3rem;
-    padding-right: 3rem;
+    width: clamp(28.1rem, 1rem + 40dvw, 41rem);
+    height: auto;         
+    padding-top: 3.25rem;
+    padding-right: 4rem;
+    padding-bottom: 3.25rem;
+    padding-left: 4rem;
     border-style: solid;
-    border-color: var(--grey);
     border-width: 0.125rem;
+    border-color: var(--grey);
     border-radius: 10px;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-
-    position: fixed;
-    overflow-x: hidden;
-    scrollbar-width: none;
     margin: 0;
 }
 
-.tela-login{
-    width: 100%;
-    height: 100%;
+.container,
+input {
+    box-sizing: border-box;
+}
+
+.home {
     display: flex;
-    flex-direction: column;
+    flex-direction: row-reverse;
+    padding-bottom: 1rem;
+    cursor: pointer;
+    width: max-content;
+    margin-left: auto;
 }
 
 form {
-    flex:1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 20%;
-    border-bottom: 1rem;
 }
 
 input {
     background-color: rgba(236, 236, 236, 0.6);
     border-width: 0.125rem;
+    border-style: solid;
     border-color: var(--grey);
     width: 100%;
     max-width: 31.875rem;
     height: 4.25rem;
     border-radius: 10px;
-    border-style: solid;
     outline: none;
     padding-left: 1.625rem;
 }
 
-#conteiner-senha{
-    display: flex;
-    align-items: center
-}
-
 #conteiner-senha {
     position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     width: 100%;
+    max-width: 31.875rem;
 }
 
-#senha {
-    width: 100%;
-    padding: 10px;
-    padding-right: 40px;
-
-    border-width: 0.125rem;
-    border-style: solid;
-    border-color: var(--grey);
+#input-senha {
+    padding-right: 3.5rem;
 }
 
 #olho-senha {
     position: absolute;
-    right: 20px;
+    right: 1.25rem;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
 }
 
-
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 20% ;
+    gap: 3.125rem;
 }
 
 ::placeholder {
@@ -131,16 +116,18 @@ input {
     font-size: 1.125rem;
 }
 
-p.subTitle {
+p.sub_title {
     color: rgba(43, 43, 43, 0.40);
+    padding-bottom: 2.0625rem;
 }
 
 p.title {
     font-size: 1.875rem;
     color: var(--black);
+    padding-bottom: 2.8125rem;
 }
 
-p.little-title {
+p.little_title {
     font-size: 1.125rem;
     color: var(--orange);
 }
@@ -157,6 +144,8 @@ button {
     cursor: pointer;
     display: flex;
     align-items: center;
+    margin-top: 2.225rem;
+    margin-bottom: 1rem;
 }
 
 .direction {
@@ -171,7 +160,6 @@ button {
     align-items: center;
     justify-content: center;
     align-content: center;
-    padding-top: 7%;
     gap: 0.625rem;
 }
 
@@ -185,44 +173,72 @@ button {
     cursor: pointer;
 }
 
-.span-erro{
+.span-erro {
     color: var(--red);
-    padding-left: 1rem !important;
+    padding-left: 1rem;
 }
 
-.caixa-erro{
+.caixa-erro {
     border-color: var(--red) !important;
 }
 
-.caixa-erro:focus{
-    outline: none;
-}
-
-#informacoes-caixa-senha{
+#informacoes-caixa-senha {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding-top: 0.5rem;
-
     padding-right: 1rem;
 }
 
-@media (max-height: 785px) {
-
-    header{
-        margin-top: 2.25rem;
-    }
-
+:is(img, a, button, .home){
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none;
 }
 
-@media (max-width: 450px){
+.home a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+button:active{
+    background-color: rgb(from var(--orange) r g b / 0.8);
+}
+
+button{
+    transition: background-color 0.5s ease;
+}
+
+
+@media (max-height: 820px){
 
     .container{
-        min-width: 350px;
-        padding-left: 2rem;
-        padding-right: 2rem;
+        margin-top: 10%;
+        height: auto;
+
         padding-top: 2rem;
         padding-bottom: 2rem;
+        
+    }
+
+    p.sub_title{
+        padding-bottom: 1rem;
+    }
+
+    p.title{
+        padding-bottom: 1.4rem;
+    }
+
+    .form-group{
+        gap: 1.6rem;
+    }
+
+    .button-text-group{
+        gap: 0;
+    }
+
+    button{
+        margin-top: 1.1rem;
     }
 
 }

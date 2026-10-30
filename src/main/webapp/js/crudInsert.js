@@ -1,6 +1,7 @@
 import {mensagensSpans} from './mensagensSpans.js';
 import {enviarFiltro} from "./crudRead.js";
 
+const contextPath = document.querySelector('meta[name="context-path"]').content;
 
 const formularioInsert = document.getElementById('formulario-insert');
 
@@ -99,7 +100,6 @@ formularioInsert.addEventListener('submit', (event) => {
       }
     })
     .catch(erro => {
-      console.error('Erro ao processar requisição:', erro);
-      alert('Ocorreu um erro inesperado ao ralizar o cadastro. Tente novamente.');
+      window.location.href = contextPath;
     });
 });

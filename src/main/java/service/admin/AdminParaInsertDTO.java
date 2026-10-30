@@ -21,7 +21,7 @@ public record AdminParaInsertDTO(
         null,
         emailTratado,
         nomeTratado,
-        criptografia.colocarHashNaSenha(senhaTratada),
+        criptografia.porEmBcrypt(senhaTratada),
         funcaoTratada,
         emAtividadeTratada);
   }

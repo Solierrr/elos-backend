@@ -39,7 +39,13 @@ public enum ErrosGeraisDados implements GenericExceptionEnum {
       "O email inserido possui um tamanho maior que o permitido, insira um email com até 256 caracteres",
       "email"),
   JOIN_INVALIDO(22, "Os registros que se deseja conectar não possuem conexão!", "join"),
-  ID_ADMIN_NAO_REGISTRADO(3, "O ID do admin inserido não foi encontrado", "id-admin"),
+  ID_ADMIN_NAO_REGISTRADO(23, "O ID do admin inserido não foi encontrado", "id-admin"),
+  LIMTE_EMAILS_ATINGIDO(24, "Você antigiu o limite de envios de e-mails em um curto periodo de tempo, tente novamente em algumas horas", "email"),
+  ERRO_GENERICO_EMAIL(25, "Algo inesperadoo aconteceu ao enviar o e-mail, tente novamente!", "email"),
+  ERRO_TOKEN(26, "O token inserido está incorreto", "codigo"),
+  ERRO_LIMITE_TENTATIVAS_TOKEN(27, "O limite de uso do token foi atingido envie outro novamente", "codigo"),
+  TOKEN_INVALIDO(28, "O token inserido não coincide com o do e-mail", "codigo"),
+  SENHAS_DIFERENTES(29, "As senhas inseridas não se coincidem", "senha-confirmacao")
   ;
 
   //Atributos

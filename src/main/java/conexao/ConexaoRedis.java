@@ -1,15 +1,16 @@
 package conexao;
 
 import config.Env;
+import java.sql.SQLException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class ConexaoRedis extends Env {
 
-  private static final JedisPool redisPool = criarPool();
+  private static JedisPool redisPool;
 
-  private static JedisPool criarPool() {
+  public static void criarPool() {
 
     JedisPoolConfig config = new JedisPoolConfig();
     config.setMaxTotal(20);
@@ -20,13 +21,17 @@ public class ConexaoRedis extends Env {
     int porta = Integer.parseInt(getRedisPort());
 
     if (!senha.isBlank()) {
-      return new JedisPool(config, getRedisHost(), porta, 2000, senha);
+      redisPool = new JedisPool(config, getRedisHost(), porta, 2000, senha);
     } else {
-      return new JedisPool(config, getRedisHost(), porta);
+      redisPool = new JedisPool(config, getRedisHost(), porta);
     }
   }
 
   public static Jedis getConexao() {
     return redisPool.getResource();
+  }
+
+  public static void closePool(){
+    redisPool.close();
   }
 }

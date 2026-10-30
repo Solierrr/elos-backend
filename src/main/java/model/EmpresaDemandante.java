@@ -8,7 +8,6 @@ public class EmpresaDemandante {
   private final TiposUsuario tipoUsuario;
   private final String cnpj;
   private String razaoSocial;
-  private Boolean ehMandante;
 
   //Construtor
   public EmpresaDemandante(
@@ -16,14 +15,12 @@ public class EmpresaDemandante {
       Long idUsuario,
       TiposUsuario tipoUsuario,
       String cnpj,
-      String razaoSocial,
-      Boolean ehMandante) {
+      String razaoSocial) {
     this.id = id;
     this.idUsuario = idUsuario;
     this.tipoUsuario = tipoUsuario;
     this.cnpj = cnpj;
     this.razaoSocial = razaoSocial;
-    this.ehMandante = ehMandante;
   }
 
   //Getters e Setters
@@ -51,13 +48,6 @@ public class EmpresaDemandante {
     this.razaoSocial = razaoSocial;
   }
 
-  public Boolean isEhMandante() {
-    return ehMandante;
-  }
-
-  public void setEhMandante(Boolean ehMandante) {
-    this.ehMandante = ehMandante;
-  }
 
   // Método toString
   @Override
@@ -76,8 +66,6 @@ public class EmpresaDemandante {
         + "\n"
         + "Razão social: "
         + this.razaoSocial
-        + "\n"
-        + "É mandante: "
-        + this.ehMandante;
+        + "\n";
   }
 }

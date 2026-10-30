@@ -23,8 +23,8 @@ public record FiltrosTelefoneDTO(
     return telefoneFiltro.strip().replace("(", "").replace(")", "").replaceAll("\\s", "");
   }
 
-  public TiposTelefone formatarTipo() {
-    return TiposTelefone.descobrirTipoTelefone(tipoFiltro);
+  public String formatarTipo() {
+    return TiposTelefone.descobrirTipoTelefone(tipoFiltro).getTipoTelefone();
   }
 
   public Boolean formatarPrincipal() {

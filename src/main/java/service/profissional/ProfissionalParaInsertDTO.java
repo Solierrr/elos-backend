@@ -19,7 +19,7 @@ public record ProfissionalParaInsertDTO(
 
     String tipoUsuarioTratado = tipoUsuario.strip().toUpperCase();
     String profissaoTratada = profissao.strip();
-    String cpfTratado = cpf.strip().replaceAll("\\.", "").replaceAll("-", "");
+    String cpfTratado = cpf.strip().replace(".", "").replace("-", "");
 
     String documentoContratoTratado =
         documentoContrato != null && !documentoContrato.isBlank()

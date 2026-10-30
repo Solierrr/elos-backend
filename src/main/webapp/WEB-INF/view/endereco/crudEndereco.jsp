@@ -270,7 +270,7 @@
         <div id="conteudo-insert">
           <div>
             <div class="label-e-input">
-              <label for="id-usuario">ID do usuário dono do telefone</label>
+              <label for="id-usuario">ID do usuário dono do endereço</label>
               <input id="id-usuario" type="text" name="id-usuario"
                      placeholder="ex: 95"
               >
@@ -418,6 +418,8 @@
 
 <script src="${pageContext.request.contextPath}/js/popUps.js" defer></script>
 <script src="${pageContext.request.contextPath}/js/abrirSidebar.js"></script>
+
+<meta name="context-path" content="${pageContext.request.contextPath}/erro">
 
 </body>
 </html>

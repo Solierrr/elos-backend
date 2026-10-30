@@ -1,5 +1,7 @@
 import {enviarFiltro} from "./crudRead.js";
 
+const contextPath = document.querySelector('meta[name="context-path"]').content;
+
 const formularioUpdate = document.getElementById("formulario-update");
 const popUpUpdate = document.getElementById('pop-up-update');
 
@@ -63,8 +65,7 @@ formularioUpdate.addEventListener('submit', (event) => {
       }
     })
     .catch(erro => {
-      console.error('Erro ao processar requisição:', erro);
-      alert(`Ocorreu um erro inesperado ao atualizar o cadastro. Tente novamente.`);
+      window.location.href = contextPath;
     });
 });
 
