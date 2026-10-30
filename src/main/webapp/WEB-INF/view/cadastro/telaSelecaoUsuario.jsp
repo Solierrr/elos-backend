@@ -15,13 +15,13 @@
   <style>
 
     .imagem{
-        background-image: url("${pageContext.request.contextPath}/assets/imgs/imagem-contribuicao.png");
+        background-image: url("${pageContext.request.contextPath}/assets/img/imagem-contribuicao.png");
     }
     .imagem1{
-        background-image: url("${pageContext.request.contextPath}/assets/imgs/imagem-contribuicao2.png");
+        background-image: url("${pageContext.request.contextPath}/assets/img/imagem-contribuicao2.png");
     }
     .imagem2{
-        background-image: url("${pageContext.request.contextPath}/assets/imgs/imagem-contribuicao3.png");
+        background-image: url("${pageContext.request.contextPath}/assets/img/imagem-contribuicao3.png");
     }
 
   </style>

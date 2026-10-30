@@ -5,7 +5,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class ConexaoRedis extends Env {
+public final class ConexaoRedis extends Env {
 
   private static JedisPool redisPool;
 

@@ -23,7 +23,7 @@
       <p class="sub">A página que você está procurando não existe ou foi movida para outro endereço. Verifique o link ou volte para a página anterior para continuar navegando.</p>
       <button class="sub_title" id="voltar">Voltar</button>
     </div>
-    <img src="${pageContext.request.contextPath}/assets/imgs/Leao_dormindo_erro.png" width="1092" height="566" alt="Leão dormindo">
+    <img src="${pageContext.request.contextPath}/assets/img/Leao_dormindo_erro.png" width="1092" height="566" alt="Leão dormindo">
   </div>
 </div>
 

@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TelefoneAdminDAO implements GenericDAO {
+public final class TelefoneAdminDAO implements GenericDAO {
 
   // Constante utilitaria
   private static final String TABELA = "telefone_admin";

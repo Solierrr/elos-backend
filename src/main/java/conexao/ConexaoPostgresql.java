@@ -6,7 +6,7 @@ import config.Env;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConexaoPostgresql extends Env {
+public final class ConexaoPostgresql extends Env {
 
   //Constante responsável por gerenciar as conexões do banco
   private static HikariDataSource postgresqlPool;

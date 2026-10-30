@@ -20,7 +20,7 @@ import java.util.Map;
 import service.redefinirSenha.RedefinicaoSenhaService;
 
 @WebServlet("/redefinirSenha")
-public class EsqueciSenhaEmailServlet extends HttpServlet {
+public final class EsqueciSenhaEmailServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =
