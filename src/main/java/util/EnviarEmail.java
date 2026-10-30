@@ -48,8 +48,10 @@ public final class EnviarEmail extends Env {
 
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+      System.out.println("Enviando e-mail =)");
       return response.statusCode() == SUCESSO;
     } catch (IOException | InterruptedException exception) {
+      System.out.println("Erro ao enviar e-mail");
       return false;
     }
   }

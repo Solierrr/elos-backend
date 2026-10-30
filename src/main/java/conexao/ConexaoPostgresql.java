@@ -31,6 +31,7 @@ public class ConexaoPostgresql extends Env {
     config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
     postgresqlPool = new HikariDataSource(config);
+    System.out.println("Criou a conexão");
   }
 
   public static Connection getConnection() throws SQLException {
