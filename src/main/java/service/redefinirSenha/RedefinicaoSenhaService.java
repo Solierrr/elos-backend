@@ -159,7 +159,6 @@ public final class RedefinicaoSenhaService {
       return EMAIL_INVALIDO;
     }
 
-    System.out.println("Email valido");
 
     return enviarEmailRedefinicao(email);
   }
@@ -168,10 +167,12 @@ public final class RedefinicaoSenhaService {
     String emailTratado = email.toLowerCase().strip();
 
     String token = gerarToken();
+    System.out.println(token);
     GenericExceptionEnum resultadoPesistirToken = persistirToken(token, emailTratado);
     if(resultadoPesistirToken != SUCESSO){
       return resultadoPesistirToken;
     }
+    System.out.println("token salvo");
 
     EnviarEmail enviarEmail = new EnviarEmail();
 
@@ -212,6 +213,7 @@ public final class RedefinicaoSenhaService {
 
       return SUCESSO;
     }catch (JedisException jedisException){
+      System.out.println("Não deu para pegar a conexão");
       return ERRO_GENERICO;
     }
   }
