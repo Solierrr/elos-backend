@@ -172,7 +172,6 @@ public final class RedefinicaoSenhaService {
     if(resultadoPesistirToken != SUCESSO){
       return resultadoPesistirToken;
     }
-    System.out.println("token salvo");
 
     EnviarEmail enviarEmail = new EnviarEmail();
 
@@ -181,9 +180,6 @@ public final class RedefinicaoSenhaService {
 
   private GenericExceptionEnum persistirToken(String token, String email){
     try(Jedis jedis = ConexaoRedis.getConexao()){
-
-      System.out.println(jedis);
-      System.out.println(jedis == null);
 
       if(jedis.exists(email+":envios")){
         String qtdEnvios =  jedis.get(email+":envios");
@@ -213,7 +209,6 @@ public final class RedefinicaoSenhaService {
 
       return SUCESSO;
     }catch (JedisException jedisException){
-      System.out.println("Não deu para pegar a conexão");
       return ERRO_GENERICO;
     }
   }

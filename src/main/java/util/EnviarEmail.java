@@ -19,7 +19,6 @@ public final class EnviarEmail extends Env {
     String apiKey = getBrevoApiKey();
     String remetente = getEmailUsuario();
 
-    System.out.println("Chegou no envio do e-mail");
 
     JsonObject sender = new JsonObject();
     sender.addProperty("name", "Elos");
@@ -50,10 +49,8 @@ public final class EnviarEmail extends Env {
 
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      System.out.println("Enviando e-mail =)");
       return response.statusCode() == SUCESSO;
     } catch (IOException | InterruptedException exception) {
-      System.out.println("Erro ao enviar e-mail");
       return false;
     }
   }
