@@ -24,9 +24,6 @@ public class ConexaoRedis extends Env {
     } else {
       redisPool = new JedisPool(config, getRedisHost(), porta);
     }
-    System.out.println("Criou o pool redis");
-    System.out.println("Redis host: " + getRedisHost());
-    System.out.println("Redis porta: " + getRedisPort());
   }
 
   public static Jedis getConexao() {

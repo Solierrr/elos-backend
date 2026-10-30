@@ -19,6 +19,8 @@ public final class EnviarEmail extends Env {
     String apiKey = getBrevoApiKey();
     String remetente = getEmailUsuario();
 
+    System.out.println("Chegou no envio do e-mail");
+
     JsonObject sender = new JsonObject();
     sender.addProperty("name", "Elos");
     sender.addProperty("email", remetente);

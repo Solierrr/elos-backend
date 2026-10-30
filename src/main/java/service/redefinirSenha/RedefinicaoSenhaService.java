@@ -159,12 +159,13 @@ public final class RedefinicaoSenhaService {
       return EMAIL_INVALIDO;
     }
 
+    System.out.println("Email valido");
+
     return enviarEmailRedefinicao(email);
   }
 
   private GenericExceptionEnum enviarEmailRedefinicao(String email){
     String emailTratado = email.toLowerCase().strip();
-
 
     String token = gerarToken();
     GenericExceptionEnum resultadoPesistirToken = persistirToken(token, emailTratado);
@@ -179,6 +180,9 @@ public final class RedefinicaoSenhaService {
 
   private GenericExceptionEnum persistirToken(String token, String email){
     try(Jedis jedis = ConexaoRedis.getConexao()){
+
+      System.out.println(jedis);
+      System.out.println(jedis == null);
 
       if(jedis.exists(email+":envios")){
         String qtdEnvios =  jedis.get(email+":envios");
