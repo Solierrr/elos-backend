@@ -13,24 +13,17 @@ public enum JoinsPossiveis {
       new String[] {"telefone", "endereco", "empresa_demandante", "profissional", "fornecedor"}),
   TELEFONE("telefone", "id_telefone", new String[] {}),
   ENDERECO("endereco", "id_endereco", new String[] {}),
-  EMPRESA_DEMANDANTE(
-      "empresa_demandante", "id_empresa_demandante",new String[] {}),
-  PROFISSIONAL(
-      "profissional", "id_profissional", new String[] {}),
-  FORNECEDOR(
-      "fornecedor", "id_fornecedor", new String[] {"profissional"}),
+  EMPRESA_DEMANDANTE("empresa_demandante", "id_empresa_demandante", new String[] {}),
+  PROFISSIONAL("profissional", "id_profissional", new String[] {}),
+  FORNECEDOR("fornecedor", "id_fornecedor", new String[] {"profissional"}),
 
   // Tabelas relacionadas aos admins
   ADMIN(
       "admin",
       "id_admin",
       new String[] {"historico_alteracoes", "log_acessos_admin", "telefone_admin"}),
-  HISTORICO_ALTERACOES(
-      "historico_alteracoes",
-      "id_historico_alteracoes",
-      new String[] {}),
-  LOG_ACESSOS_ADMIN(
-      "log_acessos_admin", "id_log_acessos_admin", new String[] {}),
+  HISTORICO_ALTERACOES("historico_alteracoes", "id_historico_alteracoes", new String[] {}),
+  LOG_ACESSOS_ADMIN("log_acessos_admin", "id_log_acessos_admin", new String[] {}),
   TELEFONE_ADMIN("telefone_admin", "id_telefone_admin", new String[] {});
 
   // Atributos
@@ -39,10 +32,7 @@ public enum JoinsPossiveis {
   private final String[] tabelasConectaveisViaPk;
 
   // Construtor
-  JoinsPossiveis(
-      String nomeTabela,
-      String nomePkComoFk,
-      String[] tabelasConectaveisViaPk) {
+  JoinsPossiveis(String nomeTabela, String nomePkComoFk, String[] tabelasConectaveisViaPk) {
     this.nomeTabela = nomeTabela;
     this.nomePkComoFk = nomePkComoFk;
     this.tabelasConectaveisViaPk = tabelasConectaveisViaPk;

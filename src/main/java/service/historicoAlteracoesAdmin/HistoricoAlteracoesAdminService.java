@@ -156,8 +156,7 @@ public final class HistoricoAlteracoesAdminService {
             filtrosHistoricoAlteracoesDTO.formatarId(),
             Types.BIGINT);
         criarInstrucaoDinamica.setOrderBy(
-            CamposHistoricoAlteracoes.ID.getNomeCampo(),
-            AcoesInstrucao.ORDEM_CRESCENTE);
+            CamposHistoricoAlteracoes.ID.getNomeCampo(), AcoesInstrucao.ORDEM_CRESCENTE);
       }
 
       if (filtrosHistoricoAlteracoesDTO.idAdminFiltro() != null) {
@@ -219,12 +218,11 @@ public final class HistoricoAlteracoesAdminService {
           && !filtrosHistoricoAlteracoesDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosHistoricoAlteracoesDTO.filtroRapido();
 
-        historicosAlteracao.removeIf(
-            historicoAlteracao ->
-                historicoAlteracao.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        historicosAlteracao.removeIf(historicoAlteracao ->
+            historicoAlteracao.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();

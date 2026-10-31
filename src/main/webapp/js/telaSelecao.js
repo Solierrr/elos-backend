@@ -13,7 +13,7 @@ cards.forEach(card => {
 const formulario = document.getElementById("formulario-selecao");
 const cardsConteiner = document.getElementById("conteiner-cards");
 
-formulario.addEventListener('submit', event =>  {
+formulario.addEventListener('submit', event => {
   event.preventDefault();
 
   const dadosFormulario = new FormData(formulario);
@@ -38,13 +38,14 @@ formulario.addEventListener('submit', event =>  {
       });
     })
     .then(resultado => {
-      if(!resultado.ok){
+      if (!resultado.ok) {
         return;
       }
-      try{
+      try {
         const dados = JSON.parse(resultado.texto);
         return;
-      }catch(e){}
+      } catch (e) {
+      }
       window.location.href = resultado.texto;
     })
     .catch(() => window.location.href = contextPath);

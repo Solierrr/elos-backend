@@ -35,7 +35,8 @@
         </div>
       </div>
       <p class="title">Olá, pronto para começar?</p>
-      <form id="formulario-cadastro" method="POST" action="${pageContext.request.contextPath}/cadastro-fim">
+      <form id="formulario-cadastro" method="POST"
+            action="${pageContext.request.contextPath}/cadastro-fim">
         <div class="form-group">
           <div>
             <input class="text-input" type="text" placeholder="Coloque a sua Razão Social"

@@ -48,11 +48,11 @@ if (popUpFiltro && botaoFiltroSair) {
 
 if (popUpUpdate && botaoUpdateSair) {
 
-  formularioUpdate = document.getElementById('formulario');
+  formularioUpdate = document.getElementById('formulario-update');
   const todosInputs = formularioUpdate.querySelectorAll(
     'input, select, textarea');
-  todosInputs.forEach(input => {
-    input.classList.remove('caixa-erro');
+  todosInputs?.forEach(input => {
+    input?.classList.remove('caixa-erro');
 
     const spanErro = formularioUpdate.querySelector(`#erro-${input.name}`);
     if (spanErro) {
@@ -67,7 +67,7 @@ if (popUpUpdate && botaoUpdateSair) {
 
 const corpoTabelaDelegado = document.querySelector('#caixa-tabela table tbody');
 const formularioPegarDadosUpdate = document.getElementById(
-    'formulario-update-dados');
+  'formulario-update-dados');
 
 corpoTabelaDelegado.addEventListener('click', event => {
   const botaoEditar = event.target.closest('.editar');
@@ -83,42 +83,42 @@ corpoTabelaDelegado.addEventListener('click', event => {
 function preencherFormularioUpdate(id) {
 
   const url = `${formularioPegarDadosUpdate.action}?id=${encodeURIComponent(
-      id)}`;
+    id)}`;
 
   fetch(url, {
     method: 'GET'
   })
-  .then(respostaServlet => {
-    return respostaServlet.text().then(texto => {
-      return {
-        ok: respostaServlet.ok, estaVazio: texto.trim() === '', texto: texto
-      };
+    .then(respostaServlet => {
+      return respostaServlet.text().then(texto => {
+        return {
+          ok: respostaServlet.ok, estaVazio: texto.trim() === '', texto: texto
+        };
+      })
     })
-  })
-  .then(resposta => {
-    if (resposta.estaVazio) {
-      alert("Algo inesperado aconteceu tente novamente");
-      return;
-    }
-
-    const dados = JSON.parse(resposta.texto)[0];
-
-    Object.keys(dados).forEach(campo => {
-
-      const elemento = document.getElementById(`${porSneakCase(campo)}-update`)
-
-      if (elemento) {
-        if (elemento.tagName === 'DIV') {
-          elemento.textContent = dados[campo];
-        } else {
-          elemento.value = dados[campo];
-        }
+    .then(resposta => {
+      if (resposta.estaVazio) {
+        alert("Algo inesperado aconteceu tente novamente");
+        return;
       }
+
+      const dados = JSON.parse(resposta.texto)[0];
+
+      Object.keys(dados).forEach(campo => {
+
+        const elemento = document.getElementById(`${porSneakCase(campo)}-update`)
+
+        if (elemento) {
+          if (elemento.tagName === 'DIV') {
+            elemento.textContent = dados[campo];
+          } else {
+            elemento.value = dados[campo];
+          }
+        }
+      })
     })
-  })
-  .catch(erro => {
-    console.error('Erro ao processar requisição:', erro);
-  });
+    .catch(erro => {
+      console.error('Erro ao processar requisição:', erro);
+    });
 
 }
 

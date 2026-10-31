@@ -20,7 +20,11 @@ public record FiltrosEnderecoDTO(
   }
 
   public String formatarEstado() {
-    return estadoFiltro.strip().toLowerCase();
+    return estadoFiltro.strip().toUpperCase();
+  }
+
+  public String formatarCep() {
+    return cepFiltro.strip().replace("-", "");
   }
 
   public String formatarCidade() {

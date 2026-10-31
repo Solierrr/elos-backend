@@ -6,19 +6,19 @@ public enum ErrosDadosFornecedor implements GenericExceptionEnum {
   TIPO_FORNECEDOR_VAZIO(401, "O tipo do fornecedor não foi inserido", "tipo-fornecedor"),
   TIPO_FORNECEDOR_INVALIDO(402, "O tipo do fornecedor inserido é inválido", "tipo-fornecedor");
 
-  //Atributos
+  // Atributos
   private final int codigo;
   private final String mensagem;
   private final String nomeCampoErro;
 
-  //Construtor
+  // Construtor
   ErrosDadosFornecedor(int codigo, String mensagem, String nomeCampoErro) {
     this.codigo = codigo;
     this.mensagem = mensagem;
     this.nomeCampoErro = nomeCampoErro;
   }
 
-  //Getters
+  // Getters
   public int getCodigo() {
     return codigo;
   }

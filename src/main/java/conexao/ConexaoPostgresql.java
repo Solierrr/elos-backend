@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public final class ConexaoPostgresql extends Env {
 
-  //Constante responsável por gerenciar as conexões do banco
+  //Uso de pool de conexões para aumentar a velocidade e evitar ficar abrindo e fechando conexões desnecessárias
   private static HikariDataSource postgresqlPool;
 
   public static void criarPool() {

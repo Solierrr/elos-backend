@@ -28,11 +28,11 @@ public record FiltrosLogAcessosAdminDTO(
     return LocalDate.parse(dataAcessoFiltro.strip(), formatador);
   }
 
-  public NavegadoresAdmin formatarNavegador() {
-    return NavegadoresAdmin.valueOf(navegadorFiltro.toUpperCase().strip());
+  public String formatarNavegador() {
+    return NavegadoresAdmin.valueOf(navegadorFiltro.toUpperCase().strip()).getNavegador();
   }
 
-  public SistemasOperacionaisAdmin formatarSistemaOperacional() {
-    return SistemasOperacionaisAdmin.valueOf(sistemaOperacionalFiltro.toUpperCase().strip());
+  public String formatarSistemaOperacional() {
+    return SistemasOperacionaisAdmin.valueOf(sistemaOperacionalFiltro.toUpperCase().strip()).getSistemaOperacional();
   }
 }

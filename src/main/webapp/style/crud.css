@@ -1,6 +1,6 @@
 @import url('variables.css');
 
-*{
+* {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
 }
@@ -60,7 +60,7 @@
   height: auto;
 }
 
-.side-bar > div> span {
+.side-bar > div > span {
   align-self: start;
 }
 
@@ -82,7 +82,7 @@
   gap: 0.5rem;
 }
 
-.side-bar> .caixa-sidebar>span{
+.side-bar > .caixa-sidebar > span {
   margin-bottom: -0.6rem;
 }
 
@@ -251,7 +251,7 @@ a > span {
   border-radius: 15px;
 
   gap: 2.5%;
-  padding:  1% 2%;
+  padding: 1% 2%;
 }
 
 #titulo-tabela {
@@ -259,13 +259,13 @@ a > span {
   font-weight: 400;
 }
 
-#traco-filtros{
+#traco-filtros {
   height: 1.5rem;
   width: 2px;
   background-color: rgb(from var(--black) r g b / 0.4);
 }
 
-#formulario-filtro-rapido{
+#formulario-filtro-rapido {
   width: 30%;
   min-width: max-content;
   height: 2.5rem;
@@ -274,7 +274,7 @@ a > span {
 
 }
 
-#caixa-busca-rapida>img{
+#caixa-busca-rapida > img {
   height: 40%;
   aspect-ratio: 1/1;
   background: none;
@@ -282,11 +282,11 @@ a > span {
   cursor: pointer;
 }
 
-.botao-ligar-verde{
+.botao-ligar-verde {
   filter: invert(33%) sepia(96%) saturate(1229%) hue-rotate(114deg) brightness(89%) contrast(95%)
 }
 
-#caixa-busca-rapida{
+#caixa-busca-rapida {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -306,7 +306,7 @@ a > span {
   border-width: 2px;
 }
 
-#caixa-busca-rapida> button{
+#caixa-busca-rapida > button {
   background-color: inherit;
   border: none;
   cursor: pointer;
@@ -340,11 +340,11 @@ a > span {
   flex: 1;
 }
 
-#input-busca-rapida:focus{
+#input-busca-rapida:focus {
   outline: none;
 }
 
-#input-busca-rapida::placeholder{
+#input-busca-rapida::placeholder {
   font-size: 1rem;
 }
 
@@ -513,7 +513,7 @@ tbody tr:nth-child(odd) {
   background-color: rgb(from var(--orange) r g b / 0.8);
   color: var(--white);
 
-  transition: background-color 0.25s ease,  transform 0.5s ease;
+  transition: background-color 0.25s ease, transform 0.5s ease;
 }
 
 .botoes-pop-up-laranjas:hover {
@@ -812,7 +812,7 @@ option {
   aspect-ratio: 1/1;
 }
 
-#conteiner-botoes>#filtro-entrar {
+#conteiner-botoes > #filtro-entrar {
   border-color: rgb(from var(--black) r g b / 0.4);
   border-width: 2px;
   border-style: solid;
@@ -849,7 +849,7 @@ option {
 
   .botoes-brancos, .botoes-laranjas {
     width: max-content;
-    padding: 0 0.5rem ;
+    padding: 0 0.5rem;
   }
 
   .botoes-pop-up {
@@ -893,9 +893,9 @@ option {
 
 }
 
-@media (max-width: 370px){
+@media (max-width: 370px) {
 
-  #traco-filtros{
+  #traco-filtros {
     display: none;
   }
 

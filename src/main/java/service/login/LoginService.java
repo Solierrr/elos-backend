@@ -22,7 +22,7 @@ import util.Criptografia;
 
 public final class LoginService {
 
-  //Métodos relacionados ao login
+  // Métodos relacionados ao login
   public Admin realizarLogin(String email, String senha, String userAgent, String ip) {
     if (!AdminService.validarDadosLogin(email, senha)) {
       return null;
@@ -75,7 +75,7 @@ public final class LoginService {
     }
   }
 
-  //Métodos auxiliares
+  // Métodos auxiliares
   private Admin buscarAdminPorEmail(String email, Connection connection) throws SQLException {
     AdminDAO dao = new AdminDAO();
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();

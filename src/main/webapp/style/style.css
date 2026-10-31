@@ -1,12 +1,20 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-    height: 100dvh;
-    width: 100dvw;
-    background-color: var(--beige);
-    overflow-x: hidden;
+body {
+  height: 100dvh;
+  width: 100dvw;
+  background-color: var(--beige);
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+img, svg {
+  max-width: 100%;
 }

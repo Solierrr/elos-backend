@@ -4,12 +4,12 @@ const dadosMutaveis = document.getElementById('dados-mutaveis');
 
 const tipoUsuario = document.getElementById('tipo-usuario');
 tipoUsuario.addEventListener('change', event => {
-    const tipoUsuarioEscolhido = event.target.value;
-    
-    dadosMutaveis.innerHTML = '';
+  const tipoUsuarioEscolhido = event.target.value;
 
-    if(tipoUsuarioEscolhido.toUpperCase() === 'EMPRESA_DEMANDANTE'){
-        const formulario = `
+  dadosMutaveis.innerHTML = '';
+
+  if (tipoUsuarioEscolhido.toUpperCase() === 'EMPRESA_DEMANDANTE') {
+    const formulario = `
         <div>
             <div class="label-e-input">
                 <label for="cnpj">CNPJ</label>
@@ -27,10 +27,10 @@ tipoUsuario.addEventListener('change', event => {
         </div>
 
         `;
-        
-        dadosMutaveis.insertAdjacentHTML('beforeend',formulario);
-    } else if(tipoUsuarioEscolhido.toUpperCase() === 'FORNECEDOR'){
-        const formulario = `
+
+    dadosMutaveis.insertAdjacentHTML('beforeend', formulario);
+  } else if (tipoUsuarioEscolhido.toUpperCase() === 'FORNECEDOR') {
+    const formulario = `
         <div>
             <div class="label-e-input">
                 <label for="tipo-fornecedo" >Tipo do fornecedor</label>
@@ -62,9 +62,9 @@ tipoUsuario.addEventListener('change', event => {
         </div>
         `;
 
-        dadosMutaveis.insertAdjacentHTML('beforeend',formulario);
-    } else if(tipoUsuarioEscolhido.toUpperCase() === 'PROFISSIONAL'){
-        const formulario = `
+    dadosMutaveis.insertAdjacentHTML('beforeend', formulario);
+  } else if (tipoUsuarioEscolhido.toUpperCase() === 'PROFISSIONAL') {
+    const formulario = `
         <div>
             <div class="label-e-input">
                 <label for="cpf" required>CPF</label>
@@ -96,21 +96,21 @@ tipoUsuario.addEventListener('change', event => {
         <div id="caixa-caso-trabelhe-para-empresa"></div>
         `;
 
-        dadosMutaveis.insertAdjacentHTML('beforeend',formulario);
-    }
-    
+    dadosMutaveis.insertAdjacentHTML('beforeend', formulario);
+  }
+
 });
 
 //Para quando selecionar trabalha para empresa
 document.addEventListener('change', event => {
-    if (event.target && event.target.id === 'trabalha-para-empresa') {
-        
-        const conteinerIdFornecedor = document.getElementById("caixa-caso-trabelhe-para-empresa");
+  if (event.target && event.target.id === 'trabalha-para-empresa') {
 
-        if (!conteinerIdFornecedor) return;
+    const conteinerIdFornecedor = document.getElementById("caixa-caso-trabelhe-para-empresa");
 
-        if (event.target.value === "true") {
-            conteinerIdFornecedor.innerHTML = `
+    if (!conteinerIdFornecedor) return;
+
+    if (event.target.value === "true") {
+      conteinerIdFornecedor.innerHTML = `
                 <div>
                     <div class="label-e-input">
                         <label for="id-fornecedor">ID do fornecedor</label>
@@ -126,8 +126,8 @@ document.addEventListener('change', event => {
                     <span id="erro-documento-contrato" class="span-erro"></span>
                 </div>
             `;
-        } else {
-            conteinerIdFornecedor.innerHTML = '';
-        }
+    } else {
+      conteinerIdFornecedor.innerHTML = '';
     }
+  }
 });

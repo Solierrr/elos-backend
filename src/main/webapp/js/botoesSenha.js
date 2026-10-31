@@ -5,7 +5,7 @@ const inputSenha = document.getElementById('senha');
 const inputSenhaUpdate = document.getElementById('senha-update');
 
 
-if(botaoSenha){
+if (botaoSenha) {
   //Botão de mostrar a senha
   botaoSenha.addEventListener('click', () => {
     const tipo = inputSenha.type === 'password' ? 'text' : 'password';
@@ -20,7 +20,7 @@ if(botaoSenha){
   });
 }
 
-if(botaoSenhaUpdate){
+if (botaoSenhaUpdate) {
 
   botaoSenhaUpdate.addEventListener('click', () => {
     const tipo = inputSenhaUpdate.type === 'password' ? 'text' : 'password';

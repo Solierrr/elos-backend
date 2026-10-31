@@ -2,7 +2,7 @@ package exception;
 
 public enum ErrosGeraisDados implements GenericExceptionEnum {
 
-  //Variações do enum
+  // Variações do enum
   VALIDACAO_OK(0, "Dado válido", "valicacao-ok"),
   ID_INVALIDO(1, "O ID inserido é inválido", "id"),
   ID_USUARIO_INVALIDO(2, "O ID do usuário inserido é inválido", "id-usuario"),
@@ -40,27 +40,31 @@ public enum ErrosGeraisDados implements GenericExceptionEnum {
       "email"),
   JOIN_INVALIDO(22, "Os registros que se deseja conectar não possuem conexão!", "join"),
   ID_ADMIN_NAO_REGISTRADO(23, "O ID do admin inserido não foi encontrado", "id-admin"),
-  LIMTE_EMAILS_ATINGIDO(24, "Você antigiu o limite de envios de e-mails em um curto periodo de tempo, tente novamente em algumas horas", "email"),
-  ERRO_GENERICO_EMAIL(25, "Algo inesperadoo aconteceu ao enviar o e-mail, tente novamente!", "email"),
+  LIMTE_EMAILS_ATINGIDO(
+      24,
+      "Você antigiu o limite de envios de e-mails em um curto periodo de tempo, tente novamente em algumas horas",
+      "email"),
+  ERRO_GENERICO_EMAIL(
+      25, "Algo inesperadoo aconteceu ao enviar o e-mail, tente novamente!", "email"),
   ERRO_TOKEN(26, "O token inserido está incorreto", "codigo"),
-  ERRO_LIMITE_TENTATIVAS_TOKEN(27, "O limite de uso do token foi atingido envie outro novamente", "codigo"),
+  ERRO_LIMITE_TENTATIVAS_TOKEN(
+      27, "O limite de uso do token foi atingido envie outro novamente", "codigo"),
   TOKEN_INVALIDO(28, "O token inserido não coincide com o do e-mail", "codigo"),
-  SENHAS_DIFERENTES(29, "As senhas inseridas não se coincidem", "senha-confirmacao")
-  ;
+  SENHAS_DIFERENTES(29, "As senhas inseridas não se coincidem", "senha-confirmacao");
 
-  //Atributos
+  // Atributos
   private final int codigo;
   private final String mensagem;
   private final String nomeCampoErro;
 
-  //Construtor
+  // Construtor
   ErrosGeraisDados(int codigo, String mensagem, String nomeCampoErro) {
     this.codigo = codigo;
     this.mensagem = mensagem;
     this.nomeCampoErro = nomeCampoErro;
   }
 
-  //Getters
+  // Getters
   public int getCodigo() {
     return codigo;
   }
@@ -73,7 +77,7 @@ public enum ErrosGeraisDados implements GenericExceptionEnum {
     return nomeCampoErro;
   }
 
-  //Métodos implementados
+  // Métodos implementados
   @Override
   public String exibirMensagem() {
     return getMensagem();

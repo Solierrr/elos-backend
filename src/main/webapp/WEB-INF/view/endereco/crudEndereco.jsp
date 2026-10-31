@@ -23,7 +23,7 @@
 <div class="conteiner">
   <nav class="side-bar" id="side-bar-id">
     <div class="conteiner-logo" id="caixa-logo">
-      <a id="link-da-logo">
+      <a id="link-da-logo" href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/assets/icone/LOGO.svg" id="logo"
              alt="botão para a tela inicial"/>
         <span id="span-logo">Elos</span>
@@ -158,7 +158,7 @@
             action="${pageContext.request.contextPath}/crudEndereco-update">
         <div id="conteiner-superior-update">
           <button type="submit" name="enviar-update" id="enviar-update"
-                  class="botoes-pop-up-laranjas">Atualizar telefone
+                  class="botoes-pop-up-laranjas">Atualizar endereço
           </button>
           <button id="update-sair" type="button" class="botoes-sair"><img
                   src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"
@@ -280,7 +280,7 @@
           <div>
             <div class="label-e-input">
               <label for="estado">Estado</label>
-              <select name="estado" id="estado"  required>
+              <select name="estado" id="estado" required>
                 <option value="" disabled selected>Selecione um estado</option>
                 <option value="AC">Acre</option>
                 <option value="AL">Alagoas</option>
@@ -341,7 +341,7 @@
             <div class="label-e-input">
               <label for="logradouro">Logradouro</label>
               <input type="text" name="logradouro" id="logradouro"
-                     placeholder="ex: Rua Borboletas Psicodélicas"required>
+                     placeholder="ex: Rua Borboletas Psicodélicas" required>
             </div>
             <span id="erro-logradouro" class="span-erro"></span>
           </div>

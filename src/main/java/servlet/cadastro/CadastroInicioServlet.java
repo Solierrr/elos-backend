@@ -24,21 +24,21 @@ public final class CadastroInicioServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =
-          new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final UsuarioService usuarioService = new UsuarioService();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-          throws IOException, ServletException {
+      throws IOException, ServletException {
     RequestDispatcher dispatcher =
-            request.getRequestDispatcher("/WEB-INF/view/cadastro/telaCadastro.jsp");
+        request.getRequestDispatcher("/WEB-INF/view/cadastro/telaCadastro.jsp");
     dispatcher.forward(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-          throws IOException, ServletException {
+      throws IOException, ServletException {
 
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
@@ -47,13 +47,13 @@ public final class CadastroInicioServlet extends HttpServlet {
 
     List<GenericExceptionEnum> listaErros = usuarioService.validarCadastro(usuarioCadastroDTO);
 
-    if(listaErros.isEmpty()){
+    if (listaErros.isEmpty()) {
       response.setCharacterEncoding("UTF-8");
       response.getWriter().write(request.getContextPath() + "/cadastro-tipo");
-      
+
       HttpSession session = request.getSession(true);
       session.setAttribute("dadosParte1", jsonObject);
-      
+
       return;
     }
 
@@ -66,8 +66,4 @@ public final class CadastroInicioServlet extends HttpServlet {
     response.setCharacterEncoding("UTF-8");
     response.getWriter().write(gson.toJson(mapaJson));
   }
-
-
-
-
 }

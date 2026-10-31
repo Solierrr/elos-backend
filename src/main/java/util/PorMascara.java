@@ -1,9 +1,8 @@
 package util;
 
-
 public final class PorMascara {
 
-  //Métodos utilitarios para mascarar dados facilitando a compreensão do usuário
+  // Métodos utilitarios para mascarar dados facilitando a compreensão do usuário
   public static String porMascaraCpf(String cpf) {
     String[] partesCpf = {
       cpf.substring(0, 3), cpf.substring(3, 6), cpf.substring(6, 9), cpf.substring(9, 11)

@@ -32,27 +32,33 @@
       </div>
       <p class="sub_title">Insira os dados!</p>
       <p class="title">Digite o código que foi enviado!</p>
-      <form id="formulario-codigo" action="${pageContext.request.contextPath}/redefinirSenha-token" method="POST">
+      <form id="formulario-codigo" action="${pageContext.request.contextPath}/redefinirSenha-token"
+            method="POST">
         <div class="form-group">
-          <input class="text-input" type="text" inputmode="numeric" required id="n1" name="n1" autocomplete="off">
-          <input class="text-input" type="text" inputmode="numeric" required id="n2" name="n2" autocomplete="off">
-          <input class="text-input" type="text" inputmode="numeric" required id="n3" name="n3" autocomplete="off">
-          <input class="text-input" type="text" inputmode="numeric" required id="n4" name="n4" autocomplete="off">
-          <input class="text-input" type="text" inputmode="numeric" required id="n5" name="n5" autocomplete="off">
+          <input class="text-input" type="text" inputmode="numeric" required id="n1" name="n1"
+                 autocomplete="off">
+          <input class="text-input" type="text" inputmode="numeric" required id="n2" name="n2"
+                 autocomplete="off">
+          <input class="text-input" type="text" inputmode="numeric" required id="n3" name="n3"
+                 autocomplete="off">
+          <input class="text-input" type="text" inputmode="numeric" required id="n4" name="n4"
+                 autocomplete="off">
+          <input class="text-input" type="text" inputmode="numeric" required id="n5" name="n5"
+                 autocomplete="off">
         </div>
         <span id="erro-codigo" class="span-erro"></span>
         <div class="button-text-group">
           <button id="botao" class="sub_title" type="submit">Proximo</button>
           <p class="little_title">
-            <div class="sPPL">
-              <span class="color">Não recebeu email?</span>
-              <span id="reenviar-email" class="link-cadastro">Reenviar email</span>
-              <input type="hidden" id="email">
-            </div>
-            <div class="sPPL">
-              <span class="color">Clicou errado?</span>
-              <a href="${pageContext.request.contextPath}/login" class="link-cadastro">Voltar</a>
-            </div>
+          <div class="sPPL">
+            <span class="color">Não recebeu email?</span>
+            <span id="reenviar-email" class="link-cadastro">Reenviar email</span>
+            <input type="hidden" id="email">
+          </div>
+          <div class="sPPL">
+            <span class="color">Clicou errado?</span>
+            <a href="${pageContext.request.contextPath}/login" class="link-cadastro">Voltar</a>
+          </div>
           </p>
         </div>
       </form>

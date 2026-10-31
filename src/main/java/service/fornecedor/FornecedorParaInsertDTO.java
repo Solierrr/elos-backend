@@ -14,7 +14,7 @@ public record FornecedorParaInsertDTO(
         TiposFornecedor.descobrirTipoFornecedor(tipoFornecedor.toUpperCase().strip());
 
     String cnpjTratado =
-          cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
+        cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
 
     String razaoSocialTratada = razaoSocial.strip();
 

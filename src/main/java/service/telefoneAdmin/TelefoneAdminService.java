@@ -46,7 +46,7 @@ public final class TelefoneAdminService {
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  //Constante utilizada pelo código
+  // Constante utilizada pelo código
   private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}[0-9]{8,9}$");
 
   // Validações
@@ -267,12 +267,11 @@ public final class TelefoneAdminService {
           && !filtrosTelefoneAdminDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosTelefoneAdminDTO.filtroRapido();
 
-        telefonesAdmin.removeIf(
-            telefoneAdmin ->
-                telefoneAdmin.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        telefonesAdmin.removeIf(telefoneAdmin ->
+            telefoneAdmin.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -370,7 +369,9 @@ public final class TelefoneAdminService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposTelefoneAdmin.TELEFONE.getNomeCampo(), telefoneAdmin.getTelefone(), Types.VARCHAR);
+            CamposTelefoneAdmin.TELEFONE.getNomeCampo(),
+            telefoneAdmin.getTelefone(),
+            Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
             CamposTelefoneAdmin.TIPO.getNomeCampo(),
             telefoneAdmin.getTipo().getTipoTelefone(),
@@ -386,12 +387,11 @@ public final class TelefoneAdminService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(
@@ -530,7 +530,9 @@ public final class TelefoneAdminService {
       try {
 
         criarInstrucaoDinamica.setCampo(
-            CamposTelefoneAdmin.TELEFONE.getNomeCampo(), telefoneAdmin.getTelefone(), Types.VARCHAR);
+            CamposTelefoneAdmin.TELEFONE.getNomeCampo(),
+            telefoneAdmin.getTelefone(),
+            Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
             CamposTelefoneAdmin.ID_ADMIN.getNomeCampo(), telefoneAdmin.getIdAdmin(), Types.BIGINT);
         criarInstrucaoDinamica.setCampo(
@@ -545,7 +547,8 @@ public final class TelefoneAdminService {
         Long idRegistro = dao.insert(criarInstrucaoDinamica, connection);
 
         if (idRegistro == null) {
-          throw new IllegalArgumentException("Ocorreu algum erro e o telefone do admin não foi registrado!");
+          throw new IllegalArgumentException(
+              "Ocorreu algum erro e o telefone do admin não foi registrado!");
         }
 
         HistoricoAlteracoesAdminService.salvarAcao(

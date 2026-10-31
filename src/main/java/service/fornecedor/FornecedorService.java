@@ -109,7 +109,7 @@ public final class FornecedorService {
     }
 
     String cnpjTratado =
-            cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
+        cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
 
     if (cnpjTratado.length() != TAMANHO_CNPJ) {
       return CNPJ_TAMANHO_INVALIDO;
@@ -231,11 +231,14 @@ public final class FornecedorService {
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaReadUsuario = new CriarInstrucaoDinamica();
 
-        Long idUsuarioConvertido =  Long.parseLong((String.valueOf(fornecedor.getFirst().get("id_usuario")).strip()));
+        Long idUsuarioConvertido =
+            Long.parseLong((String.valueOf(fornecedor.getFirst().get("id_usuario")).strip()));
 
-        criarInstrucaoDinamicaReadUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+        criarInstrucaoDinamicaReadUsuario.setWhere(
+            "id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> usuario =  daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
+        List<Map<String, Object>> usuario =
+            daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
 
         if (usuario.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
@@ -243,21 +246,22 @@ public final class FornecedorService {
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaDeleteUsuario = new CriarInstrucaoDinamica();
 
-        criarInstrucaoDinamicaDeleteUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+        criarInstrucaoDinamicaDeleteUsuario.setWhere(
+            "id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
 
         daoUsuario.delete(criarInstrucaoDinamicaDeleteUsuario, connection);
 
         HistoricoAlteracoesAdminService.salvarAcao(
-                new HistoricoAlteracoesAdmin(
-                        null,
-                        idAdmin,
-                        idUsuarioConvertido,
-                        "USUARIO",
-                        "DELETE",
-                        GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
-                        new JsonObject(),
-                        null),
-                connection);
+            new HistoricoAlteracoesAdmin(
+                null,
+                idAdmin,
+                idUsuarioConvertido,
+                "USUARIO",
+                "DELETE",
+                GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                new JsonObject(),
+                null),
+            connection);
 
         connection.commit();
         return SUCESSO;
@@ -382,12 +386,11 @@ public final class FornecedorService {
           && !filtrosFornecedorDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosFornecedorDTO.filtroRapido();
 
-        fornecedores.removeIf(
-            fornecedor ->
-                fornecedor.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        fornecedores.removeIf(fornecedor ->
+            fornecedor.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -502,12 +505,11 @@ public final class FornecedorService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(

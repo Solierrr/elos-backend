@@ -1,40 +1,57 @@
-    @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
 
-    *{
-        font-family: 'Lexend Deca';
-        color: var(--black);
-        letter-spacing: 0;
-        word-spacing: 0;
-    }
+@import url('variables.css');
 
-    .big_text{
-        font-size: clamp(2rem, 1rem + 5vw, 3.3rem);
-        font-weight: 650;
-    }
+* {
+  font-family: 'Lexend Deca';
+  color: var(--black);
+  letter-spacing: 0;
+  word-spacing: 0;
+}
 
-    .title{
-        font-size: clamp(1.25rem, 1rem + 2vw, 2.2rem);
-        font-weight: 600;
-    }
+.big_text {
+  font-size: clamp(2rem, 1rem + 5vw, 3.3rem);
+  font-weight: 650;
+}
 
-    .sub_title{
-        font-size: clamp(1rem, 1rem + 1.25vw, 1.6rem);
-        font-weight: 500;
-    }
+.title {
+  font-size: clamp(1.25rem, 1rem + 2vw, 2.2rem);
+  font-weight: 600;
+}
 
-    .little_title{
-        font-size: clamp(1rem, 1rem + 1vw, 1.4rem);
-        font-weight: 350;
-    }
+.sub_title {
+  font-size: clamp(1rem, 1rem + 1.25vw, 1.6rem);
+  font-weight: 500;
+}
 
-    .text{
-        font-size: clamp(1rem, 1rem + 0.8vw, 1.2rem);
-        font-weight: 350;
-    }
+.little_title {
+  font-size: clamp(1rem, 1rem + 1vw, 1.4rem);
+  font-weight: 350;
+}
 
-    /*Tem que mudar aqui*/
+.text {
+  font-size: clamp(1rem, 1rem + 0.8vw, 1.2rem);
+  font-weight: 350;
+}
 
-    .little_text{
-        font-size: clamp(1rem, 1rem + 5vw, 1rem);
-        font-weight: 300;
-    }
+.little_text {
+  font-size: clamp(1rem, 1rem + 5vw, 1rem);
+  font-weight: 300;
+}
+
+.accent_white {
+  font-weight: 700;
+  color: var(--white);
+}
+
+.accent {
+  color: var(--orange);
+}
+
+.medium {
+  font-weight: 500;
+}
+
+.bold {
+  font-weight: 650;
+}

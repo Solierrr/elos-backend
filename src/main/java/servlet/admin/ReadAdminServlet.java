@@ -21,7 +21,6 @@ import model.Admin;
 import model.FuncoesAdmin;
 import service.admin.AdminService;
 import service.admin.FiltrosAdminDTO;
-import service.usuario.FiltrosUsuarioDTO;
 
 @WebServlet("/crudAdmin")
 public final class ReadAdminServlet extends HttpServlet {

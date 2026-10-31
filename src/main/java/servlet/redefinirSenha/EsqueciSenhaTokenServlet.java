@@ -24,32 +24,33 @@ public final class EsqueciSenhaTokenServlet extends HttpServlet {
 
   // Constantes utilizadas pelo código
   private final Gson gson =
-          new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
   private final RedefinicaoSenhaService redefinicaoSenhaService = new RedefinicaoSenhaService();
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
     RequestDispatcher dispatcher =
-            request.getRequestDispatcher("/WEB-INF/view/redefinirSenha/telaCodigo.jsp");
+        request.getRequestDispatcher("/WEB-INF/view/redefinirSenha/telaCodigo.jsp");
     dispatcher.forward(request, response);
-
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
     Map<String, String> resposta = new HashMap<>();
 
-    HttpSession session =  request.getSession(false);
+    HttpSession session = request.getSession(false);
 
     String email = (String) session.getAttribute("email");
 
-    if(jsonObject.isEmpty()){
+    if (jsonObject.isEmpty()) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
 
@@ -58,13 +59,13 @@ public final class EsqueciSenhaTokenServlet extends HttpServlet {
       return;
     }
 
-    if(jsonObject.has("reenviar")){
+    if (jsonObject.has("reenviar")) {
 
       GenericExceptionEnum resultado = redefinicaoSenhaService.enviarToken(email);
 
-      if(resultado == SUCESSO){
+      if (resultado == SUCESSO) {
         resposta.put("codigo", "O token foi enviado novamente com sucesso!");
-      }else{
+      } else {
         resposta.put("codigo", resultado.exibirMensagem());
       }
       response.setContentType("application/json");
@@ -74,12 +75,11 @@ public final class EsqueciSenhaTokenServlet extends HttpServlet {
       return;
     }
 
-
     String token = jsonObject.get("token").getAsString();
 
     GenericExceptionEnum resultado = redefinicaoSenhaService.verificarToken(token, email);
 
-    if(resultado == SUCESSO){
+    if (resultado == SUCESSO) {
       session.setAttribute("tokenCerto", true);
 
       response.getWriter().write(request.getContextPath() + "/redefinirSenha-senha");
@@ -92,7 +92,5 @@ public final class EsqueciSenhaTokenServlet extends HttpServlet {
 
     resposta.put("token", resultado.exibirMensagem());
     response.getWriter().write(gson.toJson(resposta));
-
   }
-
 }

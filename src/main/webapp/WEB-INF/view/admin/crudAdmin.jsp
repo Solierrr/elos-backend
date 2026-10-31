@@ -26,7 +26,7 @@
 <div class="conteiner">
   <nav class="side-bar" id="side-bar-id">
     <div class="conteiner-logo" id="caixa-logo">
-      <a id="link-da-logo">
+      <a id="link-da-logo" href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/assets/icone/LOGO.svg" id="logo"
              alt="botão para a tela inicial"/>
         <span id="span-logo">Elos</span>
@@ -229,7 +229,7 @@
               action="${pageContext.request.contextPath}/crudAdmin-insert">
           <div id="conteiner-superior-insert">
             <button type="submit" name="enviar-insert" id="enviar-insert"
-                    class="botoes-pop-up-laranjas">Adicionar telefone
+                    class="botoes-pop-up-laranjas">Adicionar admin
             </button>
             <button id="insert-sair" type="button" class="botoes-sair"><img
                     src="${pageContext.request.contextPath}/assets/icone/crud/icone_sair.svg"

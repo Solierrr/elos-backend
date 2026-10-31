@@ -307,6 +307,15 @@ public final class EnderecoService {
             Types.VARCHAR);
       }
 
+      if (filtrosEnderecoDTO.cepFiltro() != null) {
+        criarInstrucaoDinamica.setWhere(
+            CamposEndereco.CEP.getNomeCampo(),
+            IGUAL,
+            AND,
+            filtrosEnderecoDTO.formatarEstado(),
+            Types.VARCHAR);
+      }
+
       if (filtrosEnderecoDTO.cidadeFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
             CamposEndereco.CIDADE.getNomeCampo(),
@@ -354,12 +363,11 @@ public final class EnderecoService {
           && !filtrosEnderecoDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosEnderecoDTO.filtroRapido();
 
-        enderecos.removeIf(
-            endereco ->
-                endereco.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        enderecos.removeIf(endereco ->
+            endereco.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -469,7 +477,9 @@ public final class EnderecoService {
         CriarInstrucaoDinamica criarInstrucaoDinamicaUpdate = new CriarInstrucaoDinamica();
 
         criarInstrucaoDinamicaUpdate.setCampo(
-            CamposEndereco.ESTADO.getNomeCampo(), endereco.getEstado().getSiglaEstado(), Types.VARCHAR);
+            CamposEndereco.ESTADO.getNomeCampo(),
+            endereco.getEstado().getSiglaEstado(),
+            Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
             CamposEndereco.CIDADE.getNomeCampo(), endereco.getCidade(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
@@ -489,12 +499,11 @@ public final class EnderecoService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(
@@ -683,7 +692,9 @@ public final class EnderecoService {
         criarInstrucaoDinamica.setCampo(
             CamposEndereco.ID_USUARIO.getNomeCampo(), endereco.getIdUsuario(), Types.BIGINT);
         criarInstrucaoDinamica.setCampo(
-            CamposEndereco.ESTADO.getNomeCampo(), endereco.getEstado().getSiglaEstado(), Types.VARCHAR);
+            CamposEndereco.ESTADO.getNomeCampo(),
+            endereco.getEstado().getSiglaEstado(),
+            Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(
             CamposEndereco.CIDADE.getNomeCampo(), endereco.getCidade(), Types.VARCHAR);
         criarInstrucaoDinamica.setCampo(

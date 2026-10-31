@@ -191,7 +191,8 @@ public final class ProfissionalService {
 
         criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, idConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> profissional = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        List<Map<String, Object>> profissional =
+            dao.readAll(criarInstrucaoDinamicaRead, connection);
 
         if (profissional.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
@@ -217,11 +218,14 @@ public final class ProfissionalService {
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaReadUsuario = new CriarInstrucaoDinamica();
 
-        Long idUsuarioConvertido =  Long.parseLong((String.valueOf(profissional.getFirst().get("id_usuario")).strip()));
+        Long idUsuarioConvertido =
+            Long.parseLong((String.valueOf(profissional.getFirst().get("id_usuario")).strip()));
 
-        criarInstrucaoDinamicaReadUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+        criarInstrucaoDinamicaReadUsuario.setWhere(
+            "id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> usuario =  daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
+        List<Map<String, Object>> usuario =
+            daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
 
         if (usuario.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
@@ -229,21 +233,22 @@ public final class ProfissionalService {
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaDeleteUsuario = new CriarInstrucaoDinamica();
 
-        criarInstrucaoDinamicaDeleteUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+        criarInstrucaoDinamicaDeleteUsuario.setWhere(
+            "id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
 
         daoUsuario.delete(criarInstrucaoDinamicaDeleteUsuario, connection);
 
         HistoricoAlteracoesAdminService.salvarAcao(
-                new HistoricoAlteracoesAdmin(
-                        null,
-                        idAdmin,
-                        idUsuarioConvertido,
-                        "USUARIO",
-                        "DELETE",
-                        GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
-                        new JsonObject(),
-                        null),
-                connection);
+            new HistoricoAlteracoesAdmin(
+                null,
+                idAdmin,
+                idUsuarioConvertido,
+                "USUARIO",
+                "DELETE",
+                GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                new JsonObject(),
+                null),
+            connection);
 
         connection.commit();
         return SUCESSO;
@@ -360,15 +365,15 @@ public final class ProfissionalService {
 
       List<Map<String, Object>> profissionais = dao.readAll(criarInstrucaoDinamica, connection);
 
-      if (filtrosProfissionalDTO.filtroRapido() != null && !filtrosProfissionalDTO.filtroRapido().isBlank()) {
+      if (filtrosProfissionalDTO.filtroRapido() != null
+          && !filtrosProfissionalDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosProfissionalDTO.filtroRapido();
 
         profissionais.removeIf(profissional ->
-                profissional.values().stream()
-                        .filter(Objects::nonNull)
-                        .map(String::valueOf)
-                        .noneMatch(valorTexto -> valorTexto.contains(termoFiltro))
-        );
+            profissional.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -476,9 +481,7 @@ public final class ProfissionalService {
         criarInstrucaoDinamicaUpdate.setCampo(
             PROFISSAO.getNomeCampo(), profissional.getProfissao(), Types.VARCHAR);
         criarInstrucaoDinamicaUpdate.setCampo(
-            DOCUMENTO_CONTRATO.getNomeCampo(),
-            profissional.getDocumentoContrato(),
-            Types.VARCHAR);
+            DOCUMENTO_CONTRATO.getNomeCampo(), profissional.getDocumentoContrato(), Types.VARCHAR);
 
         criarInstrucaoDinamicaUpdate.setWhere("id", IGUAL, VAZIO, id, Types.BIGINT);
 
@@ -486,12 +489,11 @@ public final class ProfissionalService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(

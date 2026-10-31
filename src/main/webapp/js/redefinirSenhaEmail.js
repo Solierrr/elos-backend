@@ -51,7 +51,7 @@ formulario.addEventListener('submit', event => {
     },
     body: dadosJSON
   })
-    .then(respostaServlet =>{
+    .then(respostaServlet => {
       return respostaServlet.text().then(texto => {
         return {
           ok: respostaServlet.ok, texto: texto.trim()
@@ -59,19 +59,20 @@ formulario.addEventListener('submit', event => {
       });
     })
     .then(resultado => {
-      if(!resultado.ok){
+      if (!resultado.ok) {
         inputEmail.classList.add('caixa-erro');
         erroEmail.textContent = 'Email inválido';
         return;
       }
-      try{
+      try {
         const dados = JSON.parse(resultado.texto);
         if (dados && dados.email) {
           inputEmail.classList.add('caixa-erro');
           erroEmail.textContent = dados.email;
           return;
         }
-      }catch(e){}
+      } catch (e) {
+      }
       window.location.href = resultado.texto;
     })
     .catch(() => window.location.href = contextPath);

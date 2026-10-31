@@ -27,7 +27,6 @@ import exception.ErrosDadosUsuario;
 import exception.ErrosGeraisDados;
 import exception.GenericExceptionEnum;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ import service.profissional.CamposProfissional;
 import service.profissional.ProfissionalParaInsertDTO;
 import service.profissional.ProfissionalService;
 import util.Anonimizador;
-import util.Criptografia;
 
 public final class UsuarioService {
 
@@ -128,7 +126,8 @@ public final class UsuarioService {
   }
 
   // Validações do nome
-  private static GenericExceptionEnum validarNome(String nome, String tipoUsuario, boolean isPesquisa) {
+  private static GenericExceptionEnum validarNome(
+      String nome, String tipoUsuario, boolean isPesquisa) {
     if (nome == null || nome.isBlank()) {
       return ErrosDadosUsuario.NOME_VAZIO;
     }
@@ -138,7 +137,7 @@ public final class UsuarioService {
       return ErrosDadosUsuario.NOME_TAMANHO_INVALIDO;
     }
 
-    if(!isPesquisa) {
+    if (!isPesquisa) {
       if (nomeTrim.toLowerCase().replace(nomeTrim.charAt(0), ' ').isBlank()) {
         return ErrosDadosUsuario.NOME_INVALIDO;
       }
@@ -365,12 +364,11 @@ public final class UsuarioService {
       if (filtrosUsuarioDTO.filtroRapido() != null && !filtrosUsuarioDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosUsuarioDTO.filtroRapido();
 
-        usuarios.removeIf(
-            usuario ->
-                usuario.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        usuarios.removeIf(usuario ->
+            usuario.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -395,7 +393,9 @@ public final class UsuarioService {
     if (filtrosUsuarioDTO.nomeFiltro() != null) {
       GenericExceptionEnum validacao =
           validarNome(
-              filtrosUsuarioDTO.nomeFiltro(), TiposUsuario.EMPRESA_DEMANDANTE.getTipoDoUsuario(), true);
+              filtrosUsuarioDTO.nomeFiltro(),
+              TiposUsuario.EMPRESA_DEMANDANTE.getTipoDoUsuario(),
+              true);
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
@@ -477,12 +477,11 @@ public final class UsuarioService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(
@@ -787,54 +786,58 @@ public final class UsuarioService {
     }
   }
 
-  //Método relacionados ao cadastro
+  // Método relacionados ao cadastro
   public List<GenericExceptionEnum> validarCadastro(UsuarioCadastroDTO usuarioCadastroDTO) {
     List<GenericExceptionEnum> listaDeErros = new ArrayList<>();
 
     GenericExceptionEnum validacaoEmail = validarEmail(usuarioCadastroDTO.email());
     if (validacaoEmail != VALIDACAO_OK) {
       listaDeErros.add(validacaoEmail);
-    }else{
+    } else {
       GenericExceptionEnum validacaoEmailUnico = validarEmailUnico(usuarioCadastroDTO.email());
-      if(validacaoEmailUnico != VALIDACAO_OK){
+      if (validacaoEmailUnico != VALIDACAO_OK) {
         listaDeErros.add(validacaoEmailUnico);
       }
     }
 
     GenericExceptionEnum validacaoSenha = validarSenha(usuarioCadastroDTO.senha());
-    if(validacaoSenha != VALIDACAO_OK){
+    if (validacaoSenha != VALIDACAO_OK) {
       listaDeErros.add(validacaoSenha);
     }
 
-    if(!usuarioCadastroDTO.senha().equals(usuarioCadastroDTO.senhaConfirmacao())){
+    if (!usuarioCadastroDTO.senha().equals(usuarioCadastroDTO.senhaConfirmacao())) {
       listaDeErros.add(SENHAS_DIFERENTES);
     }
 
     GenericExceptionEnum validacaoRaioProcura =
-            validarRaioProcuraKm(usuarioCadastroDTO.raioProcuraKm());
+        validarRaioProcuraKm(usuarioCadastroDTO.raioProcuraKm());
     if (validacaoRaioProcura != VALIDACAO_OK) {
       listaDeErros.add(validacaoRaioProcura);
     }
     return listaDeErros;
   }
 
-  private GenericExceptionEnum validarEmailUnico(String email){
+  private GenericExceptionEnum validarEmailUnico(String email) {
     UsuarioDAO dao = new UsuarioDAO();
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
 
-    try(Connection conexao = ConexaoPostgresql.getConnection()){
+    try (Connection conexao = ConexaoPostgresql.getConnection()) {
 
-      criarInstrucaoDinamica.setWhere(CamposUsuario.EMAIL.getCampoUsuario(), IGUAL, VAZIO, email.toLowerCase().strip(), Types.VARCHAR);
+      criarInstrucaoDinamica.setWhere(
+          CamposUsuario.EMAIL.getCampoUsuario(),
+          IGUAL,
+          VAZIO,
+          email.toLowerCase().strip(),
+          Types.VARCHAR);
 
       List<Map<String, Object>> usuario = dao.readAll(criarInstrucaoDinamica, conexao);
 
-      if(usuario.isEmpty()){
+      if (usuario.isEmpty()) {
         return VALIDACAO_OK;
       }
       return EMAIL_INVALIDO;
-    }catch (SQLException | RuntimeException  exception){
+    } catch (SQLException | RuntimeException exception) {
       return EMAIL_INVALIDO;
     }
   }
-
 }

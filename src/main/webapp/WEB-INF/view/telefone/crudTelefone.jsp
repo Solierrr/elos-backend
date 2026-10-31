@@ -23,7 +23,7 @@
 <div class="conteiner">
   <nav class="side-bar" id="side-bar-id">
     <div class="conteiner-logo" id="caixa-logo">
-      <a id="link-da-logo">
+      <a id="link-da-logo" href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/assets/icone/LOGO.svg" id="logo"
              alt="botão para a tela inicial"/>
         <span id="span-logo">Elos</span>
@@ -166,7 +166,7 @@
           <div>
             <div class="label-e-input">
               <label for="telefone-update">Número do telefone</label>
-              <input type="text" name="telefone-update" id="telefone-update" required
+              <input type="text" name="telefone-update" id="telefone-update"
                      placeholder="Deixe em branco caso não for alterar">
             </div>
             <span id="erro-telefone-update" class="span-erro"></span>
@@ -174,7 +174,7 @@
           <div>
             <div class="label-e-input">
               <label for="tipo-update">Tipo do telefone</label>
-              <select name="tipo-update" id="tipo-update" required>
+              <select name="tipo-update" id="tipo-update">
                 <option value="" disabled selected hidden>Selecione o tipo do telefone
                 </option>
                 <option value="EMPRESARIAL">Empresarial</option>
@@ -186,7 +186,7 @@
           <div>
             <div class="label-e-input">
               <label for="principal-update">É o telefone principal do usuário?</label>
-              <select name="principal-update" id="principal-update" required>
+              <select name="principal-update" id="principal-update">
                 <option value="" disabled selected hidden>Selecione uma opção
                 </option>
                 <option value="true">Sim</option>

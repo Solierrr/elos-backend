@@ -36,9 +36,9 @@ import util.EnviarEmail;
 
 public final class RedefinicaoSenhaService {
 
-  //Constantes utilizadas pelo código
+  // Constantes utilizadas pelo código
   private static final Pattern PATTERN_EMAIL =
-          Pattern.compile("^[a-z0-9._%+-]+@[a-z-0-9]+[a-z0-9.-]*\\.[a-z]{2,}$");
+      Pattern.compile("^[a-z0-9._%+-]+@[a-z-0-9]+[a-z0-9.-]*\\.[a-z]{2,}$");
   private static final int TAMANHO_MAXIMO_EMAIL = 256;
 
   private static final int TAMANHO_MAXIMO_TOKEN = 100000;
@@ -51,26 +51,26 @@ public final class RedefinicaoSenhaService {
 
   private static final String TEMPLATE_EMAIL_REDEFINICAO =
       """
-        <html>
-            <style>
-              @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
-  
-              *{
-                  font-family: 'Lexend Deca';
-                  color: 2B2B2B;
-                  letter-spacing: 0;
-                  word-spacing: 0;
-              }
-            </style>
+      <html>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
 
-          <body ">
-            <h2>Redefinição de senha</h2>
-            <p>Use o código abaixo para redefinir sua senha:</p>
-            <p style="font-size: 28px; font-weight: bold; letter-spacing: 6px;">%s</p>
-            <p>Esse código expira em alguns minutos. Se você não solicitou essa redefinição, ignore este email.</p>
-          </body>
-        </html>
-        """;
+            *{
+                font-family: 'Lexend Deca';
+                color: 2B2B2B;
+                letter-spacing: 0;
+                word-spacing: 0;
+            }
+          </style>
+
+        <body ">
+          <h2>Redefinição de senha</h2>
+          <p>Use o código abaixo para redefinir sua senha:</p>
+          <p style="font-size: 28px; font-weight: bold; letter-spacing: 6px;">%s</p>
+          <p>Esse código expira em alguns minutos. Se você não solicitou essa redefinição, ignore este email.</p>
+        </body>
+      </html>
+      """;
   private static final String ASSUNTO_EMAIL = "Redefinição de senha no Elos";
 
   private static final Pattern PATTERN_TOKEN = Pattern.compile("^[0-9]{5}$");
@@ -78,9 +78,9 @@ public final class RedefinicaoSenhaService {
   private static final int TAMANHO_MINIMO_SENHA = 8;
   private static final int TAMANHO_MAXIMO_SENHA = 60;
   private static final Pattern PATTERN_SENHA =
-          Pattern.compile("(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{8,}");
+      Pattern.compile("(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{8,}");
 
-  //Validações
+  // Validações
 
   // Validações da senha
   private static GenericExceptionEnum validarSenha(String senha) {
@@ -115,23 +115,24 @@ public final class RedefinicaoSenhaService {
       return ErrosGeraisDados.EMAIL_TAMANHO_INVALIDO;
     }
     return validarFormatoEmail(emailTratado) != VALIDACAO_OK
-            ? ErrosGeraisDados.EMAIL_INVALIDO
-            : VALIDACAO_OK;
+        ? ErrosGeraisDados.EMAIL_INVALIDO
+        : VALIDACAO_OK;
   }
 
   private static GenericExceptionEnum validarFormatoEmail(String email) {
     return PATTERN_EMAIL.matcher(email).matches() ? VALIDACAO_OK : ErrosGeraisDados.EMAIL_INVALIDO;
   }
 
-  //Validação se o email tem registro no banco
+  // Validação se o email tem registro no banco
   private static boolean ehCadastardo(String email) {
     UsuarioDAO usuarioDAO = new UsuarioDAO();
     AdminDAO adminDAO = new AdminDAO();
 
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
-    criarInstrucaoDinamica.setWhere("email", IGUAL, VAZIO, email.strip().toLowerCase(), Types.VARCHAR);
+    criarInstrucaoDinamica.setWhere(
+        "email", IGUAL, VAZIO, email.strip().toLowerCase(), Types.VARCHAR);
 
-    try(Connection connection = ConexaoPostgresql.getConnection()){
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
 
       List<Map<String, Object>> registro = usuarioDAO.readAll(criarInstrucaoDinamica, connection);
       if (!registro.isEmpty()) {
@@ -139,54 +140,56 @@ public final class RedefinicaoSenhaService {
       }
 
       registro = adminDAO.readAll(criarInstrucaoDinamica, connection);
-      if(!registro.isEmpty()) {
+      if (!registro.isEmpty()) {
         return true;
       }
       return false;
-    }catch (SQLException | RuntimeException e) {
-     return false;
+    } catch (SQLException | RuntimeException e) {
+      return false;
     }
   }
 
-  //Metodos relacionaados ao envio e persistência do token
-  public GenericExceptionEnum enviarToken(String email){
+  // Metodos relacionaados ao envio e persistência do token
+  public GenericExceptionEnum enviarToken(String email) {
     GenericExceptionEnum validacaoBase = validarEmail(email);
-    if(validacaoBase != VALIDACAO_OK){
+    if (validacaoBase != VALIDACAO_OK) {
       return validacaoBase;
     }
 
-    if(!ehCadastardo(email)){
+    if (!ehCadastardo(email)) {
       return EMAIL_INVALIDO;
     }
-
 
     return enviarEmailRedefinicao(email);
   }
 
-  private GenericExceptionEnum enviarEmailRedefinicao(String email){
+  private GenericExceptionEnum enviarEmailRedefinicao(String email) {
     String emailTratado = email.toLowerCase().strip();
 
     String token = gerarToken();
     System.out.println(token);
     GenericExceptionEnum resultadoPesistirToken = persistirToken(token, emailTratado);
-    if(resultadoPesistirToken != SUCESSO){
+    if (resultadoPesistirToken != SUCESSO) {
       return resultadoPesistirToken;
     }
 
     EnviarEmail enviarEmail = new EnviarEmail();
 
-    return enviarEmail.enviarEmail(emailTratado, ASSUNTO_EMAIL, TEMPLATE_EMAIL_REDEFINICAO.formatted(token)) ? SUCESSO : ERRO_GENERICO_EMAIL;
+    return enviarEmail.enviarEmail(
+            emailTratado, ASSUNTO_EMAIL, TEMPLATE_EMAIL_REDEFINICAO.formatted(token))
+        ? SUCESSO
+        : ERRO_GENERICO_EMAIL;
   }
 
-  private GenericExceptionEnum persistirToken(String token, String email){
-    try(Jedis jedis = ConexaoRedis.getConexao()){
+  private GenericExceptionEnum persistirToken(String token, String email) {
+    try (Jedis jedis = ConexaoRedis.getConexao()) {
 
-      if(jedis.exists(email+":envios")){
-        String qtdEnvios =  jedis.get(email+":envios");
+      if (jedis.exists(email + ":envios")) {
+        String qtdEnvios = jedis.get(email + ":envios");
         Integer qtdEnviosConvertido = Integer.parseInt(qtdEnvios);
 
         if (qtdEnviosConvertido >= MAXIMO_ENVIO_EMAILS) {
-          jedis.del(email+":token");
+          jedis.del(email + ":token");
           return LIMTE_EMAILS_ATINGIDO;
         }
 
@@ -198,46 +201,46 @@ public final class RedefinicaoSenhaService {
       }
 
       Criptografia criptografia = new Criptografia();
-      String tokenHasheado =  criptografia.porEmBcrypt(token);
+      String tokenHasheado = criptografia.porEmBcrypt(token);
 
       Map<String, String> map = new HashMap<>();
       map.put("token", tokenHasheado);
       map.put("qtd", "1");
 
-      jedis.hset(email+":token", map);
-      jedis.expire(email+":token", TTL_EMAIL_TOKEN);
+      jedis.hset(email + ":token", map);
+      jedis.expire(email + ":token", TTL_EMAIL_TOKEN);
 
       return SUCESSO;
-    }catch (JedisException jedisException){
+    } catch (JedisException jedisException) {
       return ERRO_GENERICO;
     }
   }
 
-  private String gerarToken(){
+  private String gerarToken() {
     SecureRandom random = new SecureRandom();
     int numero = random.nextInt(TAMANHO_MAXIMO_TOKEN);
     return String.format("%05d", numero);
   }
 
-  //Validação do token
-  public GenericExceptionEnum verificarToken(String token, String email){
-    if(token == null || token.isEmpty() || !PATTERN_TOKEN.matcher(token).matches()){
+  // Validação do token
+  public GenericExceptionEnum verificarToken(String token, String email) {
+    if (token == null || token.isEmpty() || !PATTERN_TOKEN.matcher(token).matches()) {
       return ERRO_TOKEN;
     }
 
     return validarToken(token, email);
   }
 
-  private GenericExceptionEnum validarToken(String tokenRecebido, String email){
+  private GenericExceptionEnum validarToken(String tokenRecebido, String email) {
 
-    try(Jedis jedis = ConexaoRedis.getConexao()){
+    try (Jedis jedis = ConexaoRedis.getConexao()) {
 
       String token = jedis.hget(email + ":token", "token");
 
-      if(token == null){
-        int qtdsEnvios =  Integer.parseInt(jedis.get(email + ":envios"));
+      if (token == null) {
+        int qtdsEnvios = Integer.parseInt(jedis.get(email + ":envios"));
 
-        if(qtdsEnvios >= MAXIMO_ENVIO_EMAILS){
+        if (qtdsEnvios >= MAXIMO_ENVIO_EMAILS) {
           return LIMTE_EMAILS_ATINGIDO;
         }
         return ERRO_LIMITE_TENTATIVAS_TOKEN;
@@ -260,46 +263,47 @@ public final class RedefinicaoSenhaService {
       jedis.hincrBy(email + ":token", "qtd", 1);
 
       return TOKEN_INVALIDO;
-    }catch (JedisException jedisException){
+    } catch (JedisException jedisException) {
       return ERRO_GENERICO;
     }
-
   }
 
-  //Métodos para redefinir a senha
-  public GenericExceptionEnum alterarSenha(String email, String senha, String senhaConfirmacao){
+  // Métodos para redefinir a senha
+  public GenericExceptionEnum alterarSenha(String email, String senha, String senhaConfirmacao) {
     GenericExceptionEnum validacaoSenha = validarSenha(senha);
-    if(validacaoSenha != VALIDACAO_OK){
+    if (validacaoSenha != VALIDACAO_OK) {
       return validacaoSenha;
     }
 
-    if(!senha.equals(senhaConfirmacao)){
+    if (!senha.equals(senhaConfirmacao)) {
       return SENHAS_DIFERENTES;
     }
     return persistirNovaSenha(email, senha.strip());
   }
 
-  private GenericExceptionEnum persistirNovaSenha(String email, String senha){
+  private GenericExceptionEnum persistirNovaSenha(String email, String senha) {
     UsuarioDAO usuarioDAO = new UsuarioDAO();
     AdminDAO adminDAO = new AdminDAO();
 
-    try(Connection connection = ConexaoPostgresql.getConnection()){
+    try (Connection connection = ConexaoPostgresql.getConnection()) {
       connection.setAutoCommit(false);
 
-      try{
+      try {
         Criptografia criptografia = new Criptografia();
 
         CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
         criarInstrucaoDinamica.setCampo("senha", criptografia.porEmBcrypt(senha), Types.VARCHAR);
         criarInstrucaoDinamica.setWhere("email", IGUAL, VAZIO, email, Types.VARCHAR);
 
-        GenericExceptionEnum resultadoUpdateUsuario = usuarioDAO.update(criarInstrucaoDinamica, connection);
+        GenericExceptionEnum resultadoUpdateUsuario =
+            usuarioDAO.update(criarInstrucaoDinamica, connection);
 
-        if(resultadoUpdateUsuario == SUCESSO){
+        if (resultadoUpdateUsuario == SUCESSO) {
           return resultadoUpdateUsuario;
         }
 
-        GenericExceptionEnum resultadoUpdateAdmin = adminDAO.update(criarInstrucaoDinamica, connection);
+        GenericExceptionEnum resultadoUpdateAdmin =
+            adminDAO.update(criarInstrucaoDinamica, connection);
 
         connection.commit();
         return resultadoUpdateAdmin;
@@ -312,7 +316,5 @@ public final class RedefinicaoSenhaService {
     } catch (SQLException | RuntimeException exception) {
       return ERRO_GENERICO;
     }
-
   }
-
 }

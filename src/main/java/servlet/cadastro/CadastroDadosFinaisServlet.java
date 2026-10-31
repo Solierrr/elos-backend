@@ -72,6 +72,20 @@ public final class CadastroDadosFinaisServlet extends HttpServlet {
     Object usuarioParaInser = session.getAttribute("dadosParte1");
     Object tipoUsuario = session.getAttribute("tipoUsuario");
 
+    if (usuarioParaInser == null) {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(request.getContextPath() + "/cadastro");
+      return;
+    }
+
+    if (tipoUsuario == null) {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(request.getContextPath() + "/cadastro-tipo");
+      return;
+    }
+
     JsonObject jsonObjectUsuario = (JsonObject) usuarioParaInser;
     String tipoUsuarioConvertido = (String) tipoUsuario;
 
@@ -80,7 +94,7 @@ public final class CadastroDadosFinaisServlet extends HttpServlet {
     jsonObject.entrySet().forEach(entry -> jsonObjectUsuario.add(entry.getKey(), entry.getValue()));
     jsonObjectUsuario.addProperty("tipo-usuario", tipoUsuarioConvertido);
 
-    if(!jsonObject.has("nome")){
+    if (!jsonObject.has("nome")) {
       jsonObjectUsuario.add("nome", jsonObject.get("razao-social"));
     }
 

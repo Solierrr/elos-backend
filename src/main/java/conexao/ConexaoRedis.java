@@ -7,6 +7,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public final class ConexaoRedis extends Env {
 
+  //Uso de pool de conexões para aumentar a velocidade e evitar ficar abrindo e fechando conexões desnecessárias
   private static JedisPool redisPool;
 
   public static void criarPool() {

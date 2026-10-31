@@ -1,6 +1,5 @@
 package service.admin;
 
-
 import service.GenericEnumCampos;
 
 public enum CamposAdmin implements GenericEnumCampos {

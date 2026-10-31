@@ -260,7 +260,7 @@ public final class CriarInstrucaoDinamica {
   }
 
   private String tratarCampoWhere(String campoWhere, Object valorWhere) {
-    return valorWhere instanceof LocalDate ? ("date(" + campoWhere + ")") : campoWhere;
+    return valorWhere instanceof LocalDate ? (campoWhere + "::date") : campoWhere;
   }
 
   // Utilitários para caso de erro

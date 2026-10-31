@@ -30,7 +30,7 @@ public record FiltrosFornecedorDTO(
         .replaceAll("/", "");
   }
 
-  public Long formatarRazaoSocial() {
-    return Long.parseLong(razaoSocialFiltro.strip());
+  public String formatarRazaoSocial() {
+    return razaoSocialFiltro.strip();
   }
 }

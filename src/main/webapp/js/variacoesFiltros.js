@@ -1,11 +1,11 @@
 const gerarCampos = () => {
-    const popUp = document.getElementById("pop-up-filtro");
+  const popUp = document.getElementById("pop-up-filtro");
 
-    const urlApagar = popUp ? popUp.dataset.urlApagar : "";
+  const urlApagar = popUp ? popUp.dataset.urlApagar : "";
 
-    return {
-        "usuario": {
-            "ID" : `
+  return {
+    "usuario": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -16,7 +16,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "EMAIL": `
+      "EMAIL": `
                 <div class="caixa-filtro label-e-input">
                     <label for="email-filtro">E-mail</label>
                     <div>
@@ -28,7 +28,7 @@ const gerarCampos = () => {
                     <span id="filtro-erro-email" class="span-erro"></span>
 
                 </div>`,
-            "NOME": ` 
+      "NOME": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="nome-filtro">Nome</label>
                     <div>
@@ -39,7 +39,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-nome" class="span-erro"></span>
                 </div>`,
-            "TIPO_USUARIO":`
+      "TIPO_USUARIO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="tipo-usuario-filtro">Tipo do usuário</label>
                     <div>
@@ -55,11 +55,11 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-tipo-usuario" class="span-erro"></span>
                 </div>`,
-            "RAIO_PROCURA_KM": `
+      "RAIO_PROCURA_KM": `
                 <div class="caixa-filtro label-e-input">
-                    <label for="raio-procura-km-filtro">Raio Procura (KM)</label>
+                    <label for="raio-procura-km-filtro">Raio de procura (KM)</label>
                     <div>
-                        <input type="text" name="raio-procura-km-filtro" id="raio-procura-km-filtro" placeholder="ex: 23" pattern="[0-9.,]+">
+                        <input type="text" name="raio-procura-km-filtro" id="raio-procura-km-filtro" placeholder="Inisira raio de prcura limite a ser exibido" pattern="[0-9.,]+">
                         <button type="button" class="remover-filtro botoes-sair">
                             <img src="${urlApagar}" class="icone-lixeira">
                         </button>
@@ -67,7 +67,7 @@ const gerarCampos = () => {
                     <span id="filtro-erro-raio-procura-km" class="span-erro"></span>
 
                 </div>`,
-            "JOIN":`
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -85,9 +85,9 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        },
-        "profissional": {
-            "ID" : `
+    },
+    "profissional": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -98,7 +98,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_USUARIO" : `
+      "ID_USUARIO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-usuario-filtro">ID do usuário</label>
                     <div>
@@ -109,7 +109,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-usuario" class="span-erro"></span>
                 </div>`,
-            "PROFISSAO": ` 
+      "PROFISSAO": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="profissao-filtro">Profissão</label>
                     <div>
@@ -120,7 +120,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-profissao" class="span-erro"></span>
                 </div>`,
-            "CPF": `
+      "CPF": `
                 <div class="caixa-filtro label-e-input">
                     <label for="cpf-filtro">CPF</label>
                     <div>
@@ -131,7 +131,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-cpf" class="span-erro"></span>
                 </div>`,
-            "ID_FORNECEDOR" : `
+      "ID_FORNECEDOR": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-fornecedor-filtro">ID do fornecedor</label>
                     <div>
@@ -142,7 +142,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-fornecedor" class="span-erro"></span>
                 </div>`,
-            "JOIN":`
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -157,8 +157,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "fornecedor":{
-            "ID" : `
+    }, "fornecedor": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -169,7 +169,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_USUARIO" : `
+      "ID_USUARIO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-usuario-filtro">ID do usuário</label>
                     <div>
@@ -180,7 +180,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-usuario" class="span-erro"></span>
                 </div>`,
-            "TIPO_FORNECEDOR":`
+      "TIPO_FORNECEDOR": `
                 <div class="caixa-filtro label-e-input">
                     <label for="tipo-fornecedor-filtro">Tipo do fornecedor</label>
                     <div>
@@ -200,7 +200,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-tipo-fornecedor" class="span-erro"></span>
                 </div>`,
-            "CNPJ": `
+      "CNPJ": `
                 <div class="caixa-filtro label-e-input">
                     <label for="cnpj-filtro">CNPJ</label>
                     <div>
@@ -211,7 +211,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-cnpj" class="span-erro"></span>
                 </div>`,
-            "RAZAO_SOCIAL": ` 
+      "RAZAO_SOCIAL": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="razao-social-filtro">Razão social</label>
                     <div>
@@ -222,7 +222,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-razao-social" class="span-erro"></span>
                 </div>`,
-            "JOIN":`
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -237,8 +237,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "empresa-demandante" : {
-            "ID" : `
+    }, "empresa-demandante": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -249,7 +249,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_USUARIO" : `
+      "ID_USUARIO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-usuario-filtro">ID do usuário</label>
                     <div>
@@ -260,7 +260,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-usuario" class="span-erro"></span>
                 </div>`,
-            "CNPJ": `
+      "CNPJ": `
                 <div class="caixa-filtro label-e-input">
                     <label for="cnpj-filtro">CNPJ</label>
                     <div>
@@ -271,7 +271,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-cnpj" class="span-erro"></span>
                 </div>`,
-            "RAZAO_SOCIAL": ` 
+      "RAZAO_SOCIAL": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="razao-social-filtro">Razão social</label>
                     <div>
@@ -282,7 +282,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-razao-social" class="span-erro"></span>
                 </div>`,
-            "JOIN":`
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -296,8 +296,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "telefone":{
-            "ID" : `
+    }, "telefone": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -308,7 +308,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_USUARIO" : `
+      "ID_USUARIO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-usuario-filtro">ID do usuário</label>
                     <div>
@@ -319,7 +319,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-usuario" class="span-erro"></span>
                 </div>`,
-            "TELEFONE": `
+      "TELEFONE": `
                 <div class="caixa-filtro label-e-input">
                     <label for="telefone-filtro">Número do telefone</label>
                     <div>
@@ -330,7 +330,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-telefone" class="span-erro"></span>
                 </div>`,
-            "TIPO": ` 
+      "TIPO": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="tipo-filtro">Tipo do telefone</label>
                     <div>
@@ -347,7 +347,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-tipo" class="span-erro"></span>
                 </div>`,
-            "PRINCIPAL":`
+      "PRINCIPAL": `
                 <div class="caixa-filtro label-e-input">
                     <label for="principal-filtro">É o telefone principal?</label>
                     <div>
@@ -364,7 +364,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-principal" class="span-erro"></span>
                 </div>`,
-            "JOIN":`
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -378,8 +378,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "telefone-admin": {
-            "ID": `
+    }, "telefone-admin": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -390,7 +390,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_ADMIN": `
+      "ID_ADMIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-admin-filtro">ID do admin</label>
                     <div>
@@ -401,7 +401,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-admin" class="span-erro"></span>
                 </div>`,
-            "TELEFONE": `
+      "TELEFONE": `
                 <div class="caixa-filtro label-e-input">
                     <label for="telefone-filtro">Número do telefone</label>
                     <div>
@@ -412,7 +412,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-telefone" class="span-erro"></span>
                 </div>`,
-            "TIPO": ` 
+      "TIPO": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="tipo-filtro">Tipo do telefone</label>
                     <div>
@@ -429,7 +429,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-tipo" class="span-erro"></span>
                 </div>`,
-            "PRINCIPAL": `
+      "PRINCIPAL": `
                 <div class="caixa-filtro label-e-input">
                     <label for="principal-filtro">É o telefone principal?</label>
                     <div>
@@ -446,7 +446,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-principal" class="span-erro"></span>
                 </div>`,
-            "JOIN": `
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -460,8 +460,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "acesso-admin": {
-            "ID": `
+    }, "acesso-admin": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -472,7 +472,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_ADMIN": `
+      "ID_ADMIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-admin-filtro">ID do admin</label>
                     <div>
@@ -483,7 +483,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-admin" class="span-erro"></span>
                 </div>`,
-            "DATA_ACESSO": `
+      "DATA_ACESSO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="data-acesso-filtro">Data de acesso</label>
                     <div>
@@ -494,9 +494,9 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-data-acesso" class="span-erro"></span>
                 </div>`,
-            "NAVEGADOR": `
+      "NAVEGADOR": `
                 <div class="caixa-filtro label-e-input">
-                    <label for="navegador-filtro">É o telefone navegador?</label>
+                    <label for="navegador-filtro">Navegador</label>
                     <div>
                         <select name="navegador-filtro" id="navegador-filtro">
                             <option value="CAMPO_VAZIO" disabled selected hidden
@@ -515,7 +515,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-navegador" class="span-erro"></span>
                 </div>`,
-            "SISTEMA_OPERACIONAL": `
+      "SISTEMA_OPERACIONAL": `
                 <div class="caixa-filtro label-e-input">
                     <label for="sistema-operacional-filtro">É o telefone sistema-operacional?</label>
                     <div>
@@ -535,7 +535,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-sistema-operacional" class="span-erro"></span>
                 </div>`,
-            "JOIN": `
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -549,8 +549,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "historico-alteracoes":{
-            "ID": `
+    }, "historico-alteracoes": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -561,7 +561,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_ADMIN": `
+      "ID_ADMIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-admin-filtro">ID do admin</label>
                     <div>
@@ -572,7 +572,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-admin" class="span-erro"></span>
                 </div>`,
-            "ID_REGISTRO": `
+      "ID_REGISTRO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-registro-filtro">ID do registro</label>
                     <div>
@@ -583,7 +583,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-registro" class="span-erro"></span>
                 </div>`,
-            "DATA_ALTERACAOO": `
+      "DATA_ALTERACAO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="data-alteracao-filtro">Data de alteração</label>
                     <div>
@@ -594,13 +594,13 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-data-alteracao" class="span-erro"></span>
                 </div>`,
-            "ACAO": `
+      "ACAO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="acao-filtro">Ação realizada</label>
                     <div>
                         <select name="acao-filtro" id="acao-filtro">
                             <option value="CAMPO_VAZIO" disabled selected hidden
-                                    id="acao-filtro-estado-vazio">Selecione o acao
+                                    id="acao-filtro-estado-vazio">Selecione a ação
                             </option>
                             <option value="UPDATE">Atualização de um registro</option>
                             <option value="INSERT">Cadastro de um registro</option>
@@ -612,7 +612,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-acao" class="span-erro"></span>
                 </div>`,
-            "JOIN": `
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -626,8 +626,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "admin":{
-            "ID" : `
+    }, "admin": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -638,7 +638,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "EMAIL": `
+      "EMAIL": `
                 <div class="caixa-filtro label-e-input">
                     <label for="email-filtro">E-mail</label>
                     <div>
@@ -650,7 +650,7 @@ const gerarCampos = () => {
                     <span id="filtro-erro-email" class="span-erro"></span>
 
                 </div>`,
-            "NOME": ` 
+      "NOME": ` 
                 <div class="caixa-filtro label-e-input">
                     <label for="nome-filtro">Nome</label>
                     <div>
@@ -661,7 +661,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-nome" class="span-erro"></span>
                 </div>`,
-            "FUNCAO": `
+      "FUNCAO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="funcao-filtro">Função do admin</label>
                     <div>
@@ -681,7 +681,24 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-funcao" class="span-erro"></span>
                 </div>`,
-            "JOIN": `
+      "EM_ATIVIDADE": `
+                <div class="caixa-filtro label-e-input">
+                    <label for="em-atividade-filtro">Status do admin</label>
+                    <div>
+                        <select name="em-atividade-filtro" id="em-atividade-filtro">
+                            <option value="CAMPO_VAZIO" disabled selected hidden
+                                    id="em-atividade-filtro-estado-vazio">Selecione o status
+                            </option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                        <button type="button" class="remover-filtro botoes-sair">
+                            <img src="${urlApagar}" class="icone-lixeira">
+                        </button>
+                    </div>
+                    <span id="filtro-erro-em-atividade" class="span-erro"></span>
+                </div>`,
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -697,8 +714,8 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }, "endereco":{
-            "ID" : `
+    }, "endereco": {
+      "ID": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-filtro">ID</label>
                     <div>
@@ -709,7 +726,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id" class="span-erro"></span>
                 </div>`,
-            "ID_USUARIO" : `
+      "ID_USUARIO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="id-usuario-filtro">ID do usuário</label>
                     <div>
@@ -720,7 +737,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-id-usuario" class="span-erro"></span>
                 </div>`,
-            "ESTADO" : `
+      "ESTADO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="estado-filtro">Estado</label>
                     <div>
@@ -760,7 +777,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-estado" class="span-erro"></span>
                 </div>`,
-            "CIDADE": `
+      "CIDADE": `
                 <div class="caixa-filtro label-e-input">
                     <label for="cidade-filtro">Cidade</label>
                     <div>
@@ -771,7 +788,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-cidade" class="span-erro"></span>
                 </div>`,
-            "BAIRRO": `
+      "BAIRRO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="bairro-filtro">Bairro</label>
                     <div>
@@ -782,7 +799,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-bairro" class="span-erro"></span>
                 </div>`,
-            "CEP": `
+      "CEP": `
                 <div class="caixa-filtro label-e-input">
                     <label for="cep-filtro">CEP</label>
                     <div>
@@ -793,7 +810,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-cep" class="span-erro"></span>
                 </div>`,
-            "LOGRADOURO": `
+      "LOGRADOURO": `
                 <div class="caixa-filtro label-e-input">
                     <label for="logradouro-filtro">Logradouro</label>
                     <div>
@@ -804,7 +821,7 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-logradouro" class="span-erro"></span>
                 </div>`,
-            "JOIN": `
+      "JOIN": `
                 <div class="caixa-filtro label-e-input">
                     <label for="join-filtro">Com qual registro você deseja conectar os dados?</label>
                     <div>
@@ -818,11 +835,11 @@ const gerarCampos = () => {
                     </div>
                     <span id="filtro-erro-join" class="span-erro"></span>
                 </div>`
-        }
-    };
+    }
+  };
 };
 
 export const camposValores = (nomeTela) => {
-    const campos = gerarCampos();
-    return campos[nomeTela];
+  const campos = gerarCampos();
+  return campos[nomeTela];
 };

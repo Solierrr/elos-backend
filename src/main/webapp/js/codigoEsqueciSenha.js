@@ -107,7 +107,8 @@ formulario.addEventListener("submit", event => {
           spanErro.textContent = dadosResposta.token;
           return;
         }
-      } catch (e) {}
+      } catch (e) {
+      }
       window.location.href = resultado.texto;
     }).catch(() => window.location.href = contextPath);
 });
@@ -147,7 +148,8 @@ textoReenviar.addEventListener("click", (e) => {
           spanErro.textContent = dadosResposta.codigo;
 
         }
-      } catch (e) {}
+      } catch (e) {
+      }
     }).catch(() => window.location.href = contextPath);
 
 })

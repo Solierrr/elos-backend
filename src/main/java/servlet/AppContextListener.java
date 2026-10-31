@@ -7,7 +7,7 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
 @WebListener
-public class AppContextListener implements ServletContextListener {
+public final class AppContextListener implements ServletContextListener {
 
   //Uso dessa classe para contornar o problema da primeira requisição ser muito lenta por estar ligando o pool
 

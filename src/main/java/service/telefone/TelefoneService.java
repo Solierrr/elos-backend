@@ -47,8 +47,8 @@ public final class TelefoneService {
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  //Constante utilizada pelo código
-  private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}(9)?[0-9]{8}$");
+  // Constante utilizada pelo código
+  private static final Pattern PATTERN_TELEFONE = Pattern.compile("^[0-9]{2}[0-9]{8,9}$");
 
   // Validações
 
@@ -265,12 +265,11 @@ public final class TelefoneService {
           && !filtrosTelefoneDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosTelefoneDTO.filtroRapido();
 
-        telefones.removeIf(
-            telefone ->
-                telefone.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        telefones.removeIf(telefone ->
+            telefone.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -380,12 +379,11 @@ public final class TelefoneService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(

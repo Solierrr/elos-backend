@@ -6,17 +6,15 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import java.io.IOException;
-
+import exception.GenericExceptionEnum;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
+import java.io.IOException;
 import model.Admin;
 import service.fornecedor.FornecedorService;
-import exception.GenericExceptionEnum;
 
 @WebServlet("/crudFornecedor-delete")
 public final class DeleteFornecedorServlet extends HttpServlet {

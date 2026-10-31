@@ -19,17 +19,17 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public final class Criptografia extends Env {
 
-  //Chaves responsáveis pela criptografia
+  // Chaves responsáveis pela criptografia
   private static final byte[] HMAC_KEY = getHmacKey();
   private static final byte[] AES_KEY = getAesKey();
 
-  //Constantes utilizadas pelo código
+  // Constantes utilizadas pelo código
   private static final String NOME_ALGORITMO_HMAC = "HmacSHA256";
   private static final String NOME_ALGORITMO_AES = "AES/GCM/NoPadding";
   private static final int TAMANHO_VETOR_INICIALIZACAO = 12;
   private static final int TAMANHO_TAG_AUTENTICACAO = 128;
 
-  //Métodos do BCrypt
+  // Métodos do BCrypt
   public String porEmBcrypt(String senha) {
     return BCrypt.hashpw(senha, BCrypt.gensalt());
   }
@@ -38,7 +38,7 @@ public final class Criptografia extends Env {
     return BCrypt.checkpw(senhaSemHash, senhaComHash);
   }
 
-  //Método do HMAC
+  // Método do HMAC
   public String criptografarHmac(String stringParaHmac) {
     try {
       Mac gerarMac = Mac.getInstance(NOME_ALGORITMO_HMAC);
@@ -53,7 +53,7 @@ public final class Criptografia extends Env {
     }
   }
 
-  //Métodos do AES
+  // Métodos do AES
   public byte[] criptografarAes(String stringParaAes) {
     try {
       byte[] vetorInicializacao = new byte[TAMANHO_VETOR_INICIALIZACAO];
@@ -62,16 +62,16 @@ public final class Criptografia extends Env {
       Cipher cifraAes = Cipher.getInstance(NOME_ALGORITMO_AES);
       SecretKey chaveAes = new SecretKeySpec(AES_KEY, "AES");
 
-      GCMParameterSpec parametrosGcm = new GCMParameterSpec(TAMANHO_TAG_AUTENTICACAO,
-          vetorInicializacao);
+      GCMParameterSpec parametrosGcm =
+          new GCMParameterSpec(TAMANHO_TAG_AUTENTICACAO, vetorInicializacao);
       cifraAes.init(Cipher.ENCRYPT_MODE, chaveAes, parametrosGcm);
 
       byte[] textoCifrado = cifraAes.doFinal(stringParaAes.getBytes(StandardCharsets.UTF_8));
 
       byte[] resultadoCombinado = new byte[vetorInicializacao.length + textoCifrado.length];
       System.arraycopy(vetorInicializacao, 0, resultadoCombinado, 0, vetorInicializacao.length);
-      System.arraycopy(textoCifrado, 0, resultadoCombinado, vetorInicializacao.length,
-          textoCifrado.length);
+      System.arraycopy(
+          textoCifrado, 0, resultadoCombinado, vetorInicializacao.length, textoCifrado.length);
 
       return resultadoCombinado;
     } catch (NoSuchAlgorithmException | NoSuchPaddingException exception) {
@@ -92,16 +92,20 @@ public final class Criptografia extends Env {
       byte[] vetorInicializacao = new byte[TAMANHO_VETOR_INICIALIZACAO];
       byte[] textoCifrado = new byte[bytesParaDescriptografar.length - TAMANHO_VETOR_INICIALIZACAO];
 
-      System.arraycopy(bytesParaDescriptografar, 0, vetorInicializacao, 0,
-          TAMANHO_VETOR_INICIALIZACAO);
-      System.arraycopy(bytesParaDescriptografar, TAMANHO_VETOR_INICIALIZACAO, textoCifrado, 0,
+      System.arraycopy(
+          bytesParaDescriptografar, 0, vetorInicializacao, 0, TAMANHO_VETOR_INICIALIZACAO);
+      System.arraycopy(
+          bytesParaDescriptografar,
+          TAMANHO_VETOR_INICIALIZACAO,
+          textoCifrado,
+          0,
           textoCifrado.length);
 
       Cipher cifraAes = Cipher.getInstance(NOME_ALGORITMO_AES);
       SecretKey chaveAes = new SecretKeySpec(AES_KEY, "AES");
 
-      GCMParameterSpec parametrosGcm = new GCMParameterSpec(TAMANHO_TAG_AUTENTICACAO,
-          vetorInicializacao);
+      GCMParameterSpec parametrosGcm =
+          new GCMParameterSpec(TAMANHO_TAG_AUTENTICACAO, vetorInicializacao);
       cifraAes.init(Cipher.DECRYPT_MODE, chaveAes, parametrosGcm);
 
       byte[] textoDecifrado = cifraAes.doFinal(textoCifrado);
@@ -118,5 +122,4 @@ public final class Criptografia extends Env {
           badPaddingException);
     }
   }
-
 }

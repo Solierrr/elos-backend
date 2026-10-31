@@ -123,7 +123,7 @@ public enum DataTypesUsados {
       if (object == null) {
         preparedStatement.setNull(index, Types.DATE);
       } else if (object instanceof LocalDate) {
-        preparedStatement.setDate(index, java.sql.Date.valueOf((LocalDate) object));
+        preparedStatement.setObject(index, object);
       } else {
         throw new IllegalArgumentException("DataType fornecido incompatível com o valor inserido");
       }

@@ -58,7 +58,7 @@ public final class AdminService {
 
   private static final int TAMANHO_MAXIMO_NOME = 150;
   private static final Pattern PATTERN_PESSOA_FISICA =
-      Pattern.compile("^[\\p{Script=Latin}']+[\\p{Script=Latin}'\\s\\-]+$");
+          Pattern.compile("^(?=[\\p{Script=Latin} \\-]+$)[\\p{Script=Latin} \\-]+$");
 
   // Validações
 

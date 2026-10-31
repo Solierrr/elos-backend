@@ -79,7 +79,7 @@ formularioInsert.addEventListener('submit', (event) => {
       if (resultado.ok && !temErros) {
         alert('Cadastro realizado com sucesso!');
         formularioInsert.reset();
-        if(document.getElementById("dados-mutaveis")) {
+        if (document.getElementById("dados-mutaveis")) {
           document.getElementById("dados-mutaveis").innerHTML = "";
         }
         enviarFiltro();

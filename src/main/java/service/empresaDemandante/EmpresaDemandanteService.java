@@ -5,7 +5,6 @@ import static dao.AcoesInstrucao.IGUAL;
 import static dao.AcoesInstrucao.ILIKE;
 import static dao.AcoesInstrucao.INNER_JOIN;
 import static dao.AcoesInstrucao.VAZIO;
-import static exception.ErrosDadosEmpresaDemandante.EH_MANDANTE_INVALIDO;
 import static exception.ErrosGerais.ERRO_GENERICO;
 import static exception.ErrosGerais.SUCESSO;
 import static exception.ErrosGeraisDados.CNPJ_FORMATO_INVALIDO;
@@ -58,7 +57,7 @@ public final class EmpresaDemandanteService {
   private static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-  //Constantes utilizadas pelo código
+  // Constantes utilizadas pelo código
   private static final int TAMANHO_CNPJ = 14;
   private static final Pattern PATTERN_CNPJ = Pattern.compile("^[0-9-A-Z]{12}[0-9]{2}$");
 
@@ -94,7 +93,8 @@ public final class EmpresaDemandanteService {
       return CNPJ_VAZIO;
     }
 
-    String cnpjTratado = cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
+    String cnpjTratado =
+        cnpj.strip().toUpperCase().replace(".", "").replace("-", "").replace("/", "");
 
     if (cnpjTratado.length() != TAMANHO_CNPJ) {
       return CNPJ_TAMANHO_INVALIDO;
@@ -190,7 +190,8 @@ public final class EmpresaDemandanteService {
 
         criarInstrucaoDinamicaRead.setWhere("id", IGUAL, VAZIO, idConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> empresaDemandante = dao.readAll(criarInstrucaoDinamicaRead, connection);
+        List<Map<String, Object>> empresaDemandante =
+            dao.readAll(criarInstrucaoDinamicaRead, connection);
 
         if (empresaDemandante.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
@@ -216,11 +217,15 @@ public final class EmpresaDemandanteService {
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaReadUsuario = new CriarInstrucaoDinamica();
 
-        Long idUsuarioConvertido =  Long.parseLong((String.valueOf(empresaDemandante.getFirst().get("id_usuario")).strip()));
+        Long idUsuarioConvertido =
+            Long.parseLong(
+                (String.valueOf(empresaDemandante.getFirst().get("id_usuario")).strip()));
 
-        criarInstrucaoDinamicaReadUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+        criarInstrucaoDinamicaReadUsuario.setWhere(
+            "id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
 
-        List<Map<String, Object>> usuario =  daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
+        List<Map<String, Object>> usuario =
+            daoUsuario.readAll(criarInstrucaoDinamicaReadUsuario, connection);
 
         if (usuario.isEmpty()) {
           throw new IllegalArgumentException("ID não possui um correspondente no banco!");
@@ -228,21 +233,22 @@ public final class EmpresaDemandanteService {
 
         CriarInstrucaoDinamica criarInstrucaoDinamicaDeleteUsuario = new CriarInstrucaoDinamica();
 
-        criarInstrucaoDinamicaDeleteUsuario.setWhere("id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
+        criarInstrucaoDinamicaDeleteUsuario.setWhere(
+            "id", IGUAL, VAZIO, idUsuarioConvertido, Types.BIGINT);
 
         daoUsuario.delete(criarInstrucaoDinamicaDeleteUsuario, connection);
 
         HistoricoAlteracoesAdminService.salvarAcao(
-                new HistoricoAlteracoesAdmin(
-                        null,
-                        idAdmin,
-                        idUsuarioConvertido,
-                        "USUARIO",
-                        "DELETE",
-                        GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
-                        new JsonObject(),
-                        null),
-                connection);
+            new HistoricoAlteracoesAdmin(
+                null,
+                idAdmin,
+                idUsuarioConvertido,
+                "USUARIO",
+                "DELETE",
+                GSON.toJsonTree(usuario.getFirst()).getAsJsonObject(),
+                new JsonObject(),
+                null),
+            connection);
 
         connection.commit();
         return SUCESSO;
@@ -361,12 +367,11 @@ public final class EmpresaDemandanteService {
           && !filtrosEmpresaDemandanteDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosEmpresaDemandanteDTO.filtroRapido();
 
-        empresasDemandante.removeIf(
-            empresaDemandante ->
-                empresaDemandante.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        empresasDemandante.removeIf(empresaDemandante ->
+            empresaDemandante.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -473,12 +478,11 @@ public final class EmpresaDemandanteService {
 
         jsonObject
             .entrySet()
-            .removeIf(
-                campo ->
-                    campo.getValue() != null
-                        && !campo.getValue().isJsonNull()
-                        && (campo.getValue().isJsonPrimitive()
-                            && campo.getValue().getAsString().trim().isEmpty()));
+            .removeIf(campo ->
+                campo.getValue() != null
+                    && !campo.getValue().isJsonNull()
+                    && (campo.getValue().isJsonPrimitive()
+                        && campo.getValue().getAsString().trim().isEmpty()));
 
         HistoricoAlteracoesAdminService.salvarAcao(
             new HistoricoAlteracoesAdmin(
@@ -569,7 +573,6 @@ public final class EmpresaDemandanteService {
     if (validacaoTipoUsuario != VALIDACAO_OK) {
       listaDeErros.add(validacaoTipoUsuario);
     }
-
 
     GenericExceptionEnum validacaoCnpj = validarCnpj(empresaDemandanteParaInsertDTO.cnpj());
     if (validacaoCnpj != VALIDACAO_OK) {

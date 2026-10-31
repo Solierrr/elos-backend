@@ -37,6 +37,7 @@ public final class CadastroTipoUsuarioServlet extends HttpServlet {
 
     if (usuarioParaInsert == null) {
       response.sendRedirect(request.getContextPath() + "/cadastro");
+      return;
     }
 
     RequestDispatcher dispatcher =
@@ -47,6 +48,16 @@ public final class CadastroTipoUsuarioServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+
+    HttpSession session = request.getSession(true);
+    Object usuarioParaInsert = session.getAttribute("dadosParte1");
+
+    if (usuarioParaInsert == null) {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(request.getContextPath() + "/cadastro");
+      return;
+    }
 
     request.setCharacterEncoding("UTF-8");
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
@@ -65,7 +76,6 @@ public final class CadastroTipoUsuarioServlet extends HttpServlet {
       return;
     }
 
-    HttpSession session = request.getSession(false);
     session.setAttribute("tipoUsuario", tipoUsuarioString.toUpperCase().strip());
 
     response.setContentType("application/json");

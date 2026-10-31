@@ -1,6 +1,5 @@
 package service.telefoneAdmin;
 
-import model.Telefone;
 import model.TelefoneAdmin;
 import model.TiposTelefone;
 

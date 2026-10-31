@@ -44,27 +44,32 @@ import util.Anonimizador;
 
 public final class LogAcessosAdminService {
 
-  //Constante utilizada pelo código
+  // Constante utilizada pelo código
   private static final int INET = -1000;
 
-  //Métodos para o login
+  // Métodos para o login
   public List<GenericExceptionEnum> validarDadosNoLogin(String userAgent) {
     List<GenericExceptionEnum> erros = new ArrayList<>();
-      if (NavegadoresAdmin.descobrirNavegadorAdmin(userAgent)
-          == NavegadoresAdmin.NAVEGADOR_INVALIDO) {
-          erros.add(NAVEGADOR_INVALIDO);
-      }
+    if (NavegadoresAdmin.descobrirNavegadorAdmin(userAgent)
+        == NavegadoresAdmin.NAVEGADOR_INVALIDO) {
+      erros.add(NAVEGADOR_INVALIDO);
+    }
 
-      if (SistemasOperacionaisAdmin.descobrirSistemaOperacionalAdmin(userAgent)
-          == SistemasOperacionaisAdmin.SISTEMA_OPERACIONAL_INVALIDO) {
-          erros.add(SISTEMA_OPERACIONAL_INVALIDO);
-      }
+    if (SistemasOperacionaisAdmin.descobrirSistemaOperacionalAdmin(userAgent)
+        == SistemasOperacionaisAdmin.SISTEMA_OPERACIONAL_INVALIDO) {
+      erros.add(SISTEMA_OPERACIONAL_INVALIDO);
+    }
 
     return erros;
   }
 
-  public void salvarAcessoDoAdmin(List<GenericExceptionEnum> erros, String userAgent, String ip,
-      Long idAdmin, Connection connection) throws SQLException {
+  public void salvarAcessoDoAdmin(
+      List<GenericExceptionEnum> erros,
+      String userAgent,
+      String ip,
+      Long idAdmin,
+      Connection connection)
+      throws SQLException {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
 
     StringBuilder mensagemErro = new StringBuilder();
@@ -76,16 +81,21 @@ public final class LogAcessosAdminService {
     criarInstrucaoDinamica.setCampo(ID_ADMIN.getNomeCampo(), idAdmin, Types.BIGINT);
 
     if (erros.contains(NAVEGADOR_INVALIDO)) {
-      criarInstrucaoDinamica.setCampo(NAVEGADOR.getNomeCampo(),
-          NavegadoresAdmin.NAVEGADOR_INVALIDO.getNavegador(), Types.VARCHAR);
+      criarInstrucaoDinamica.setCampo(
+          NAVEGADOR.getNomeCampo(),
+          NavegadoresAdmin.NAVEGADOR_INVALIDO.getNavegador(),
+          Types.VARCHAR);
       mensagemErro.append("Navegador inválido");
     } else {
-      criarInstrucaoDinamica.setCampo(NAVEGADOR.getNomeCampo(),
-          NavegadoresAdmin.descobrirNavegadorAdmin(userAgent).getNavegador(), Types.VARCHAR);
+      criarInstrucaoDinamica.setCampo(
+          NAVEGADOR.getNomeCampo(),
+          NavegadoresAdmin.descobrirNavegadorAdmin(userAgent).getNavegador(),
+          Types.VARCHAR);
     }
 
     if (erros.contains(SISTEMA_OPERACIONAL_INVALIDO)) {
-      criarInstrucaoDinamica.setCampo(SISTEMA_OPERACIONAL.getNomeCampo(),
+      criarInstrucaoDinamica.setCampo(
+          SISTEMA_OPERACIONAL.getNomeCampo(),
           SistemasOperacionaisAdmin.SISTEMA_OPERACIONAL_INVALIDO.getSistemaOperacional(),
           Types.VARCHAR);
       if (mensagemErro.isEmpty()) {
@@ -94,7 +104,8 @@ public final class LogAcessosAdminService {
         mensagemErro.append("e sistema operacional inválido");
       }
     } else {
-      criarInstrucaoDinamica.setCampo(SISTEMA_OPERACIONAL.getNomeCampo(),
+      criarInstrucaoDinamica.setCampo(
+          SISTEMA_OPERACIONAL.getNomeCampo(),
           SistemasOperacionaisAdmin.descobrirSistemaOperacionalAdmin(userAgent)
               .getSistemaOperacional(),
           Types.VARCHAR);
@@ -123,8 +134,8 @@ public final class LogAcessosAdminService {
       criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getNomeCampo(), null, Types.VARCHAR);
     } else {
       criarInstrucaoDinamica.setCampo(SUCESSO.getNomeCampo(), false, Types.BOOLEAN);
-      criarInstrucaoDinamica.setCampo(MOTIVO_FALHA.getNomeCampo(),
-          mensagemErro.toString(), Types.VARCHAR);
+      criarInstrucaoDinamica.setCampo(
+          MOTIVO_FALHA.getNomeCampo(), mensagemErro.toString(), Types.VARCHAR);
     }
 
     LogAcessosAdminDAO logAcessosAdminDAO = new LogAcessosAdminDAO();
@@ -145,39 +156,40 @@ public final class LogAcessosAdminService {
     return VALIDACAO_OK;
   }
 
-  //Validação da data de acesso
-  private static GenericExceptionEnum validarDataAcesso(String dataAcesso){
+  // Validação da data de acesso
+  private static GenericExceptionEnum validarDataAcesso(String dataAcesso) {
     DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    try{
+    try {
       LocalDate data = LocalDate.parse(dataAcesso.strip(), formatador);
 
       return VALIDACAO_OK;
-    }catch (DateTimeParseException dateTimeParseException){
+    } catch (DateTimeParseException dateTimeParseException) {
       return DATA_INVALIDA;
     }
   }
 
-  //Validação do navegador
-  private static GenericExceptionEnum validarNavegador(String navegador){
+  // Validação do navegador
+  private static GenericExceptionEnum validarNavegador(String navegador) {
     NavegadoresAdmin navegadorConertido;
     try {
       navegadorConertido = NavegadoresAdmin.valueOf(navegador.toUpperCase().strip());
     } catch (IllegalArgumentException e) {
       navegadorConertido = null;
     }
-    return navegadorConertido == null ? null : NAVEGADOR_INVALIDO;
+    return navegadorConertido == null ? NAVEGADOR_INVALIDO : VALIDACAO_OK;
   }
 
-  //Validação do sistema operacional
-  private static GenericExceptionEnum validarSistemaOperacional(String sistemaOperacional){
+  // Validação do sistema operacional
+  private static GenericExceptionEnum validarSistemaOperacional(String sistemaOperacional) {
     SistemasOperacionaisAdmin sistemasOperacionaisAdmin;
     try {
-      sistemasOperacionaisAdmin = SistemasOperacionaisAdmin.valueOf(sistemaOperacional.toUpperCase().strip());
+      sistemasOperacionaisAdmin =
+          SistemasOperacionaisAdmin.valueOf(sistemaOperacional.toUpperCase().strip());
     } catch (IllegalArgumentException e) {
       sistemasOperacionaisAdmin = null;
     }
-    return sistemasOperacionaisAdmin == null ? null : SISTEMA_OPERACIONAL_INVALIDO;
+    return sistemasOperacionaisAdmin == null ? SISTEMA_OPERACIONAL_INVALIDO : VALIDACAO_OK;
   }
 
   // Métodos relacionados ao select
@@ -256,7 +268,7 @@ public final class LogAcessosAdminService {
             Types.VARCHAR);
       }
 
-        if (filtrosLogAcessosAdminDTO.sistemaOperacionalFiltro() != null) {
+      if (filtrosLogAcessosAdminDTO.sistemaOperacionalFiltro() != null) {
         criarInstrucaoDinamica.setWhere(
             SISTEMA_OPERACIONAL.getNomeCampo(),
             IGUAL,
@@ -268,7 +280,8 @@ public final class LogAcessosAdminService {
       JoinsPossiveis tabelaConectada =
           JoinsPossiveis.encontrarTabelaReferente(filtrosLogAcessosAdminDTO.joinFiltro());
       if (filtrosLogAcessosAdminDTO.joinFiltro() != null) {
-        String conector = JoinsPossiveis.joinValido("log_acessos_admin", filtrosLogAcessosAdminDTO.joinFiltro());
+        String conector =
+            JoinsPossiveis.joinValido("log_acessos_admin", filtrosLogAcessosAdminDTO.joinFiltro());
 
         if (conector.contains("log_acessos_admin")) {
           criarInstrucaoDinamica.setJoin(
@@ -285,12 +298,11 @@ public final class LogAcessosAdminService {
           && !filtrosLogAcessosAdminDTO.filtroRapido().isBlank()) {
         String termoFiltro = filtrosLogAcessosAdminDTO.filtroRapido();
 
-        acessosAdmin.removeIf(
-            acessoAdmin ->
-                acessoAdmin.values().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
+        acessosAdmin.removeIf(acessoAdmin ->
+            acessoAdmin.values().stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .noneMatch(valorTexto -> valorTexto.contains(termoFiltro)));
       }
 
       Anonimizador anonimizador = new Anonimizador();
@@ -321,32 +333,35 @@ public final class LogAcessosAdminService {
     }
 
     if (filtrosLogAcessosAdminDTO.dataAcessoFiltro() != null) {
-      GenericExceptionEnum validacao = validarDataAcesso(filtrosLogAcessosAdminDTO.dataAcessoFiltro());
+      GenericExceptionEnum validacao =
+          validarDataAcesso(filtrosLogAcessosAdminDTO.dataAcessoFiltro());
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
     }
 
     if (filtrosLogAcessosAdminDTO.navegadorFiltro() != null) {
-      GenericExceptionEnum validacao = validarNavegador(filtrosLogAcessosAdminDTO.navegadorFiltro());
+      GenericExceptionEnum validacao =
+          validarNavegador(filtrosLogAcessosAdminDTO.navegadorFiltro());
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
     }
 
     if (filtrosLogAcessosAdminDTO.sistemaOperacionalFiltro() != null) {
-      GenericExceptionEnum validacao = validarSistemaOperacional(filtrosLogAcessosAdminDTO.sistemaOperacionalFiltro());
+      GenericExceptionEnum validacao =
+          validarSistemaOperacional(filtrosLogAcessosAdminDTO.sistemaOperacionalFiltro());
       if (validacao != VALIDACAO_OK) {
         erros.add(validacao);
       }
     }
 
     if (filtrosLogAcessosAdminDTO.joinFiltro() != null) {
-      if (JoinsPossiveis.joinValido("log_acessos_admin", filtrosLogAcessosAdminDTO.joinFiltro()) == null) {
+      if (JoinsPossiveis.joinValido("log_acessos_admin", filtrosLogAcessosAdminDTO.joinFiltro())
+          == null) {
         erros.add(JOIN_INVALIDO);
       }
     }
     return erros;
   }
-
 }

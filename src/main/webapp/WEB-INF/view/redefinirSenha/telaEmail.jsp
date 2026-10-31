@@ -27,12 +27,14 @@
       <div>
         <div class="home">
           <a href="${pageContext.request.contextPath}">
-            <img id="iconHome" src="${pageContext.request.contextPath}/assets/icone/home.svg" width="24" height="24">
+            <img id="iconHome" src="${pageContext.request.contextPath}/assets/icone/home.svg"
+                 width="24" height="24">
           </a>
         </div>
         <p class="sub_title">Insira os dados!</p>
         <p class="title">Esqueceu sua senha?</p>
-        <form id="formulario-email" action="${pageContext.request.contextPath}/redefinirSenha" method="POST">
+        <form id="formulario-email" action="${pageContext.request.contextPath}/redefinirSenha"
+              method="POST">
           <div class="form-group">
             <input class="text-input" name="email" id="email" type="text"
                    placeholder="Coloque o seu e-mail aqui" required>

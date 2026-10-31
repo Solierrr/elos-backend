@@ -27,13 +27,13 @@ const mensagens = {
     "erro-razao-social": "Razão social inválida",
     "erro-tipo-fornecedor": "Selecione um tipo do fornecedor",
     "erro-join": "O registro inserido não se conecta com o atual"
-  }, "empresa-demandante":{
+  }, "empresa-demandante": {
     "erro-id": "O ID inserido é inválido",
     "erro-cnpj": "CNPJ inválido",
     "erro-razao-social": "Razão social inválida",
     "erro-id-usuario": "ID do usuário inválido",
     "erro-join": "O registro inserido não se conecta com o atual"
-  }, "telefone":{
+  }, "telefone": {
     "erro-id": "O ID inserido é inválido",
     "erro-id-usuario": "ID do usuário inválido",
     "erro-telefone": "O número inserido está inválido",
@@ -47,23 +47,23 @@ const mensagens = {
     "erro-tipo": "O tipo do telefone escolhido está inválido",
     "erro-principal": "Erro o valor dde principal está inválido",
     "erro-join": "O registro inserido não se conecta com o atual"
-  }, "acesso-admin":{
+  }, "acesso-admin": {
     "erro-id": "O ID inserido é inválido",
     "erro-id-admin": "ID do admin inválido",
-    "erro-data-acesso":  "Data de acesso inválida",
-    "erro-sucesso":  "Sucesso inválido",
+    "erro-data-acesso": "Data de acesso inválida",
+    "erro-sucesso": "Sucesso inválido",
     "erro-motivo-falha": "Motivo da falha inválido",
     "erro-navegador": "Navegador inválido",
-    "erro-sistema-operacional":  "Sistema operacional inválido",
+    "erro-sistema-operacional": "Sistema operacional inválido",
     "erro-join": "O registro inserido não se conecta com o atual"
-  }, "historico-alteracoes":{
+  }, "historico-alteracoes": {
     "erro-id": "O ID inserido é inválido",
     "erro-id-admin": "ID do admin inválido",
     "erro-id-registro": "ID do registro inválido",
-    "erro-data-alteracao":  "Data de alteração inválida",
+    "erro-data-alteracao": "Data de alteração inválida",
     "erro-acao": "A ação escolhida é inválida",
     "erro-join": "O registro inserido não se conecta com o atual"
-  }, "admin":{
+  }, "admin": {
     "erro-id": "O ID inserido é inválido",
     "erro-email": "E-mail inválido",
     "erro-nome": "Nome inválido",

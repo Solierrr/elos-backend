@@ -20,7 +20,7 @@ import service.admin.AdminService;
 @WebServlet("/crudAdmin-insert")
 public final class InsertAdminServlet extends HttpServlet {
 
-  //Constantes utilizadas pelo código
+  // Constantes utilizadas pelo código
   private final Gson gson =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 

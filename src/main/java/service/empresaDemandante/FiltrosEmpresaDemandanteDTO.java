@@ -28,5 +28,4 @@ public record FiltrosEmpresaDemandanteDTO(
   public String formatarRazaoSocial() {
     return razaoSocialFiltro.strip();
   }
-
 }
