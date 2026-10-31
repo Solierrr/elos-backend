@@ -460,7 +460,7 @@
       <div class="flex-column gap-1rem" id="sobre-footer">
         <a href="#secao2" class="text">Nossa proposta</a>
 
-        <a href="${pageContext.request.contextPath}#FAQ" class="text">FAQ</a>
+        <a href="${pageContext.request.contextPath}#FAQ/" class="text">FAQ</a>
       </div>
 
     </div>
