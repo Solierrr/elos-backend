@@ -20,7 +20,7 @@
 <section id="hero">
   <header>
     <div class="header_container">
-      <a href="${pageContext.request.contextPath}">
+      <a href="${pageContext.request.contextPath}/">
         <img src="${pageContext.request.contextPath}/assets/icone/logotipo.svg" alt="Logo">
       </a>
       <div class="divisor"></div>

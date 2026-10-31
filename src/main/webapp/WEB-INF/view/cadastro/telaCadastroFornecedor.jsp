@@ -18,7 +18,7 @@
 <body>
 <div class="containerP">
   <header>
-    <a href="${pageContext.request.contextPath}">
+    <a href="${pageContext.request.contextPath}/">
       <img src="${pageContext.request.contextPath}/assets/icone/Logo_com_nome.svg" alt="logo-elos"
            width="146" height="60">
     </a>
@@ -28,7 +28,7 @@
       <div class="initial-text">
         <p class="sub_title">Insira os dados!</p>
         <div class="home">
-          <a href="${pageContext.request.contextPath}">
+          <a href="${pageContext.request.contextPath}/">
             <img id="iconHome" src="${pageContext.request.contextPath}/assets/icone/home.svg"
                  width="24" height="24">
           </a>
