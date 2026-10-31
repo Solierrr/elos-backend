@@ -462,7 +462,6 @@
 
         <a href="${pageContext.request.contextPath}#FAQ/" class="text">FAQ</a>
       </div>
-
     </div>
 
     <div class="flex-column gap-1rem" id="navegacao-footer">
