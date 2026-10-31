@@ -90,15 +90,4 @@ public final class ProfissionalDAO implements GenericDAO {
     return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
   }
 
-  // } catch (SQLException sqlException) {
-  //        if(foiCausadoPorCpfCadastrado(sqlException))
-  //        return CPF_INVALIDO;
-  //
-  //            if(foiCausadoPorUsuarioCadastrado(sqlException))
-  //        return ID_USUARIO_INVALIDO;
-  //
-  //            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ?
-  // ERRO_POR_VIOLACAO_DE_REGRA_DO_BD : ERRO_GENERICO_NO_BD;
-  //        }
-
 }
