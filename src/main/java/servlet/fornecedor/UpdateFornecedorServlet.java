@@ -1,97 +1,88 @@
 package servlet.fornecedor;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import exception.GenericExceptionEnum;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.Fornecedor;
-import service.FornecedorService;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.Admin;
+import service.fornecedor.FornecedorService;
 
 @WebServlet("/crudFornecedor-update")
-public class UpdateFornecedorServlet extends HttpServlet{
+public final class UpdateFornecedorServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        try {
-            HttpSession session = request.getSession();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
+  private final FornecedorService fornecedorService = new FornecedorService();
 
-            String id = request.getParameter("idUpdate");
-            Fornecedor fornecedor = FornecedorService.exibirFornecedorParaUpdate(id);
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
 
-            if (Fornecedor == null){
-                session.setAttribute("erroUpdate", "Um erro inesperado aconteceu, tente novamente");
-                response.sendRedirect(request.getContextPath()+"/crudFornecedor");
-            } else {
-                session.setAttribute("forecedorUpdate", fornecedor);
-                session.setAttribute("abrirUpdate", true);
-                response.sendRedirect(request.getContextPath()+"/crudFornecedor");
-            }
-        } catch (Exception e){
-            HttpSession session = request.getSession();
-
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
-
-            session.setAttribute("erroUpdate", "Um erro inesperado aconteceu, tente novamente");
-            response.sendRedirect(request.getContextPath()+"/crudFornecedor");
-        }
+    HttpSession session = request.getSession(true);
+    Admin admin = (Admin) session.getAttribute("adm");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try{
-            HttpSession session = request.getSession();
+    String id = request.getParameter("id");
 
-            String idUpdate = request.getParameter("idUpdate");
-            String idUsuarioUpdate = request.getParameter("idUsuarioUpdate");
-            String tipoUsuarioUpdate = request.getParameter("tipoUsuarioUpdate");
-            String tipoFornecedorUpdate = request.getParameter("tipoFornecedorUpdate");
-            String cnpjUpdate = request.getParameter("cnpjUpdate");
-            String razaoSocialUpdate = request.getParameter("razaoSocialUpdate");
+    List<Map<String, Object>> fornecedor = fornecedorService.exibirFornecedorParaUpdate(id, admin);
+    if (fornecedor.isEmpty()) {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
 
-            ArrayList<GenericExceptionEnum> erros = FornecedorService.realizarUpdate(idUpdate, tipoUsuarioUpdate, idUsuarioUpdate, tipoFornecedorUpdate, cnpjUpdate, razaoSocialUpdate);
-
-            if(!erros.isEmpty()){
-                session.setAttribute("errosUpdate", erros);
-                response.sendRedirect(request.getContextPath()+"/crudFornecedor");
-            } else{
-                //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-                Enumeration<String> attributes = session.getAttributeNames();
-                while(attributes.hasMoreElements()){
-                    session.removeAttribute(attributes.nextElement());
-                }
-
-                session.setAttribute("mensagemUpdate", "Os dados foram atualizados com sucesso");
-                response.sendRedirect(request.getContextPath()+"/crudFornecedor");
-            }
-        } catch (Exception e) {
-            HttpSession session = request.getSession();
-
-            ArrayList<GenericExceptionEnum> erros = new ArrayList<>();
-            erros.add(ERRO_GENERICO);
-
-            session.setAttribute("errosUpdate", erros);
-            response.sendRedirect(request.getContextPath()+"/crudFornecedor");
-        }
+      response.getWriter().write("");
+      return;
     }
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+
+    response.getWriter().write(gson.toJson(fornecedor));
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+
+    HttpSession session = request.getSession(true);
+    Admin admin = (Admin) session.getAttribute("adm");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
+    }
+
+    request.setCharacterEncoding("UTF-8");
+    JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
+
+    List<GenericExceptionEnum> mensagensInsert =
+        fornecedorService.realizarUpdate(jsonObject, admin.getId());
+    if (!mensagensInsert.isEmpty()) {
+      Map<String, String> mapaJson = new HashMap<>();
+      for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {
+        mapaJson.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
+      }
+
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(gson.toJson(mapaJson));
+    } else {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write("{}");
+    }
+  }
 }

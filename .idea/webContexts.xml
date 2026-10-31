@@ -4,6 +4,9 @@
     <option name="state">
       <map>
         <entry key="file://$PROJECT_DIR$/Elos/src/main/webapp/WEB-INF/view/usuario/crudUsuario.jsp" value="file://$PROJECT_DIR$/Elos/src/main/webapp/WEB-INF/view/usuario" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/view/profissional/crudProfissional.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/view/profissional" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/view/redefinirSenha/telaEmail.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/view/redefinirSenha" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/view/telefoneAdmin/crudTelefoneAdmin.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/view/telefoneAdmin" />
       </map>
     </option>
   </component>

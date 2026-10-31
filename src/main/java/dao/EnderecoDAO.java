@@ -1,330 +1,92 @@
 package dao;
 
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+import static exception.ErrosGerais.SUCESSO;
 
-import java.util.ArrayList;
+import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import conexao.Conexao;
-import exception.ErrosDoSQL;
-import model.Endereco;
-import model.EstadosBrasileiros;
+public final class EnderecoDAO implements GenericDAO {
 
-public class EnderecoDAO implements GenericDAO<Endereco> {
+  // Constante utilitaria
+  private static final String TABELA = "endereco";
 
-    @Override
-    public int insert(Endereco endereco){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+  // Métodos implementados
+  @Override
+  public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
+      throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS);
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        try{
-            String insert = "insert into endereco(id_usuario, estado, cidade, bairro, cep, logradouro, numero, complemento) values(?, ?, ?, ?, ?, ?, ?, ?)";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setLong(1, endereco.getIdUsuario() );
-            preparedStatement.setString(2, endereco.getEstado().getSiglaEstado());
-            preparedStatement.setString(3, endereco.getCidade());
-            preparedStatement.setString(4, endereco.getBairro() );
-            preparedStatement.setString(5, endereco.getCep() );
-            preparedStatement.setString(6, endereco.getLogradouro() );
-            preparedStatement.setString(7, endereco.getNumero() );
-            preparedStatement.setString(8, endereco.getComplemento() );
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
+    if (preparedStatement.executeUpdate() >= 1) {
+      ResultSet resultSet = preparedStatement.getGeneratedKeys();
+      resultSet.next();
+      return resultSet.getLong(1);
     }
 
-    @Override
-    public Endereco readById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    return null;
+  }
 
-        try {
-            String read = "select * from endereco where id = ?";
+  @Override
+  public List<Map<String, Object>> readAll(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    List<Map<String, Object>> dados = new ArrayList<>();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            if (resultSet.next()){
-                return new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                );
-            }
+    // Uso do ResultSetMetaData para resolver os conflitos de campos com o mesmo valor ao realizar joins
+    ResultSet resultSet = preparedStatement.executeQuery();
+    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+    while (resultSet.next()) {
+      Map<String, Object> valoresRegistroAtual = new LinkedHashMap<>();
 
-            return new Endereco(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null,
-                          null, null, null, null, null);
-        } catch (Exception exception){
-            return null;
-        } finally {
-            conexao.desconectar();
-        }
+      for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+        String nomeColuna = resultSetMetaData.getColumnName(i);
+
+        if (nomeColuna.equalsIgnoreCase("id")
+            && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+          valoresRegistroAtual.put(
+              "id_" + resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+        else valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+      }
+
+      dados.add(valoresRegistroAtual);
     }
+    return dados;
+  }
 
-    @Override
-    public ArrayList<Endereco> readAll(){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Endereco> enderecos = new ArrayList<>();
+  @Override
+  public GenericExceptionEnum update(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-        try {
-            String read = "select * from endereco";
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 
-            while (resultSet.next()){
-                enderecos.add(new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                ));
-            }
-            return enderecos;
-        } catch (Exception exception){
-            return enderecos;
-        } finally {
-            conexao.desconectar();
-        }
-    }
+  @Override
+  public GenericExceptionEnum delete(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
-    public ArrayList<Endereco> readAllByIdUsuario(long idUsuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Endereco> enderecos = new ArrayList<>();
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        try {
-            String read = "select * from endereco where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, idUsuario);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                enderecos.add(new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                ));
-            }
-            return enderecos;
-        } catch (Exception exception){
-            return enderecos;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public ArrayList<Endereco> readAllByEstado(String estado){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Endereco> enderecos = new ArrayList<>();
-
-        try {
-            String read = "select * from endereco where estado = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, estado);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                enderecos.add(new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                ));
-            }
-            return enderecos;
-        } catch (Exception exception){
-            return enderecos;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public ArrayList<Endereco> readAllByCidade(String cidade){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Endereco> enderecos = new ArrayList<>();
-
-        try {
-            String read = "select * from endereco where cidade = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, cidade);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                enderecos.add(new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                ));
-            }
-            return enderecos;
-        } catch (Exception exception){
-            return enderecos;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public ArrayList<Endereco> readAllByBairro(String bairro){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Endereco> enderecos = new ArrayList<>();
-
-        try {
-            String read = "select * from endereco where bairro = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, bairro);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                enderecos.add(new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                ));
-            }
-            return enderecos;
-        } catch (Exception exception){
-            return enderecos;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public ArrayList<Endereco> readAllByCep(String cep){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Endereco> enderecos = new ArrayList<>();
-
-        try {
-            String read = "select * from endereco where cep = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, cep);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                enderecos.add(new Endereco(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        EstadosBrasileiros.descobrirEstadoBrasileiroPorSigla(resultSet.getString("estado")),
-                        resultSet.getString("cidade"),
-                        resultSet.getString("bairro"),
-                        resultSet.getString("cep"),
-                        resultSet.getString("logradouro"),
-                        resultSet.getString("numero"),
-                        resultSet.getString("complemento")
-                ));
-            }
-            return enderecos;
-        } catch (Exception exception){
-            return enderecos;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public int updateById(Endereco endereco){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update endereco set estado = ?, cidade = ?, bairro = ?, cep = ?, logradouro = ?, numero = ?, complemento = ? where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, endereco.getEstado().getSiglaEstado() );
-            preparedStatement.setString(2, endereco.getCidade() );
-            preparedStatement.setString(3, endereco.getBairro() );
-            preparedStatement.setString(4, endereco.getCep() );
-            preparedStatement.setString(5, endereco.getLogradouro() );
-            preparedStatement.setString(6, endereco.getNumero() );
-            preparedStatement.setString(7, endereco.getComplemento() );
-            preparedStatement.setLong(8, endereco.getId());
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public int deleteById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from endereco where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, id);
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 }

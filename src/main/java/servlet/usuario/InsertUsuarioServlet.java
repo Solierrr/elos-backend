@@ -1,83 +1,66 @@
 package servlet.usuario;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
-
-import java.util.Enumeration;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import jakarta.servlet.ServletException;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import exception.GenericExceptionEnum;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import service.usuario.UsuarioDadosDto;
-import exception.GenericExceptionEnum;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.Admin;
 import service.usuario.UsuarioService;
 
 @WebServlet("/crudUsuario-insert")
-public class InsertUsuarioServlet extends HttpServlet {
+public final class InsertUsuarioServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath()+"/crudUsuario");
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+
+  private final UsuarioService usuarioService = new UsuarioService();
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    response.sendRedirect(request.getContextPath() + "/crudUsuario");
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+
+    HttpSession session = request.getSession(true);
+    Admin admin = (Admin) session.getAttribute("adm");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        try{
-            HttpSession session = request.getSession();
+    request.setCharacterEncoding("UTF-8");
+    JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
+    List<GenericExceptionEnum> mensagensInsert =
+        usuarioService.realizarInsert(jsonObject, admin.getId());
+    if (!mensagensInsert.isEmpty()) {
+      Map<String, String> mapaJson = new HashMap<>();
+      for (GenericExceptionEnum genericExceptionEnum : mensagensInsert) {
+        mapaJson.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
+      }
 
-            String tipoUsuarioInsert = request.getParameter("tipoUsuarioInsert");
-            String emailInsert = request.getParameter("emailInsert");
-            String senhaInsert = request.getParameter("senhaInsert");
-            String nomeInsert = request.getParameter("nomeInsert");
-            String raioProcuraKmInsert = request.getParameter("raioProcuraKmInsert");
-
-            UsuarioDadosDto usuarioDadosDto = new UsuarioDadosDto(null, tipoUsuarioInsert, emailInsert,
-                                                                    senhaInsert, nomeInsert, raioProcuraKmInsert);
-
-            ArrayList<GenericExceptionEnum> mensagensInsert = UsuarioService.realizarInsert(usuarioDadosDto);
-
-            if(!mensagensInsert.isEmpty()){
-                session.setAttribute("mensagensInsert", mensagensInsert);
-                session.setAttribute("tipoUsuarioInsert", tipoUsuarioInsert);
-                session.setAttribute("emailInsert", emailInsert);
-                session.setAttribute("nomeInsert", nomeInsert);
-                session.setAttribute("raioProcuraKmInsert", raioProcuraKmInsert);
-
-                //Atributo usado no javascript para abrir o pop-up
-                session.setAttribute("abrirInsert", true);
-
-                response.sendRedirect(request.getContextPath()+"/crudUsuario");
-            } else{
-                session.setAttribute("mensagemInsert", "O cadastro foi efetuado com sucesso");
-                response.sendRedirect(request.getContextPath() + "/crudUsuario");
-            }
-        } catch (Exception exception){
-            HttpSession session = request.getSession();
-
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
-
-            ArrayList<GenericExceptionEnum> mensagensInsert = new ArrayList<>();
-            mensagensInsert.add(ERRO_GENERICO);
-
-            session.setAttribute("mensagensInsert", mensagensInsert);
-            response.sendRedirect(request.getContextPath() + "/crudUsuario");
-        }
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(gson.toJson(mapaJson));
+    } else {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write("{}");
     }
+  }
 }

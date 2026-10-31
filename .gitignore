@@ -48,6 +48,8 @@ src/main/resources/.env
 ../.idea/
 *.iml
 *.iws
+/.idea/
+/.mvn/
 
 # VS Code
 .vscode/

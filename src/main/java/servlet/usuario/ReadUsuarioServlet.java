@@ -1,12 +1,10 @@
 package servlet.usuario;
 
-import static exception.ErrosGerais.ERRO_GENERICO;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import exception.GenericExceptionEnum;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,64 +12,93 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import model.Usuario;
-import service.usuario.UsuarioDadosDePesquisaDto;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.Admin;
+import service.usuario.FiltrosUsuarioDTO;
 import service.usuario.UsuarioService;
-import exception.GenericExceptionEnum;
 
 @WebServlet("/crudUsuario")
-public class ReadUsuarioServlet extends HttpServlet {
+public final class ReadUsuarioServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        try {
-            HttpSession session = request.getSession();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-            String sairPressionado = request.getParameter("sairPressionado");
+  private final UsuarioService usuarioService = new UsuarioService();
 
-            if(sairPressionado != null && sairPressionado.equalsIgnoreCase("true")){
-                Enumeration<String> attributes = session.getAttributeNames();
-                while(attributes.hasMoreElements()){
-                    session.removeAttribute(attributes.nextElement());
-                }
-            }
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-            String clausulaWhereNome = request.getParameter("clausulaWhereNome");
-            String clausulaWhereValor = request.getParameter("clausulaWhereValor");
-            String clausulaWhereValor2 = request.getParameter("clausulaWhereValor2");
-            String orderBy = request.getParameter("orderBy");
-            String ordenacao = request.getParameter("sentidoOrderBy");
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
 
-            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
-            List<Usuario> usuariosRead = new ArrayList<>();
-            UsuarioDadosDePesquisaDto usuarioDadosDePesquisaDto = new UsuarioDadosDePesquisaDto(clausulaWhereNome, clausulaWhereValor, clausulaWhereValor2, orderBy, ordenacao);
-            usuariosRead.addAll(UsuarioService.realizarSelect(usuarioDadosDePesquisaDto, errosRead));
+    HttpSession httpSession = request.getSession();
+    Admin admin = (Admin) httpSession.getAttribute("adm");
 
-            request.setAttribute("errosRead", errosRead);
-            request.setAttribute("usuariosRead", usuariosRead);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
-            dispatcher.forward(request, response);
-
-        } catch (Exception e){
-            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
-            errosRead.add(ERRO_GENERICO);
-
-            List<Usuario> usuariosRead = UsuarioService.realizarSelect(null, errosRead);
-
-            request.setAttribute("errosRead", errosRead);
-            request.setAttribute("usuariosRead", usuariosRead);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
-            dispatcher.forward(request, response);
-        }
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/usuario/crudUsuario.jsp");
+    dispatcher.forward(request, response);
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+
+    HttpSession session = request.getSession(true);
+    Admin admin = (Admin) session.getAttribute("adm");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
+    request.setCharacterEncoding("UTF-8");
+
+    JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
+
+    Map<String, Object> json = new HashMap<>();
+    if (jsonObject.isEmpty()) {
+      json.put("valores", usuarioService.realizarSelectInicial(admin));
+
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(gson.toJson(json));
+      return;
+    }
+
+    List<GenericExceptionEnum> erros = new ArrayList<>();
+
+    List<Map<String, Object>> usuarios =
+        usuarioService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosUsuarioDTO.class), erros, admin);
+    if (erros.isEmpty()) {
+      if (!usuarios.isEmpty()) {
+        json.put("valores", usuarios);
+      }
+
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+
+      response.getWriter().write(gson.toJson(json));
+      return;
+    }
+
+    for (GenericExceptionEnum genericExceptionEnum : erros) {
+      json.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
+    }
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(gson.toJson(json));
+  }
 }

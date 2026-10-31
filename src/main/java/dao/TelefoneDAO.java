@@ -1,263 +1,92 @@
 package dao;
 
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+import static exception.ErrosGerais.SUCESSO;
 
-import java.util.ArrayList;
+import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import conexao.Conexao;
-import exception.ErrosDoSQL;
-import model.TiposTelefone;
-import model.Telefone;
+public final class TelefoneDAO implements GenericDAO {
 
-public class TelefoneDAO implements GenericDAO<Telefone> {
+  // Constante utilitaria
+  private static final String TABELA = "telefone";
 
-    @Override
-    public int insert(Telefone telefone){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+  // Métodos implementados
+  @Override
+  public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
+      throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS);
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        try{
-            String insert = "insert into telefone(telefone, id_usuario, tipo, principal) values(?, ?, ?, ?)";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setString(1, telefone.getTelefone() );
-            preparedStatement.setLong(2, telefone.getIdUsuario());
-            preparedStatement.setString(3, telefone.getTipo().getTipoTelefone());
-            preparedStatement.setBoolean(4, telefone.isPrincipal() );
-
-            return preparedStatement.executeUpdate();
-
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-
-        } finally {
-            conexao.desconectar();
-
-        }
+    if (preparedStatement.executeUpdate() >= 1) {
+      ResultSet resultSet = preparedStatement.getGeneratedKeys();
+      resultSet.next();
+      return resultSet.getLong(1);
     }
 
-    @Override
-    public Telefone readById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    return null;
+  }
 
-        try {
-            String read = "select * from telefone where id = ?";
+  // Uso do ResultSetMetaData para resolver os conflitos de campos com o mesmo valor ao realizar joins
+  @Override
+  public List<Map<String, Object>> readAll(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    List<Map<String, Object>> dados = new ArrayList<>();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            if (resultSet.next()){
-                return new Telefone(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("telefone"),
-                        TiposTelefone.descobrirTipoTelefone(resultSet.getString("tipo")),
-                        resultSet.getBoolean("principal")
-                );
-            }
+    ResultSet resultSet = preparedStatement.executeQuery();
+    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+    while (resultSet.next()) {
+      Map<String, Object> valoresRegistroAtual = new LinkedHashMap<>();
 
-            return new Telefone(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, false);
+      for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+        String nomeColuna = resultSetMetaData.getColumnName(i);
 
-        } catch (Exception exception){
-            return null;
+        if (nomeColuna.equalsIgnoreCase("id")
+            && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+          valoresRegistroAtual.put(
+              "id_" + resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+        else valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+      }
 
-        } finally {
-            conexao.desconectar();
-
-        }
+      dados.add(valoresRegistroAtual);
     }
+    return dados;
+  }
 
-    public Telefone readByTelefone(String telefone){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+  @Override
+  public GenericExceptionEnum update(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-        try {
-            String read = "select * from telefone where telefone = ?";
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, telefone);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 
-            if (resultSet.next()){
-                return new Telefone(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("telefone"),
-                        TiposTelefone.descobrirTipoTelefone(resultSet.getString("tipo")),
-                        resultSet.getBoolean("principal")
-                );
-            }
+  @Override
+  public GenericExceptionEnum delete(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
-            return new Telefone(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, false);
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        } catch (Exception exception){
-            return null;
-
-        } finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    @Override
-    public ArrayList<Telefone> readAll(){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-        ArrayList<Telefone> telefones = new ArrayList<>();
-
-        try {
-            String read = "select * from telefone";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                telefones.add(new Telefone(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("telefone"),
-                        TiposTelefone.descobrirTipoTelefone(resultSet.getString("tipo")),
-                        resultSet.getBoolean("principal")
-                ));
-            }
-
-            return telefones;
-
-        } catch (Exception exception){
-            return telefones;
-
-        } finally {
-            conexao.desconectar();
-
-        }
-    }
-
-    public ArrayList<Telefone> readAllByIdUsuario(long idUsuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        ArrayList<Telefone> telefones = new ArrayList<>();
-
-        try {
-            String read = "select * from telefone where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, idUsuario);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                telefones.add(new Telefone(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("telefone"),
-                        TiposTelefone.descobrirTipoTelefone(resultSet.getString("tipo")),
-                        resultSet.getBoolean("principal")
-                ));
-            }
-            return telefones;
-        } catch (Exception exception){
-            return telefones;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public int updateById(Telefone telefone){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update telefone set telefone = ?, tipo = ?, principal = ? where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, telefone.getTelefone() );
-            preparedStatement.setString(2, telefone.getTipo().getTipoTelefone() );
-            preparedStatement.setBoolean(3, telefone.isPrincipal() );
-            preparedStatement.setLong(4, telefone.getId());
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public int updateByTelefone(Telefone telefone){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update telefone set tipo = ?, principal = ? where telefone = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, telefone.getTipo().getTipoTelefone() );
-            preparedStatement.setBoolean(2, telefone.isPrincipal() );
-            preparedStatement.setString(3, telefone.getTelefone() );
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public int deleteById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from telefone where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, id);
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public int deleteByTelefone(String telefone){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from telefone where telefone = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setString(1, telefone);
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 }

@@ -1,17 +1,24 @@
 package dao;
 
-import java.util.ArrayList;
+import exception.GenericExceptionEnum;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
-public interface GenericDAO<T> {
+//Criada para garantir que todos os DAOs implementem todas as ações de um CRUD
+public interface GenericDAO {
 
-    public int insert(T objeto);
+  //Métodos de assinatura
+  public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
+      throws SQLException;
 
-    public T readById(long id);
+  public List<Map<String, Object>> readAll(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
 
-    public ArrayList<T> readAll();
+  public GenericExceptionEnum update(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
 
-    public int updateById(T objeto);
-
-    public int deleteById(long id);
-
+  public GenericExceptionEnum delete(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException;
 }

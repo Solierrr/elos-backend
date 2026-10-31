@@ -1,284 +1,92 @@
 package dao;
 
-import static exception.ErrosGerais.ERRO_POR_VIOLACAO_DE_REGRA_DO_BD;
-import static exception.ErrosGerais.ERRO_GENERICO_NO_BD;
 import static exception.ErrosGerais.ERRO_GENERICO;
-import static exception.ErrosGerais.REGISTRO_NAO_ENCONTRADO;
+import static exception.ErrosGerais.SUCESSO;
 
-import java.util.ArrayList;
+import exception.GenericExceptionEnum;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import exception.ErrosDoSQL;
-import model.EmpresaDemandante;
-import conexao.Conexao;
+public final class EmpresaDemandanteDAO implements GenericDAO {
 
-public class EmpresaDemandanteDAO implements GenericDAO<EmpresaDemandante> {
+  // Constante utilitaria
+  private static final String TABELA = "empresa_demandante";
 
-    @Override
-    public int insert(EmpresaDemandante empresaDemandante) {
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+  // Métodos implementados
+  @Override
+  public Long insert(CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection)
+      throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            criarInstrucaoDinamica.construirInsert(TABELA), Statement.RETURN_GENERATED_KEYS);
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        try {
-            String insert = "insert into empresa_demandante(id_usuario, tipo_usuario, cnpj, razao_social, eh_mandante) values(?, ?, ?, ?, ?)";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setLong(1, empresaDemandante.getIdUsuario());
-            preparedStatement.setString(2, empresaDemandante.getTipoUsuario().getTipoDoUsuario());
-            preparedStatement.setString(3, empresaDemandante.getCnpj());
-            preparedStatement.setString(4, empresaDemandante.getRazaoSocial());
-            preparedStatement.setBoolean(5, empresaDemandante.isEhMandante());
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
+    if (preparedStatement.executeUpdate() >= 1) {
+      ResultSet resultSet = preparedStatement.getGeneratedKeys();
+      resultSet.next();
+      return resultSet.getLong(1);
     }
 
-    @Override
-    public EmpresaDemandante readById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    return null;
+  }
 
-        try {
-            String read = "select * from empresa_demandante where id = ?";
+  @Override
+  public List<Map<String, Object>> readAll(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    List<Map<String, Object>> dados = new ArrayList<>();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirSelect(TABELA));
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            if (resultSet.next()){
-                return new EmpresaDemandante(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("cnpj"),
-                        resultSet.getString("razao_social"),
-                        resultSet.getBoolean("eh_mandante")
-                );
-            }
-            return new EmpresaDemandante(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null,false);
-        } catch (Exception exception){
-            return null;
-        } finally {
-            conexao.desconectar();
-        }
+    // Uso do ResultSetMetaData para resolver os conflitos de campos com o mesmo valor ao realizar joins
+    ResultSet resultSet = preparedStatement.executeQuery();
+    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+    while (resultSet.next()) {
+      Map<String, Object> valoresRegistroAtual = new LinkedHashMap<>();
+
+      for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+        String nomeColuna = resultSetMetaData.getColumnName(i);
+
+        if (nomeColuna.equalsIgnoreCase("id")
+            && !resultSetMetaData.getTableName(i).equalsIgnoreCase(TABELA))
+          valoresRegistroAtual.put(
+              "id_" + resultSetMetaData.getTableName(i).toLowerCase(), resultSet.getObject(i));
+        else valoresRegistroAtual.put(nomeColuna.toLowerCase(), resultSet.getObject(i));
+      }
+
+      dados.add(valoresRegistroAtual);
     }
+    return dados;
+  }
 
-    public EmpresaDemandante readByIdUsuario(long idUsuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+  @Override
+  public GenericExceptionEnum update(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirUpdate(TABELA));
 
-        try {
-            String read = "select * from empresa_demandante where id_usuario = ?";
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setLong(1, idUsuario);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 
-            if (resultSet.next()){
-                return new EmpresaDemandante(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("cnpj"),
-                        resultSet.getString("razao_social"),
-                        resultSet.getBoolean("eh_mandante")
-                );
-            }
-            return new EmpresaDemandante(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null, false);
-        } catch (Exception exception){
-            return null;
-        } finally {
-            conexao.desconectar();
-        }
-    }
+  @Override
+  public GenericExceptionEnum delete(
+      CriarInstrucaoDinamica criarInstrucaoDinamica, Connection connection) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement(criarInstrucaoDinamica.construirDelete(TABELA));
 
-    public EmpresaDemandante readByCnpj(String cnpj){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
+    criarInstrucaoDinamica.aplicarValoresDoPreparedStatement(preparedStatement);
 
-        try {
-            String read = "select * from empresa_demandante where cnpj = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            preparedStatement.setString(1, cnpj);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()){
-                return new EmpresaDemandante(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("cnpj"),
-                        resultSet.getString("razao_social"),
-                        resultSet.getBoolean("eh_mandante")
-                );
-            }
-            return new EmpresaDemandante(REGISTRO_NAO_ENCONTRADO.getCodigo(), REGISTRO_NAO_ENCONTRADO.getCodigo(), null, null,false);
-        } catch (Exception exception){
-            return null;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public ArrayList<EmpresaDemandante> readAll(){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        ArrayList<EmpresaDemandante> empresaDemandantes = new ArrayList<>();
-
-        try {
-            String read = "select * from empresa_demandante";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(read);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                empresaDemandantes.add(new EmpresaDemandante(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("id_usuario"),
-                        resultSet.getString("cnpj"),
-                        resultSet.getString("razao_social"),
-                        resultSet.getBoolean("eh_mandante")
-                ));
-            }
-            return empresaDemandantes;
-        } catch (Exception exception){
-            return empresaDemandantes;
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public int updateById(EmpresaDemandante empresaDemandante){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update empresa_demandante set razao_social = ? where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, empresaDemandante.getRazaoSocial() );
-            preparedStatement.setLong(2, empresaDemandante.getId());
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public int updateByIdUsuario(EmpresaDemandante empresaDemandante){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update empresa_demandante set razao_social = ? where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, empresaDemandante.getRazaoSocial() );
-            preparedStatement.setLong(2, empresaDemandante.getIdUsuario());
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public int updateByCnpj(EmpresaDemandante empresaDemandante){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String update = "update empresa_demandante set razao_social = ? where cnpj = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(update);
-            preparedStatement.setString(1, empresaDemandante.getRazaoSocial() );
-            preparedStatement.setString(2, empresaDemandante.getCnpj());
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    @Override
-    public int deleteById(long id){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from empresaDemandante where id = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, id);
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public int deleteByIdUsuario(long idUsuario){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from empresa_demandante where id_usuario = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setLong(1, idUsuario);
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
-
-    public int deleteByCnpj(String cnpj){
-        Conexao conexao = new Conexao();
-        Connection connection = conexao.conectar();
-
-        try{
-            String delete = "delete from empresa_demandante where cnpj = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-            preparedStatement.setString(1, cnpj);
-
-            return preparedStatement.executeUpdate();
-        }catch (SQLException sqlException){
-            return ErrosDoSQL.foiCausadoPorConstraint(sqlException.getSQLState()) ? ERRO_POR_VIOLACAO_DE_REGRA_DO_BD.getCodigo() : ERRO_GENERICO_NO_BD.getCodigo();
-        }catch (Exception exception){
-            return ERRO_GENERICO.getCodigo();
-        } finally {
-            conexao.desconectar();
-        }
-    }
+    return preparedStatement.executeUpdate() >= 1 ? SUCESSO : ERRO_GENERICO;
+  }
 }

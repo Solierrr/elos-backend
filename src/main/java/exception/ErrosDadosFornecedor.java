@@ -2,28 +2,43 @@ package exception;
 
 public enum ErrosDadosFornecedor implements GenericExceptionEnum {
 
-    TIPO_FORNECEDOR_VAZIO(301, "O tipo do fornecedor não foi inserido"),
-    TIPO_FORNECEDOR_INVALIDO(302, "O tipo do fornecedor inserido é inválido"),
-    ;
+  // Variações do enum
+  TIPO_FORNECEDOR_VAZIO(401, "O tipo do fornecedor não foi inserido", "tipo-fornecedor"),
+  TIPO_FORNECEDOR_INVALIDO(402, "O tipo do fornecedor inserido é inválido", "tipo-fornecedor");
 
-    private final int codigo;
-    private final String mensagem;
+  // Atributos
+  private final int codigo;
+  private final String mensagem;
+  private final String nomeCampoErro;
 
-    ErrosDadosFornecedor(int codigo, String mensagem) {
-        this.codigo = codigo;
-        this.mensagem = mensagem;
-    }
+  // Construtor
+  ErrosDadosFornecedor(int codigo, String mensagem, String nomeCampoErro) {
+    this.codigo = codigo;
+    this.mensagem = mensagem;
+    this.nomeCampoErro = nomeCampoErro;
+  }
 
-    public int getCodigo() {
-        return codigo;
-    }
+  // Getters
+  public int getCodigo() {
+    return codigo;
+  }
 
-    public String getMensagem() {
-        return mensagem;
-    }
+  public String getMensagem() {
+    return mensagem;
+  }
 
-    @Override
-    public String exibirMensagem() {
-        return getMensagem();
-    }
+  public String getNomeCampoErro() {
+    return nomeCampoErro;
+  }
+
+  // Métodos implementados
+  @Override
+  public String exibirMensagem() {
+    return getMensagem();
+  }
+
+  @Override
+  public String nomeCampoErro() {
+    return getNomeCampoErro();
+  }
 }

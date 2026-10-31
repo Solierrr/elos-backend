@@ -1,0 +1,16 @@
+:root {
+  /* Paleta de cores */
+  --orange: #F58A07;
+  --dark-orange: #F18A07;
+  --black: #2B2B2B;
+  --white: #fff;
+  --grey: #E5E5E5;
+  --beige: #FCF5ED;
+  --red: #D9021E;
+  --beigeW: #FFFAF4;
+  --dark-grey: #E5E5E5;
+  --light-grey: #FFFAF4;
+
+  /*Tipografia*/
+  --sublinhado: underline;
+}

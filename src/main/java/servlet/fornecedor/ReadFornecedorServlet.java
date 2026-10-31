@@ -1,5 +1,9 @@
 package servlet.fornecedor;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import exception.GenericExceptionEnum;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -8,68 +12,91 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.Fornecedor;
-import service.FornecedorService;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import java.util.Map;
+import model.Admin;
+import service.fornecedor.FiltrosFornecedorDTO;
+import service.fornecedor.FornecedorService;
 
 @WebServlet("/crudFornecedor")
-public class ReadFornecedorServlet extends HttpServlet {
+public final class ReadFornecedorServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        try {
-            HttpSession session = request.getSession();
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
 
-            String sairPressionado = request.getParameter("sairPressionado");
+  private final FornecedorService fornecedorService = new FornecedorService();
 
-            if(sairPressionado != null && sairPressionado.equalsIgnoreCase("true")){
-                Enumeration<String> attributes = session.getAttributeNames();
-                while(attributes.hasMoreElements()){
-                    session.removeAttribute(attributes.nextElement());
-                }
-            }
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-            String clausulaWhereNome = request.getParameter("clausulaWhereNome");
-            String clausulaWhereValor = request.getParameter("clausulaWhereValor");
-            String clausulaWhereValor2 = request.getParameter("clausulaWhereValor2");
-            String orderBy = request.getParameter("orderBy");
-            String ordenacao = request.getParameter("ordenacao");
+    // Faz com que o navegador não salve a página no cache garantindo proteção dos dados privados do
+    // crud
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
 
-            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
-            List<Fornecedor> fornecedoresRead = new ArrayList<>();
+    HttpSession httpSession = request.getSession();
+    Admin admin = (Admin) httpSession.getAttribute("adm");
 
-            fornecedoresRead.addAll(FornecedorService.realizarSelect(clausulaWhereNome, clausulaWhereValor, clausulaWhereValor2, orderBy, ordenacao, errosRead));
-
-            request.setAttribute("errosRead", errosRead);
-            request.setAttribute("fornecedoresRead", fornecedoresRead);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/fornecedor/crudFornecedor.jsp");
-            dispatcher.forward(request, response);
-
-        } catch (Exception e){
-            ArrayList<GenericExceptionEnum> errosRead = new ArrayList<>();
-            errosRead.add(ERRO_GENERICO);
-
-            List<Fornecedor> fornecedorRead = FornecedorService.realizarSelect(null, null, null, null, null, errosRead);
-
-            request.setAttribute("errosRead", errosRead);
-            request.setAttribute("fornecedorRead", fornecedorRead);
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/fornecedor/crudFornecedor.jsp");
-            dispatcher.forward(request, response);
-        }
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
+    RequestDispatcher dispatcher =
+        request.getRequestDispatcher("/WEB-INF/view/fornecedor/crudFornecedor.jsp");
+    dispatcher.forward(request, response);
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+
+    HttpSession session = request.getSession(true);
+    Admin admin = (Admin) session.getAttribute("adm");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
+    request.setCharacterEncoding("UTF-8");
+
+    JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
+
+    Map<String, Object> json = new HashMap<>();
+    if (jsonObject.isEmpty()) {
+      json.put("valores", fornecedorService.realizarSelectInicial(admin));
+
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write(gson.toJson(json));
+      return;
+    }
+
+    List<GenericExceptionEnum> erros = new ArrayList<>();
+
+    List<Map<String, Object>> usuario =
+        fornecedorService.realizarSelect(
+            gson.fromJson(jsonObject, FiltrosFornecedorDTO.class), erros, admin);
+    if (erros.isEmpty()) {
+      if (!usuario.isEmpty()) json.put("valores", usuario);
+
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+
+      response.getWriter().write(gson.toJson(json));
+      return;
+    }
+
+    for (GenericExceptionEnum genericExceptionEnum : erros) {
+      json.put(genericExceptionEnum.nomeCampoErro(), genericExceptionEnum.exibirMensagem());
+    }
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(gson.toJson(json));
+  }
 }

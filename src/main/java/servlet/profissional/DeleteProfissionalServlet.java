@@ -1,63 +1,60 @@
 package servlet.profissional;
 
+import static exception.ErrosGerais.SUCESSO;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import exception.GenericExceptionEnum;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import service.ProfissionalService;
-
 import java.io.IOException;
-import java.util.Enumeration;
-
-import static exception.ErrosGerais.ERRO_GENERICO;
+import model.Admin;
+import service.profissional.ProfissionalService;
 
 @WebServlet("/crudProfissional-delete")
-public class DeleteProfissionalServlet extends HttpServlet {
+public final class DeleteProfissionalServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath() + "/crudProfissional");
+  // Constantes utilizadas pelo código
+  private final Gson gson =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+
+  private final ProfissionalService profissionalService = new ProfissionalService();
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    response.sendRedirect(request.getContextPath() + "/crudProfissional");
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+
+    HttpSession session = request.getSession(true);
+    Admin admin = (Admin) session.getAttribute("adm");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            HttpSession session = request.getSession();
+    request.setCharacterEncoding("UTF-8");
+    JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
-
-            String id = request.getParameter("idDelete");
-
-            GenericExceptionEnum erro = ProfissionalService.realizarDelete(id);
-
-            if(erro != null){
-                session.setAttribute("mensagemDelete", erro.exibirMensagem());
-                response.sendRedirect(request.getContextPath() + "/crudProfissional");
-            } else {
-                session.setAttribute("mensagemDelete", "O usuário foi deletado com sucesso!");
-                response.sendRedirect(request.getContextPath() + "/crudProfissional");
-            }
-        } catch (Exception e){
-
-            HttpSession session = request.getSession();
-
-            //Limpeza dos atributos da seção, para evitar casos dos pop-ups abrirem quando não deveriam
-            Enumeration<String> attributes = session.getAttributeNames();
-            while(attributes.hasMoreElements()){
-                session.removeAttribute(attributes.nextElement());
-            }
-
-            session.setAttribute("mensagemDelete", ERRO_GENERICO.exibirMensagem());
-            response.sendRedirect(request.getContextPath() + "/crudProfissional");
-        }
+    GenericExceptionEnum resultado =
+        profissionalService.realizarDelete(jsonObject.get("id").getAsString(), admin.getId());
+    if (resultado == SUCESSO) {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write("{}");
+    } else {
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getWriter().write("{\"erro\": true}");
     }
+  }
 }

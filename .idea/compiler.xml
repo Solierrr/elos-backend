@@ -13,6 +13,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Elos (2)" target="25" />
       <module name="SolariaInterdisciplinar" target="1.8" />
     </bytecodeTargetLevel>
   </component>

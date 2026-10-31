@@ -2,62 +2,103 @@ package model;
 
 public class Profissional {
 
-    private final long id;
-    private final long idUsuario;
-    private final TiposUsuario tipoUsuario = TiposUsuario.PROFISSIONAL;
-    private String profissao;
-    private final String cpf;
-    private long idFornecedor;
+  //Atributos
+  private final Long id;
+  private final Long idUsuario;
+  private final TiposUsuario tipoUsuario;
+  private String profissao;
+  private final String cpfHmac;
+  private final byte[] cpfAes;
+  private Long idFornecedor;
+  private String documentoContrato;
 
-    public Profissional(long id, long idUsuario, String profissao, String cpf, long idFornecedor) {
-        this.id = id;
-        this.idUsuario = idUsuario;
-        this.profissao = profissao;
-        this.cpf = cpf;
-        this.idFornecedor = idFornecedor;
-    }
+  //Construtor
+  public Profissional(
+      Long id,
+      Long idUsuario,
+      TiposUsuario tipoUsuario,
+      String profissao,
+      String cpfHmac,
+      byte[] cpfAes,
+      Long idFornecedor,
+      String documentoContrato) {
+    this.id = id;
+    this.idUsuario = idUsuario;
+    this.tipoUsuario = tipoUsuario;
+    this.profissao = profissao;
+    this.cpfHmac = cpfHmac;
+    this.cpfAes = cpfAes;
+    this.idFornecedor = idFornecedor;
+    this.documentoContrato = documentoContrato;
+  }
 
-    public long getId() {
-        return id;
-    }
+  //Getters e Setters
+  public Long getId() {
+    return id;
+  }
 
-    public long getIdUsuario() {
-        return idUsuario;
-    }
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
 
-    public TiposUsuario getTipoUsuario() {
-        return tipoUsuario;
-    }
+  public TiposUsuario getTipoUsuario() {
+    return tipoUsuario;
+  }
 
-    public String getProfissao() {
-        return profissao;
-    }
+  public String getProfissao() {
+    return profissao;
+  }
 
-    public void setProfissao(String profissao) {
-        this.profissao = profissao;
-    }
+  public void setProfissao(String profissao) {
+    this.profissao = profissao;
+  }
 
-    public String getCpf() {
-        return cpf;
-    }
+  public String getCpfHmac() {
+    return cpfHmac;
+  }
 
-    public long getIdFornecedor() {
-        return idFornecedor;
-    }
+  public byte[] getCpfAes() {
+    return cpfAes;
+  }
 
-    public void setIdFornecedor(long idFornecedor) {
-        this.idFornecedor = idFornecedor;
-    }
+  public Long getIdFornecedor() {
+    return idFornecedor;
+  }
 
-    @Override
-    public String toString(){
-        return  "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n" +
-                "ID: "+ this.id + "\n" +
-                "ID do usuário: "+ this.idUsuario + "\n" +
-                "Tipo do usuário: "+ this.tipoUsuario.getTipoDoUsuario() + "\n" +
-                "Profissão: "+ this.profissao + "\n" +
-                "CPF: "+ this.cpf + "\n" +
-                "ID do fornecedor: "+ this.idFornecedor + "\n" +
-                "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-    }
+  public void setIdFornecedor(Long idFornecedor) {
+    this.idFornecedor = idFornecedor;
+  }
+
+  public String getDocumentoContrato() {
+    return documentoContrato;
+  }
+
+  public void setDocumentoContrato(String documentoContrato) {
+    this.documentoContrato = documentoContrato;
+  }
+
+  @Override
+  public String toString() {
+    return "ID: "
+        + this.id
+        + "\n"
+        + "ID do usuário: "
+        + this.idUsuario
+        + "\n"
+        + "Tipo do usuário: "
+        + this.tipoUsuario.getTipoDoUsuario()
+        + "\n"
+        + "Profissão: "
+        + this.profissao
+        + "\n"
+        + "CPF hmac: "
+        + this.cpfHmac
+        + "\n"
+        + "CPF aes: "
+        + this.cpfAes
+        + "\n"
+        + "ID do fornecedor: "
+        + this.idFornecedor
+        + "\n";
+  }
 }
