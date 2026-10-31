@@ -19,13 +19,13 @@
 <div id="hero">
   <header>
     <div class="header_container">
-      <a  href="${pageContext.request.contextPath}">
+      <a  href="${pageContext.request.contextPath}/">
         <img src="${pageContext.request.contextPath}/assets/icone/logotipo.svg" alt="Logo"
              class="logo-header">
       </a>
       <div class="divisor"></div>
       <nav class="navigation_header">
-        <a href="${pageContext.request.contextPath}" class="text">Início</a>
+        <a href="${pageContext.request.contextPath}/" class="text">Início</a>
       </nav>
       <nav class="navigation_header">
         <a href="#secao1" class="text">Proposta</a>
@@ -468,7 +468,7 @@
     <div class="flex-column gap-1rem" id="navegacao-footer">
       <h3 class="sub_title">Navegação</h3>
       <div class="flex-column gap-1rem">
-        <a href="${pageContext.request.contextPath}" class="text">Início</a>
+        <a href="${pageContext.request.contextPath}/" class="text">Início</a>
 
         <a href="${pageContext.request.contextPath}/login" class="text">Portal</a>
       </div>

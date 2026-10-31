@@ -17,13 +17,17 @@
 <body>
 <div class="containerP">
   <header>
-    <img src="${pageContext.request.contextPath}/assets/icone/Logo_com_nome.svg" alt="logo-elos"
-         width="146" height="60">
+    <a href="${pageContext.request.contextPath}/">
+      <img src="${pageContext.request.contextPath}/assets/icone/Logo_com_nome.svg" alt="logo-elos"
+           width="146" height="60">
+    </a>
   </header>
   <div class="container">
     <div class="tela-login">
       <div class="home">
-        <img src="${pageContext.request.contextPath}/assets/icone/home.svg" width="24" height="24">
+        <a href="${pageContext.request.contextPath}/">
+          <img src="${pageContext.request.contextPath}/assets/icone/home.svg" width="24" height="24">
+        </a>
       </div>
       <p class="sub_title">Insira os dados!</p>
       <p class="title">Redefina sua senha</p>
