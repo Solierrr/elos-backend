@@ -167,7 +167,6 @@ public final class RedefinicaoSenhaService {
     String emailTratado = email.toLowerCase().strip();
 
     String token = gerarToken();
-    System.out.println(token);
     GenericExceptionEnum resultadoPesistirToken = persistirToken(token, emailTratado);
     if (resultadoPesistirToken != SUCESSO) {
       return resultadoPesistirToken;

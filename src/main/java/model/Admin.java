@@ -78,9 +78,6 @@ public class Admin {
         + "Nome: "
         + this.nome
         + "\n"
-        + "Senha: "
-        + this.senha
-        + "\n"
         + "Função: "
         + this.funcao
         + "\n"

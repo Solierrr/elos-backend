@@ -371,6 +371,7 @@ public final class FornecedorService {
         String conector =
             JoinsPossiveis.joinValido("fornecedor", filtrosFornecedorDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("fornecedor")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);

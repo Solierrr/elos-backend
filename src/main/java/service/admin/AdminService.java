@@ -156,15 +156,18 @@ public final class AdminService {
     return validarEmail(email) == VALIDACAO_OK && validarSenha(senha) == VALIDACAO_OK;
   }
 
-  // Métodos relacionados ao delete
-  public GenericExceptionEnum realizarDelete(String id, Long idAdmin) {
+  /* Métodos utlizados para alterar o  campo em_atividade dos admin,
+     isso foi  feito para não perder o registro de alterações feitos
+     pelos admins
+  */
+  public GenericExceptionEnum desativarOuAtivarAdmin(String id, Long idAdmin) {
     if (validarId(id) != VALIDACAO_OK) {
       return ERRO_GENERICO;
     }
-    return deletarAdmin(id, idAdmin);
+    return alterarEmAtividade(id, idAdmin);
   }
 
-  private GenericExceptionEnum deletarAdmin(String id, Long idAdmin) {
+  private GenericExceptionEnum alterarEmAtividade(String id, Long idAdmin) {
     AdminDAO dao = new AdminDAO();
 
     try (Connection connection = ConexaoPostgresql.getConnection()) {
@@ -327,6 +330,7 @@ public final class AdminService {
       if (filtrosAdminDTO.joinFiltro() != null) {
         String conector = JoinsPossiveis.joinValido("admin", filtrosAdminDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("admin")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);
@@ -394,7 +398,6 @@ public final class AdminService {
         erros.add(JOIN_INVALIDO);
       }
     }
-
     return erros;
   }
 

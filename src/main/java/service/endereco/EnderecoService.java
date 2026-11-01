@@ -348,6 +348,7 @@ public final class EnderecoService {
       if (filtrosEnderecoDTO.joinFiltro() != null) {
         String conector = JoinsPossiveis.joinValido("endereco", filtrosEnderecoDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("endereco")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);

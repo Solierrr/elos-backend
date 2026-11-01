@@ -79,9 +79,6 @@ public class Usuario {
         + "Email: "
         + this.email
         + "\n"
-        + "Senha: "
-        + this.senha
-        + "\n"
         + "Nome: "
         + this.nome
         + "\n"

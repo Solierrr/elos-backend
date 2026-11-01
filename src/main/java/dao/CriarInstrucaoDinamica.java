@@ -117,6 +117,7 @@ public final class CriarInstrucaoDinamica {
         sb.append(", ");
       }
 
+      //Uso do coalesce para que quando o usuário não digite um campo o valor salvo no banco persista
       sb.append(campo).append(" = coalesce(?, ").append(campo).append(")");
     }
     sb.append(" where ").append(construirWhere(tabela));
