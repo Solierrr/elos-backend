@@ -207,7 +207,7 @@ button:active {
   }
 }
 
-@media (max-height: 820px) {
+@media (max-height: 700px) {
 
   .container {
     margin-top: 10%;
