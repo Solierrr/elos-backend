@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/aboutUs")
-public final class paginaAboutUsServlet extends HttpServlet {
+public final class PaginaAboutUsServlet extends HttpServlet {
 
   //Servlet apenas para encaminhar para a paginaAboutUs
   @Override

@@ -69,6 +69,8 @@ public final class Criptografia extends Env {
       byte[] textoCifrado = cifraAes.doFinal(stringParaAes.getBytes(StandardCharsets.UTF_8));
 
       byte[] resultadoCombinado = new byte[vetorInicializacao.length + textoCifrado.length];
+
+      //Concatenação do código IV para o GCM poder usar depois ao descriptografar
       System.arraycopy(vetorInicializacao, 0, resultadoCombinado, 0, vetorInicializacao.length);
       System.arraycopy(
           textoCifrado, 0, resultadoCombinado, vetorInicializacao.length, textoCifrado.length);

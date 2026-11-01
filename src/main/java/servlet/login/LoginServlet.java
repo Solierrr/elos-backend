@@ -36,7 +36,11 @@ public final class LoginServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
+
+    //Coleta o ip real do visitante no caso do servidor ser da Cloudflare
     String ip = request.getHeader("CF-Connecting-IP");
+
+    //Caso não seja da cloudflare pega o IP que conectou com o servidor
     if (ip == null) ip = request.getRemoteAddr();
 
     request.setCharacterEncoding("UTF-8");

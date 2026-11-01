@@ -46,7 +46,7 @@ public final class DeleteAdminServlet extends HttpServlet {
     JsonObject jsonObject = gson.fromJson(request.getReader(), JsonObject.class);
 
     GenericExceptionEnum resultado =
-        adminService.realizarDelete(jsonObject.get("id").getAsString(), admin.getId());
+        adminService.desativarOuAtivarAdmin(jsonObject.get("id").getAsString(), admin.getId());
     if (resultado == SUCESSO) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

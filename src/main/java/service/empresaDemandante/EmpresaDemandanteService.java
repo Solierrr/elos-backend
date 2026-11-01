@@ -351,6 +351,7 @@ public final class EmpresaDemandanteService {
             JoinsPossiveis.joinValido(
                 "empresa_demandante", filtrosEmpresaDemandanteDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("empresa_demandante")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);

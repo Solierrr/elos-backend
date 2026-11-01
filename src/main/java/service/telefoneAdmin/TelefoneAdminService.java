@@ -252,7 +252,8 @@ public final class TelefoneAdminService {
         String conector =
             JoinsPossiveis.joinValido("telefone_admin", filtrosTelefoneAdminDTO.joinFiltro());
 
-        if (conector.contains("telefone")) {
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
+        if (conector.contains("telefone_admin")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);
         } else {

@@ -14,14 +14,15 @@ public record AdminParaUpdateDTO(
     Boolean emAtividadeTratada = Boolean.parseBoolean(emAtividadeUpdate);
 
     String emailTratado = emailUpdate.toLowerCase().strip();
-    String senhaTratada = senhaUpdate == null || senhaUpdate.isBlank() ? null : senhaUpdate.strip();
-    String nomeTratado = nomeUpdate.strip();
 
     Criptografia criptografia = new Criptografia();
+    String senhaTratada = senhaUpdate == null || senhaUpdate.isBlank() ? null : criptografia.porEmBcrypt(senhaUpdate.strip());
+    String nomeTratado = nomeUpdate.strip();
+
     return new Admin(
         Long.parseLong(idUpdate),
         emailTratado,
-        criptografia.porEmBcrypt(senhaTratada),
+        senhaTratada,
         nomeTratado,
         null,
         emAtividadeTratada);

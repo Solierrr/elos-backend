@@ -109,6 +109,8 @@ public final class HistoricoAlteracoesAdminService {
     return ErrosDadosHistoricoAlteracoes.ACAO_INVALIDA;
   }
 
+  //O admin só consegue ler os históricos de alteração para evitar manipulação deles
+
   // Métodos relacionados ao select
   public List<Map<String, Object>> realizarSelectInicial(Admin admin) {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
@@ -202,6 +204,7 @@ public final class HistoricoAlteracoesAdminService {
             JoinsPossiveis.joinValido(
                 "log_acessos_admin", filtrosHistoricoAlteracoesDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("log_acessos_admin")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);

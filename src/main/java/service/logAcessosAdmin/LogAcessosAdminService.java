@@ -192,6 +192,8 @@ public final class LogAcessosAdminService {
     return sistemasOperacionaisAdmin == null ? SISTEMA_OPERACIONAL_INVALIDO : VALIDACAO_OK;
   }
 
+  //O admin só consegue ler os históricos de alteração para evitar manipulação deles
+
   // Métodos relacionados ao select
   public List<Map<String, Object>> realizarSelectInicial(Admin admin) {
     CriarInstrucaoDinamica criarInstrucaoDinamica = new CriarInstrucaoDinamica();
@@ -283,6 +285,7 @@ public final class LogAcessosAdminService {
         String conector =
             JoinsPossiveis.joinValido("log_acessos_admin", filtrosLogAcessosAdminDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("log_acessos_admin")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);

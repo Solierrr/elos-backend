@@ -350,6 +350,7 @@ public final class UsuarioService {
       if (filtrosUsuarioDTO.joinFiltro() != null) {
         String conector = JoinsPossiveis.joinValido("usuario", filtrosUsuarioDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("usuario")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);

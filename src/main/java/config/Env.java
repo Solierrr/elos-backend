@@ -3,6 +3,7 @@ package config;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Base64;
 
+//Uso dessa classe para garantir que o .env fosse acessado uma vez e que o menor número de classes tenham acesso
 public abstract class Env {
 
   // Dados do .env

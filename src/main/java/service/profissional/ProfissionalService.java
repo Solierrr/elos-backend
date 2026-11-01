@@ -354,6 +354,7 @@ public final class ProfissionalService {
         String conector =
             JoinsPossiveis.joinValido("profissional", filtrosProfissionalDTO.joinFiltro());
 
+        //Inverte a ordem das tabelas de acordo com quem tem a FK
         if (conector.contains("profissional")) {
           criarInstrucaoDinamica.setJoin(
               INNER_JOIN, tabelaConectada.getNomeTabela(), "id", conector);
