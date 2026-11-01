@@ -48,7 +48,7 @@
     <p class="title">Qual será sua contruibuição para o ecossistema?</p>
     <div class="sPPL">
       <span class="color">Clicou errado?</span>
-      <a href="${pageContext.request.contextPath}/login" class="link-cadastro">Voltar</a>
+      <a href="${pageContext.request.contextPath}/cadastro" class="link-cadastro">Voltar</a>
     </div>
   </div>
   <div class="cards" id="conteiner-cards">
