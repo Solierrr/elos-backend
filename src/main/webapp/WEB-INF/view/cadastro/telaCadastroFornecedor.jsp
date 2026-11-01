@@ -69,7 +69,7 @@
           <button class="sub_title" type="submit">Finalizar</button>
           <div class="sPPL">
             <span class="color">Clicou errado?</span>
-            <a href="${pageContext.request.contextPath}/login" class="link-cadastro">Voltar</a>
+            <a href="${pageContext.request.contextPath}/cadastro-tipo" class="link-cadastro">Voltar</a>
           </div>
         </div>
       </form>
